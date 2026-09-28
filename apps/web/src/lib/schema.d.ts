@@ -1689,7 +1689,6 @@ export interface components {
       verification_status?: components["schemas"]["VerificationStatusEnum"];
       /** Format: uuid */
       evidence_policy: string;
-      /** Format: int64 */
       evidence_version: number;
       evidence_quote: string;
       readonly verified_by: number | null;
@@ -1708,7 +1707,6 @@ export interface components {
       verification_status?: components["schemas"]["VerificationStatusEnum"];
       /** Format: uuid */
       evidence_policy: string;
-      /** Format: int64 */
       evidence_version: number;
       evidence_quote: string;
     };
@@ -1933,7 +1931,6 @@ export interface components {
       title: string;
       abstract?: string;
       status?: components["schemas"]["KnowledgePageStatusEnum"];
-      /** Format: int64 */
       source_count?: number;
       readonly revision: number;
       /** Format: date-time */
@@ -1955,7 +1952,6 @@ export interface components {
       title: string;
       abstract?: string;
       status?: components["schemas"]["KnowledgePageStatusEnum"];
-      /** Format: int64 */
       source_count?: number;
       readonly revision: number;
       /** Format: date-time */
@@ -2051,7 +2047,6 @@ export interface components {
       verification_status?: components["schemas"]["VerificationStatusEnum"];
       /** Format: uuid */
       evidence_policy: string;
-      /** Format: int64 */
       evidence_version: number;
       evidence_quote: string;
       readonly verified_by: number | null;
@@ -2100,7 +2095,6 @@ export interface components {
       verification_status?: components["schemas"]["VerificationStatusEnum"];
       /** Format: uuid */
       evidence_policy: string;
-      /** Format: int64 */
       evidence_version: number;
       evidence_quote: string;
     };
@@ -2467,7 +2461,6 @@ export interface components {
       verification_status?: components["schemas"]["VerificationStatusEnum"];
       /** Format: uuid */
       evidence_policy?: string;
-      /** Format: int64 */
       evidence_version?: number;
       evidence_quote?: string;
     };
@@ -2506,7 +2499,6 @@ export interface components {
       verification_status?: components["schemas"]["VerificationStatusEnum"];
       /** Format: uuid */
       evidence_policy?: string;
-      /** Format: int64 */
       evidence_version?: number;
       evidence_quote?: string;
     };
@@ -2519,7 +2511,6 @@ export interface components {
       verification_status?: components["schemas"]["VerificationStatusEnum"];
       /** Format: uuid */
       evidence_policy?: string;
-      /** Format: int64 */
       evidence_version?: number;
       evidence_quote?: string;
     };
@@ -2529,7 +2520,6 @@ export interface components {
       url?: string;
       collection_type?: components["schemas"]["CollectionTypeEnum"];
       enabled?: boolean;
-      /** Format: int64 */
       interval_minutes?: number;
       schedule_mode?: components["schemas"]["ScheduleModeEnum"];
       /** Format: time */
@@ -2558,7 +2548,6 @@ export interface components {
       eligible_keywords?: string;
       authority_keywords?: string;
       has_deadline?: boolean | null;
-      /** Format: int64 */
       deadline_within_days?: number | null;
       active?: boolean;
     };
@@ -2595,12 +2584,10 @@ export interface components {
       summary_method?: string;
       summary_evidence?: unknown;
       structured_keywords?: unknown;
-      /** Format: int64 */
       extraction_version?: number;
       /** Format: uri */
       source_url: string;
       status?: components["schemas"]["PolicyStatusEnum"];
-      /** Format: int64 */
       version?: number;
       /** Format: date-time */
       published_at?: string | null;
@@ -2649,12 +2636,10 @@ export interface components {
       summary_method?: string;
       summary_evidence?: unknown;
       structured_keywords?: unknown;
-      /** Format: int64 */
       extraction_version?: number;
       /** Format: uri */
       source_url: string;
       status?: components["schemas"]["PolicyStatusEnum"];
-      /** Format: int64 */
       version?: number;
       /** Format: date-time */
       published_at?: string | null;
@@ -2805,7 +2790,6 @@ export interface components {
       verification_status?: components["schemas"]["VerificationStatusEnum"];
       /** Format: uuid */
       evidence_policy: string;
-      /** Format: int64 */
       evidence_version: number;
       evidence_quote: string;
       readonly verified_by: number | null;
@@ -2857,7 +2841,6 @@ export interface components {
       verification_status?: components["schemas"]["VerificationStatusEnum"];
       /** Format: uuid */
       evidence_policy: string;
-      /** Format: int64 */
       evidence_version: number;
       evidence_quote: string;
     };
@@ -3070,7 +3053,6 @@ export interface components {
       collection_type?: components["schemas"]["CollectionTypeEnum"];
       readonly collection_type_label: string;
       enabled?: boolean;
-      /** Format: int64 */
       interval_minutes?: number;
       schedule_mode?: components["schemas"]["ScheduleModeEnum"];
       /** Format: time */
@@ -3101,7 +3083,6 @@ export interface components {
       url: string;
       collection_type?: components["schemas"]["CollectionTypeEnum"];
       enabled?: boolean;
-      /** Format: int64 */
       interval_minutes?: number;
       schedule_mode?: components["schemas"]["ScheduleModeEnum"];
       /** Format: time */
@@ -3118,7 +3099,6 @@ export interface components {
       readonly created_at: string;
       /** Format: date-time */
       finished_at?: string | null;
-      /** Format: int64 */
       discovered?: number;
       progress?: unknown;
       error_code?: string;
@@ -3148,7 +3128,6 @@ export interface components {
       eligible_keywords?: string;
       authority_keywords?: string;
       has_deadline?: boolean | null;
-      /** Format: int64 */
       deadline_within_days?: number | null;
       active?: boolean;
       /** Format: date-time */
@@ -3182,7 +3161,6 @@ export interface components {
       eligible_keywords?: string;
       authority_keywords?: string;
       has_deadline?: boolean | null;
-      /** Format: int64 */
       deadline_within_days?: number | null;
       active?: boolean;
     };

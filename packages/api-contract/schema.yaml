@@ -3104,9 +3104,8 @@ components:
           format: uuid
         evidence_version:
           type: integer
-          maximum: 9223372036854775807
+          maximum: 2147483647
           minimum: 0
-          format: int64
         evidence_quote:
           type: string
         verified_by:
@@ -3157,9 +3156,8 @@ components:
           format: uuid
         evidence_version:
           type: integer
-          maximum: 9223372036854775807
+          maximum: 2147483647
           minimum: 0
-          format: int64
         evidence_quote:
           type: string
           minLength: 1
@@ -3592,9 +3590,8 @@ components:
           $ref: '#/components/schemas/KnowledgePageStatusEnum'
         source_count:
           type: integer
-          maximum: 9223372036854775807
+          maximum: 2147483647
           minimum: 0
-          format: int64
         revision:
           type: integer
           readOnly: true
@@ -3655,9 +3652,8 @@ components:
           $ref: '#/components/schemas/KnowledgePageStatusEnum'
         source_count:
           type: integer
-          maximum: 9223372036854775807
+          maximum: 2147483647
           minimum: 0
-          format: int64
         revision:
           type: integer
           readOnly: true
@@ -3870,9 +3866,8 @@ components:
           format: uuid
         evidence_version:
           type: integer
-          maximum: 9223372036854775807
+          maximum: 2147483647
           minimum: 0
-          format: int64
         evidence_quote:
           type: string
         verified_by:
@@ -3975,9 +3970,8 @@ components:
           format: uuid
         evidence_version:
           type: integer
-          maximum: 9223372036854775807
+          maximum: 2147483647
           minimum: 0
-          format: int64
         evidence_quote:
           type: string
           minLength: 1
@@ -4551,9 +4545,8 @@ components:
           format: uuid
         evidence_version:
           type: integer
-          maximum: 9223372036854775807
+          maximum: 2147483647
           minimum: 0
-          format: int64
         evidence_quote:
           type: string
           minLength: 1
@@ -4624,9 +4617,8 @@ components:
           format: uuid
         evidence_version:
           type: integer
-          maximum: 9223372036854775807
+          maximum: 2147483647
           minimum: 0
-          format: int64
         evidence_quote:
           type: string
           minLength: 1
@@ -4648,9 +4640,8 @@ components:
           format: uuid
         evidence_version:
           type: integer
-          maximum: 9223372036854775807
+          maximum: 2147483647
           minimum: 0
-          format: int64
         evidence_quote:
           type: string
           minLength: 1
@@ -4672,9 +4663,8 @@ components:
           type: boolean
         interval_minutes:
           type: integer
-          maximum: 9223372036854775807
+          maximum: 2147483647
           minimum: 30
-          format: int64
         schedule_mode:
           $ref: '#/components/schemas/ScheduleModeEnum'
         daily_check_time:
@@ -4744,9 +4734,8 @@ components:
           nullable: true
         deadline_within_days:
           type: integer
-          maximum: 9223372036854775807
+          maximum: 32767
           minimum: 0
-          format: int64
           nullable: true
         active:
           type: boolean
@@ -4818,9 +4807,8 @@ components:
         structured_keywords: {}
         extraction_version:
           type: integer
-          maximum: 9223372036854775807
+          maximum: 2147483647
           minimum: 0
-          format: int64
         source_url:
           type: string
           format: uri
@@ -4829,9 +4817,8 @@ components:
           $ref: '#/components/schemas/PolicyStatusEnum'
         version:
           type: integer
-          maximum: 9223372036854775807
+          maximum: 2147483647
           minimum: 0
-          format: int64
         published_at:
           type: string
           format: date-time
@@ -4956,9 +4943,8 @@ components:
         structured_keywords: {}
         extraction_version:
           type: integer
-          maximum: 9223372036854775807
+          maximum: 2147483647
           minimum: 0
-          format: int64
         source_url:
           type: string
           format: uri
@@ -4967,9 +4953,8 @@ components:
           $ref: '#/components/schemas/PolicyStatusEnum'
         version:
           type: integer
-          maximum: 9223372036854775807
+          maximum: 2147483647
           minimum: 0
-          format: int64
         published_at:
           type: string
           format: date-time
@@ -5335,9 +5320,8 @@ components:
           format: uuid
         evidence_version:
           type: integer
-          maximum: 9223372036854775807
+          maximum: 2147483647
           minimum: 0
-          format: int64
         evidence_quote:
           type: string
         verified_by:
@@ -5417,9 +5401,8 @@ components:
           format: uuid
         evidence_version:
           type: integer
-          maximum: 9223372036854775807
+          maximum: 2147483647
           minimum: 0
-          format: int64
         evidence_quote:
           type: string
           minLength: 1
@@ -5921,9 +5904,8 @@ components:
           type: boolean
         interval_minutes:
           type: integer
-          maximum: 9223372036854775807
+          maximum: 2147483647
           minimum: 30
-          format: int64
         schedule_mode:
           $ref: '#/components/schemas/ScheduleModeEnum'
         daily_check_time:
@@ -5999,9 +5981,8 @@ components:
           type: boolean
         interval_minutes:
           type: integer
-          maximum: 9223372036854775807
+          maximum: 2147483647
           minimum: 30
-          format: int64
         schedule_mode:
           $ref: '#/components/schemas/ScheduleModeEnum'
         daily_check_time:
@@ -6036,9 +6017,8 @@ components:
           nullable: true
         discovered:
           type: integer
-          maximum: 9223372036854775807
+          maximum: 2147483647
           minimum: 0
-          format: int64
         progress: {}
         error_code:
           type: string
@@ -6113,9 +6093,8 @@ components:
           nullable: true
         deadline_within_days:
           type: integer
-          maximum: 9223372036854775807
+          maximum: 32767
           minimum: 0
-          format: int64
           nullable: true
         active:
           type: boolean
@@ -6201,9 +6180,8 @@ components:
           nullable: true
         deadline_within_days:
           type: integer
-          maximum: 9223372036854775807
+          maximum: 32767
           minimum: 0
-          format: int64
           nullable: true
         active:
           type: boolean
