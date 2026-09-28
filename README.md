@@ -52,7 +52,7 @@ Windows 上如果 `python` 不可用，可将下文的 `python` 换为 `py`。
 ### 2. 获取代码并生成本机配置
 
 ```bash
-git clone https://github.com/OWNER/REPO.git
+git clone https://github.com/JiaHN213/policy-platform.git
 cd policy-platform
 python scripts/prepare_compose.py
 ```
