@@ -1,10 +1,10 @@
 from accounts.services import access_decision
+from core.business_config import get_config
 from core.errors import Conflict
 from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.utils import timezone
 from drf_spectacular.utils import OpenApiParameter, extend_schema, inline_serializer
-from core.business_config import get_config
 from policies.business_scope import configured_domains, configured_tags
 from policies.models import Policy
 from policies.taxonomy import OpportunityCategory, OpportunityStatus, ValidityStatus

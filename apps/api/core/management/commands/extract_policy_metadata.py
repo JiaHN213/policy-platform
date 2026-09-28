@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand
+from django.utils import timezone
 from policies.extraction import extract_metadata
 from policies.models import Policy
-from django.utils import timezone
 
 
 class Command(BaseCommand):

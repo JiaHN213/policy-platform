@@ -1,6 +1,5 @@
 from django.db import migrations
 
-
 TRACKED_FIELDS = (
     "title",
     "issuer",

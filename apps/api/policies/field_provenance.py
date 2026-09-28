@@ -3,7 +3,6 @@ from decimal import Decimal
 
 from .models import PolicyFieldProvenance
 
-
 TRACKED_FIELDS = (
     "title",
     "issuer",
