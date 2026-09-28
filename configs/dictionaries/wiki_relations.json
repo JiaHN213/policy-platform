@@ -1,0 +1,40 @@
+{
+  "version": "wiki-relations-evidence-v3",
+  "directions": {
+    "superior": "A是B的上位依据",
+    "implements": "A实施B",
+    "supports": "A配套B",
+    "application": "A是B的申报通知",
+    "supplements": "A补充B",
+    "extends": "A延长B",
+    "interprets": "A解读B",
+    "finalizes": "A是征求意见稿，B是其正式版本；方向为征求意见稿A指向正式文件B",
+    "revises": "新文件A修订旧文件B",
+    "replaces": "新文件A替代B",
+    "repeals": "A废止B",
+    "publicizes": "A公示B事项的拟定结果",
+    "lists": "A发布B事项正式名单",
+    "allocates": "A下达B事项资金",
+    "approves": "A批复B事项",
+    "accepts": "A公布B事项验收结果"
+  },
+  "newer_source_kinds": ["implements", "supports", "application", "supplements", "extends", "interprets", "revises", "replaces", "repeals", "publicizes", "lists", "allocates", "approves", "accepts"],
+  "relation_cues": ["实施", "申报", "通知", "补充", "延期", "延长", "解读", "征求意见", "修订", "修改", "替代", "废止", "公示", "名单", "资金下达", "批复", "验收"],
+  "kind_cues": {
+    "implements": ["依据", "根据", "贯彻", "落实", "实施"],
+    "supports": ["配套"],
+    "application": ["申报", "申请", "征集", "指南"],
+    "supplements": ["补充"],
+    "extends": ["延期", "延长"],
+    "interprets": ["解读"],
+    "revises": ["修订", "修改", "调整", "变更"],
+    "replaces": ["替代", "停止执行", "同时废止"],
+    "repeals": ["废止", "停止执行"],
+    "publicizes": ["公示"],
+    "lists": ["名单"],
+    "allocates": ["资金", "下达"],
+    "approves": ["批复"],
+    "accepts": ["验收"]
+  },
+  "targeted_revision_cues": ["调整", "变更"]
+}

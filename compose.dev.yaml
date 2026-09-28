@@ -1,0 +1,31 @@
+# Use with compose.yaml: docker compose --env-file .env.compose -f compose.yaml -f compose.dev.yaml up -d --build
+# Source changes appear in API/Next.js immediately. Restart worker/beat after editing background jobs.
+services:
+  init:
+    volumes:
+      - ./apps/api:/app/apps/api
+      - ./configs:/app/configs:ro
+  api:
+    command: ["python", "apps/api/manage.py", "runserver", "0.0.0.0:8000"]
+    volumes:
+      - ./apps/api:/app/apps/api
+      - ./configs:/app/configs:ro
+  worker:
+    volumes:
+      - ./apps/api:/app/apps/api
+      - ./configs:/app/configs:ro
+  beat:
+    volumes:
+      - ./apps/api:/app/apps/api
+      - ./configs:/app/configs:ro
+  web:
+    build:
+      target: dev
+    command: ["pnpm", "--filter", "web", "exec", "next", "dev", "--hostname", "0.0.0.0"]
+    environment:
+      NODE_ENV: development
+      WATCHPACK_POLLING: "true"
+    volumes:
+      - ./apps/web:/app/apps/web
+      - /app/apps/web/node_modules
+      - /app/apps/web/.next

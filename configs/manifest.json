@@ -1,0 +1,13 @@
+{
+  "schema_version": "1.0",
+  "release_version": "policy-config-1.1.0",
+  "files": {
+    "system_taxonomies": "taxonomy/system_taxonomies.json",
+    "business_scope": "dictionaries/business_scope.json",
+    "document_classification": "dictionaries/document_classification.json",
+    "opportunity_identification": "dictionaries/opportunity_identification.json",
+    "policy_validity": "dictionaries/policy_validity.json",
+    "wiki_relations": "dictionaries/wiki_relations.json",
+    "opportunity_rules": "rules/opportunity_rules.json"
+  }
+}

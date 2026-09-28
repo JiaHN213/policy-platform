@@ -1,0 +1,9 @@
+{
+  "version": "1.1",
+  "core_rule": "关键词只用于语义辅助。命中不等于存在正式机会，未命中也不等于不存在机会。必须结合全文、附件、文档角色、适用对象、具体利益或参与机制和直接原文证据判断。",
+  "formal_requirements": ["可识别的适用对象", "具体利益、资格或参与机制", "正文或已解析附件中的直接证据"],
+  "result_roles": ["PUBLICITY_RESULT", "FINAL_RESULT", "FUND_ALLOCATION"],
+  "draft_roles": ["CONSULTATION_DRAFT"],
+  "category_codes": ["fiscal", "tax", "finance", "pilot", "honor", "qualification", "market", "other"],
+  "status_codes": ["not_started", "open", "closed", "ongoing", "suspended", "publicity", "completed", "unverified"]
+}

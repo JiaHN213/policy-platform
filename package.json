@@ -1,0 +1,16 @@
+{
+  "name": "policy-platform",
+  "private": true,
+  "packageManager": "pnpm@11.19.0",
+  "scripts": {
+    "dev": "pnpm --filter web dev",
+    "build": "pnpm --filter web build",
+    "typecheck": "pnpm --filter web typecheck",
+    "lint": "pnpm --filter web lint",
+    "api:types": "openapi-typescript packages/api-contract/schema.yaml -o apps/web/src/lib/schema.d.ts && prettier --write apps/web/src/lib/schema.d.ts"
+  },
+  "devDependencies": {
+    "openapi-typescript": "^7.10.1",
+    "prettier": "^3.6.2"
+  }
+}

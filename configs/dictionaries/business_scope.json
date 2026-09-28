@@ -1,0 +1,34 @@
+{
+  "version": "water-v1.1",
+  "industry": {"code": "water_environment", "label": "水务环保"},
+  "business_domains": [
+    {"code": "urban_sewage", "label": "城镇污水处理", "terms": ["城镇污水", "城市污水", "生活污水", "污水处理厂", "污水处理设施", "污水处理费", "污水处理"], "enabled": true},
+    {"code": "industrial_wastewater", "label": "工业废水处理", "terms": ["工业废水", "工业污水", "园区污水", "工业园区污水", "废水处理", "废水治理"], "enabled": true},
+    {"code": "water_supply", "label": "供水", "terms": ["供水", "自来水", "水厂", "饮用水", "水源保护"], "enabled": true},
+    {"code": "drainage", "label": "排水", "terms": ["排水", "雨污分流", "雨污管网", "雨水管网", "污水管网", "内涝", "海绵城市"], "enabled": true},
+    {"code": "water_reuse", "label": "再生水利用", "terms": ["再生水", "中水回用", "中水利用", "污水资源化", "水循环利用"], "enabled": true},
+    {"code": "sludge", "label": "污泥处理处置", "terms": ["污泥"], "enabled": true},
+    {"code": "water_environment", "label": "水环境治理", "terms": ["水环境", "水污染", "水体治理", "黑臭水体", "河湖治理", "流域治理", "水生态", "河道治理"], "enabled": true},
+    {"code": "rural_sewage", "label": "农村污水治理", "terms": ["农村污水", "农村生活污水", "乡村污水", "乡镇污水"], "enabled": true},
+    {"code": "water_infrastructure", "label": "水务设施建设与改造", "terms": ["水务设施", "供排水设施", "供水管网", "排水管网", "污水管网", "污水处理设施", "供水设施"], "enabled": true},
+    {"code": "water_operations", "label": "水务运营管理", "terms": ["水务", "污水处理运营", "供水企业", "供水单位", "供排水企业", "污水处理服务", "供水价格", "水价"], "enabled": true}
+  ],
+  "direction_tags": [
+    {"code": "smart_water", "label": "智慧水务", "terms": ["智慧水务", "智慧供水", "智慧排水"], "enabled": true},
+    {"code": "digital", "label": "数字化转型", "terms": ["数字化", "数字转型", "信息化"], "enabled": true},
+    {"code": "ai", "label": "人工智能", "terms": ["人工智能", "大模型", "机器学习"], "enabled": true},
+    {"code": "automation", "label": "自动化控制", "terms": ["自动化控制", "自动控制", "自控"], "enabled": true},
+    {"code": "smart_operations", "label": "智能运维", "terms": ["智能运维", "智慧运维", "智能巡检"], "enabled": true},
+    {"code": "energy_upgrade", "label": "节能改造", "terms": ["节能改造"], "enabled": true},
+    {"code": "carbon", "label": "节能降碳", "terms": ["节能", "降碳", "减碳", "碳排放", "碳中和"], "enabled": true},
+    {"code": "equipment_renewal", "label": "设备更新", "terms": ["设备更新", "以旧换新"], "enabled": true},
+    {"code": "technical_upgrade", "label": "技术改造", "terms": ["技术改造", "技改"], "enabled": true},
+    {"code": "innovation", "label": "科技创新", "terms": ["科技创新", "技术创新", "科技成果"], "enabled": true},
+    {"code": "green_manufacturing", "label": "绿色制造", "terms": ["绿色制造", "绿色工厂"], "enabled": true},
+    {"code": "circular_economy", "label": "循环经济", "terms": ["循环经济", "资源循环", "资源综合利用"], "enabled": true},
+    {"code": "environmental_equipment", "label": "环保装备", "terms": ["环保装备", "环保设备", "环境保护装备"], "enabled": true}
+  ],
+  "primary_collection_terms": ["污水", "废水", "供水", "排水", "再生水", "污泥", "水环境", "水务", "饮用水", "水污染", "河湖", "河道", "水生态", "内涝", "海绵城市", "中水"],
+  "applicability_patterns": ["(污水处理|供水|排水|水务|再生水|污泥).{0,8}(企业|厂|设施|工程|项目|管网|单位|运营|利用|处置)", "工业废水", "农村生活污水", "水环境治理", "饮用水源保护"],
+  "negative_title_patterns": ["召开.*会议", "工作动态", "调研活动", "领导调研", "新闻报道", "今日要闻", "任免职", "任职通知", "干部任免"]
+}

@@ -1,0 +1,108 @@
+{
+  "version": "1.1",
+  "industries": [
+    {"code": "water_environment", "label": "水务环保", "enabled": true, "sort_order": 10}
+  ],
+  "document_types": [
+    {"code": "unclassified", "label": "待分类", "enabled": true, "sort_order": 0},
+    {"code": "policy", "label": "政策与制度文件", "enabled": true, "sort_order": 10},
+    {"code": "opportunity", "label": "政策机会文件", "enabled": true, "sort_order": 20},
+    {"code": "result", "label": "政策执行结果", "enabled": true, "sort_order": 30},
+    {"code": "interpretation", "label": "官方解读", "enabled": true, "sort_order": 40},
+    {"code": "draft", "label": "征求意见稿", "enabled": true, "sort_order": 50}
+  ],
+  "source_grades": [
+    {"code": "unverified", "label": "待核验", "enabled": true, "sort_order": 0},
+    {"code": "L1", "label": "L1 官方原始", "enabled": true, "sort_order": 10},
+    {"code": "L2", "label": "L2 官方转载", "enabled": true, "sort_order": 20},
+    {"code": "L3", "label": "L3 政府官方业务平台", "enabled": true, "sort_order": 30},
+    {"code": "L4", "label": "L4 非官方线索", "enabled": true, "sort_order": 40}
+  ],
+  "geographic_levels": [
+    {"code": "unverified", "label": "待核验", "enabled": true, "sort_order": 0},
+    {"code": "national", "label": "国家级", "enabled": true, "sort_order": 10},
+    {"code": "provincial", "label": "省级", "enabled": true, "sort_order": 20},
+    {"code": "city", "label": "地级市级", "enabled": true, "sort_order": 30}
+  ],
+  "validity_statuses": [
+    {"code": "consultation", "label": "征求意见", "enabled": true, "sort_order": 10},
+    {"code": "not_effective", "label": "尚未生效", "enabled": true, "sort_order": 20},
+    {"code": "effective", "label": "现行有效", "enabled": true, "sort_order": 30},
+    {"code": "expired", "label": "已失效", "enabled": true, "sort_order": 40},
+    {"code": "repealed", "label": "已废止", "enabled": true, "sort_order": 50},
+    {"code": "replaced", "label": "已被替代/已修订", "enabled": true, "sort_order": 60},
+    {"code": "unverified", "label": "待核实", "enabled": true, "sort_order": 70}
+  ],
+  "opportunity_levels": [
+    {"code": "NONE", "label": "没有政策机会", "enabled": true, "sort_order": 10},
+    {"code": "SUPPORT_SIGNAL", "label": "政策支持方向", "enabled": true, "sort_order": 20},
+    {"code": "FORMAL_OPPORTUNITY", "label": "正式政策机会", "enabled": true, "sort_order": 30}
+  ],
+  "opportunity_categories": [
+    {"code": "fiscal", "label": "财政资金支持", "enabled": true, "sort_order": 10},
+    {"code": "tax", "label": "税费优惠", "enabled": true, "sort_order": 20},
+    {"code": "finance", "label": "融资支持", "enabled": true, "sort_order": 30},
+    {"code": "pilot", "label": "项目与试点", "enabled": true, "sort_order": 40},
+    {"code": "honor", "label": "荣誉与认定", "enabled": true, "sort_order": 50},
+    {"code": "qualification", "label": "资质与目录", "enabled": true, "sort_order": 60},
+    {"code": "market", "label": "市场与推广支持", "enabled": true, "sort_order": 70},
+    {"code": "other", "label": "其他政策支持", "enabled": true, "sort_order": 80}
+  ],
+  "opportunity_statuses": [
+    {"code": "not_started", "label": "未开始", "enabled": true, "sort_order": 10},
+    {"code": "open", "label": "申报中", "enabled": true, "sort_order": 20},
+    {"code": "closed", "label": "已截止", "enabled": true, "sort_order": 30},
+    {"code": "ongoing", "label": "长期有效/常态化受理", "enabled": true, "sort_order": 40},
+    {"code": "suspended", "label": "暂停/中止", "enabled": true, "sort_order": 50},
+    {"code": "publicity", "label": "结果公示中", "enabled": true, "sort_order": 60},
+    {"code": "completed", "label": "已完成", "enabled": true, "sort_order": 70},
+    {"code": "unverified", "label": "待核实", "enabled": true, "sort_order": 80}
+  ],
+  "document_roles": [
+    {"code": "POLICY_BASIS", "label": "政策依据", "enabled": true, "sort_order": 10},
+    {"code": "APPLICATION_NOTICE", "label": "申报通知", "enabled": true, "sort_order": 20},
+    {"code": "APPLICATION_GUIDE", "label": "申报指南", "enabled": true, "sort_order": 30},
+    {"code": "SUPPLEMENT_NOTICE", "label": "补充通知", "enabled": true, "sort_order": 40},
+    {"code": "EXTENSION_NOTICE", "label": "延期通知", "enabled": true, "sort_order": 50},
+    {"code": "CONSULTATION_DRAFT", "label": "征求意见稿", "enabled": true, "sort_order": 60},
+    {"code": "PUBLICITY_RESULT", "label": "结果公示", "enabled": true, "sort_order": 70},
+    {"code": "FINAL_RESULT", "label": "正式结果", "enabled": true, "sort_order": 80},
+    {"code": "FUND_ALLOCATION", "label": "资金下达", "enabled": true, "sort_order": 90},
+    {"code": "OFFICIAL_INTERPRETATION", "label": "官方解读", "enabled": true, "sort_order": 100},
+    {"code": "OTHER", "label": "其他", "enabled": true, "sort_order": 110}
+  ],
+  "acquisition_methods": [
+    {"code": "APPLICATION", "label": "申报申请", "enabled": true, "sort_order": 10},
+    {"code": "RECOMMENDATION", "label": "组织推荐", "enabled": true, "sort_order": 20},
+    {"code": "COLLECTION", "label": "公开征集", "enabled": true, "sort_order": 30},
+    {"code": "SELECTION", "label": "评审遴选", "enabled": true, "sort_order": 40},
+    {"code": "RECOGNITION", "label": "认定认证", "enabled": true, "sort_order": 50},
+    {"code": "FILING", "label": "备案入库", "enabled": true, "sort_order": 60},
+    {"code": "AUTOMATIC", "label": "免申即享", "enabled": true, "sort_order": 70},
+    {"code": "REDEMPTION", "label": "兑现兑付", "enabled": true, "sort_order": 80},
+    {"code": "OTHER", "label": "其他方式", "enabled": true, "sort_order": 90}
+  ],
+  "verification_statuses": [
+    {"code": "pending", "label": "待核验", "enabled": true, "sort_order": 10},
+    {"code": "verified", "label": "已核验", "enabled": true, "sort_order": 20},
+    {"code": "rejected", "label": "核验不通过", "enabled": true, "sort_order": 30}
+  ],
+  "relation_kinds": [
+    {"code": "superior", "label": "上位", "enabled": true, "sort_order": 10},
+    {"code": "implements", "label": "实施", "enabled": true, "sort_order": 20},
+    {"code": "supports", "label": "配套", "enabled": true, "sort_order": 30},
+    {"code": "application", "label": "申报通知", "enabled": true, "sort_order": 40},
+    {"code": "supplements", "label": "补充", "enabled": true, "sort_order": 50},
+    {"code": "extends", "label": "延期", "enabled": true, "sort_order": 60},
+    {"code": "interprets", "label": "解读", "enabled": true, "sort_order": 70},
+    {"code": "finalizes", "label": "征求→正式", "enabled": true, "sort_order": 80},
+    {"code": "revises", "label": "修订", "enabled": true, "sort_order": 90},
+    {"code": "replaces", "label": "替代", "enabled": true, "sort_order": 100},
+    {"code": "repeals", "label": "废止", "enabled": true, "sort_order": 110},
+    {"code": "publicizes", "label": "公示", "enabled": true, "sort_order": 120},
+    {"code": "lists", "label": "正式名单", "enabled": true, "sort_order": 130},
+    {"code": "allocates", "label": "资金下达", "enabled": true, "sort_order": 140},
+    {"code": "approves", "label": "项目批复", "enabled": true, "sort_order": 150},
+    {"code": "accepts", "label": "验收结果", "enabled": true, "sort_order": 160}
+  ]
+}

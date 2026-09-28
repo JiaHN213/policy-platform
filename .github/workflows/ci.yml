@@ -1,0 +1,41 @@
+name: Application checks
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17.11
+        env:
+          POSTGRES_USER: policy_test
+          POSTGRES_PASSWORD: ci-test-only
+          POSTGRES_DB: policy_test
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U policy_test"
+          --health-interval 5s --health-timeout 5s --health-retries 20
+    env:
+      TEST_DATABASE_URL: postgresql://policy_test:ci-test-only@127.0.0.1:5432/policy_test
+      RUN_POSTGRES_TESTS: '1'
+      NEXT_TELEMETRY_DISABLED: '1'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: pip install uv==0.12.14
+      - run: uv sync --frozen
+      - run: uv run ruff check apps/api tests scripts
+      - run: uv run pytest -q
+      - run: uv run python apps/api/manage.py makemigrations --check --dry-run --settings=config.test_settings
+      - run: uv run python apps/api/manage.py spectacular --settings=config.test_settings --file packages/api-contract/schema.yaml --validate --fail-on-warn
+      - run: npm install --global pnpm@11.19.0
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm api:types
+      - run: git diff --exit-code packages/api-contract/schema.yaml apps/web/src/lib/schema.d.ts
+      - run: pnpm typecheck && pnpm lint && pnpm build

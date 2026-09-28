@@ -1,0 +1,5220 @@
+openapi: 3.0.3
+info:
+  title: 政策观察 API
+  version: 0.1.0
+paths:
+  /api/schema:
+    get:
+      operationId: schema_retrieve
+      description: |-
+        OpenApi3 schema for this API. Format can be selected via content negotiation.
+
+        - YAML: application/vnd.oai.openapi
+        - JSON: application/vnd.oai.openapi+json
+      parameters:
+      - in: query
+        name: format
+        schema:
+          type: string
+          enum:
+          - json
+          - yaml
+      - in: query
+        name: lang
+        schema:
+          type: string
+          enum:
+          - af
+          - ar
+          - ar-dz
+          - ast
+          - az
+          - be
+          - bg
+          - bn
+          - br
+          - bs
+          - ca
+          - ckb
+          - cs
+          - cy
+          - da
+          - de
+          - dsb
+          - el
+          - en
+          - en-au
+          - en-gb
+          - eo
+          - es
+          - es-ar
+          - es-co
+          - es-mx
+          - es-ni
+          - es-ve
+          - et
+          - eu
+          - fa
+          - fi
+          - fr
+          - fy
+          - ga
+          - gd
+          - gl
+          - he
+          - hi
+          - hr
+          - hsb
+          - hu
+          - hy
+          - ia
+          - id
+          - ig
+          - io
+          - is
+          - it
+          - ja
+          - ka
+          - kab
+          - kk
+          - km
+          - kn
+          - ko
+          - ky
+          - lb
+          - lt
+          - lv
+          - mk
+          - ml
+          - mn
+          - mr
+          - ms
+          - my
+          - nb
+          - ne
+          - nl
+          - nn
+          - os
+          - pa
+          - pl
+          - pt
+          - pt-br
+          - ro
+          - ru
+          - sk
+          - sl
+          - sq
+          - sr
+          - sr-latn
+          - sv
+          - sw
+          - ta
+          - te
+          - tg
+          - th
+          - tk
+          - tr
+          - tt
+          - udm
+          - ug
+          - uk
+          - ur
+          - uz
+          - vi
+          - zh-hans
+          - zh-hant
+      tags:
+      - schema
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/vnd.oai.openapi:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/yaml:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/vnd.oai.openapi+json:
+              schema:
+                type: object
+                additionalProperties: {}
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/admin/config/documents:
+    get:
+      operationId: v1_admin_config_documents_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: 分页结果集中的页码。
+        schema:
+          type: integer
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSystemConfigDocumentList'
+          description: ''
+    post:
+      operationId: v1_admin_config_documents_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SystemConfigDocumentRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SystemConfigDocumentRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SystemConfigDocumentRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemConfigDocument'
+          description: ''
+  /api/v1/admin/config/documents/{id}:
+    get:
+      operationId: v1_admin_config_documents_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 system config document 的 UUID 字符串。
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemConfigDocument'
+          description: ''
+    patch:
+      operationId: v1_admin_config_documents_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 system config document 的 UUID 字符串。
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedSystemConfigDocumentRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedSystemConfigDocumentRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedSystemConfigDocumentRequest'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemConfigDocument'
+          description: ''
+    delete:
+      operationId: v1_admin_config_documents_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 system config document 的 UUID 字符串。
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/admin/config/releases:
+    get:
+      operationId: v1_admin_config_releases_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: 分页结果集中的页码。
+        schema:
+          type: integer
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSystemConfigReleaseList'
+          description: ''
+    post:
+      operationId: v1_admin_config_releases_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SystemConfigReleaseRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SystemConfigReleaseRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SystemConfigReleaseRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemConfigRelease'
+          description: ''
+  /api/v1/admin/config/releases/{id}:
+    get:
+      operationId: v1_admin_config_releases_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 system config release 的 UUID 字符串。
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemConfigRelease'
+          description: ''
+  /api/v1/admin/config/releases/{id}/clone:
+    post:
+      operationId: v1_admin_config_releases_clone_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 system config release 的 UUID 字符串。
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SystemConfigReleaseRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SystemConfigReleaseRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SystemConfigReleaseRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemConfigRelease'
+          description: ''
+  /api/v1/admin/config/releases/{id}/export:
+    get:
+      operationId: v1_admin_config_releases_export_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 system config release 的 UUID 字符串。
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemConfigRelease'
+          description: ''
+  /api/v1/admin/config/releases/{id}/publish:
+    post:
+      operationId: v1_admin_config_releases_publish_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 system config release 的 UUID 字符串。
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SystemConfigReleaseRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SystemConfigReleaseRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SystemConfigReleaseRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemConfigRelease'
+          description: ''
+  /api/v1/admin/config/releases/{id}/rollback:
+    post:
+      operationId: v1_admin_config_releases_rollback_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 system config release 的 UUID 字符串。
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SystemConfigReleaseRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SystemConfigReleaseRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SystemConfigReleaseRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemConfigRelease'
+          description: ''
+  /api/v1/admin/config/releases/{id}/validate:
+    post:
+      operationId: v1_admin_config_releases_validate_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 system config release 的 UUID 字符串。
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SystemConfigReleaseRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SystemConfigReleaseRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SystemConfigReleaseRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemConfigRelease'
+          description: ''
+  /api/v1/admin/config/releases/current:
+    get:
+      operationId: v1_admin_config_releases_current_retrieve
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemConfigRelease'
+          description: ''
+  /api/v1/admin/config/releases/import:
+    post:
+      operationId: v1_admin_config_releases_import_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SystemConfigReleaseRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SystemConfigReleaseRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SystemConfigReleaseRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SystemConfigRelease'
+          description: ''
+  /api/v1/admin/discovered-items:
+    get:
+      operationId: v1_admin_discovered_items_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: 分页结果集中的页码。
+        schema:
+          type: integer
+      - in: query
+        name: status
+        schema:
+          type: string
+          enum:
+          - discovered
+          - excluded
+          - failed
+          - imported
+          - indexed
+          - needs_review
+          - processing
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedDiscoveredItemList'
+          description: ''
+  /api/v1/admin/discovered-items/{id}:
+    get:
+      operationId: v1_admin_discovered_items_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 discovered item 的 UUID 字符串。
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DiscoveredItem'
+          description: ''
+  /api/v1/admin/discovered-items/{id}/retry:
+    post:
+      operationId: v1_admin_discovered_items_retry_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 discovered item 的 UUID 字符串。
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DiscoveredItem'
+          description: ''
+  /api/v1/admin/discovered-items/summary:
+    get:
+      operationId: v1_admin_discovered_items_summary_retrieve
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DiscoveredItemSummary'
+          description: ''
+  /api/v1/admin/knowledge/builds:
+    get:
+      operationId: v1_admin_knowledge_builds_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: 分页结果集中的页码。
+        schema:
+          type: integer
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedKnowledgeBuildList'
+          description: ''
+  /api/v1/admin/knowledge/builds/{id}:
+    get:
+      operationId: v1_admin_knowledge_builds_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 knowledge build 的 UUID 字符串。
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KnowledgeBuild'
+          description: ''
+  /api/v1/admin/knowledge/builds/{id}/retry:
+    post:
+      operationId: v1_admin_knowledge_builds_retry_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 knowledge build 的 UUID 字符串。
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KnowledgeBuild'
+          description: ''
+  /api/v1/admin/knowledge/builds/sync:
+    post:
+      operationId: v1_admin_knowledge_builds_sync_create
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KnowledgeBuild'
+          description: ''
+  /api/v1/admin/knowledge/pages:
+    get:
+      operationId: v1_admin_knowledge_pages_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: 分页结果集中的页码。
+        schema:
+          type: integer
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedKnowledgePageDetailList'
+          description: ''
+  /api/v1/admin/knowledge/pages/{id}:
+    get:
+      operationId: v1_admin_knowledge_pages_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 knowledge page 的 UUID 字符串。
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KnowledgePageDetail'
+          description: ''
+  /api/v1/admin/knowledge/pages/{id}/issues:
+    get:
+      operationId: v1_admin_knowledge_pages_issues_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 knowledge page 的 UUID 字符串。
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/admin/knowledge/pages/export-obsidian:
+    post:
+      operationId: v1_admin_knowledge_pages_export_obsidian_create
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/admin/knowledge/pages/import-obsidian:
+    post:
+      operationId: v1_admin_knowledge_pages_import_obsidian_create
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/admin/knowledge/pages/lint:
+    post:
+      operationId: v1_admin_knowledge_pages_lint_create
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/admin/opportunities:
+    get:
+      operationId: v1_admin_opportunities_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: 分页结果集中的页码。
+        schema:
+          type: integer
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedOpportunityList'
+          description: ''
+    post:
+      operationId: v1_admin_opportunities_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OpportunityRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/OpportunityRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/OpportunityRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Opportunity'
+          description: ''
+  /api/v1/admin/opportunities/{id}:
+    get:
+      operationId: v1_admin_opportunities_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 opportunity 的 UUID 字符串。
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Opportunity'
+          description: ''
+    patch:
+      operationId: v1_admin_opportunities_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 opportunity 的 UUID 字符串。
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedOpportunityRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedOpportunityRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedOpportunityRequest'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Opportunity'
+          description: ''
+  /api/v1/admin/opportunity-batches:
+    get:
+      operationId: v1_admin_opportunity_batches_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: 分页结果集中的页码。
+        schema:
+          type: integer
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedBatchList'
+          description: ''
+    post:
+      operationId: v1_admin_opportunity_batches_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BatchRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/BatchRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BatchRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Batch'
+          description: ''
+  /api/v1/admin/opportunity-batches/{id}:
+    get:
+      operationId: v1_admin_opportunity_batches_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 opportunity batch 的 UUID 字符串。
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Batch'
+          description: ''
+    patch:
+      operationId: v1_admin_opportunity_batches_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 opportunity batch 的 UUID 字符串。
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedBatchRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedBatchRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedBatchRequest'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Batch'
+          description: ''
+  /api/v1/admin/policies:
+    get:
+      operationId: v1_admin_policies_list
+      parameters:
+      - in: query
+        name: ai_status
+        schema:
+          type: string
+          enum:
+          - excluded
+          - failed
+          - not_started
+          - queued
+          - running
+          - succeeded
+      - name: page
+        required: false
+        in: query
+        description: 分页结果集中的页码。
+        schema:
+          type: integer
+      - in: query
+        name: q
+        schema:
+          type: string
+      - in: query
+        name: stage
+        schema:
+          type: string
+          enum:
+          - AI_REVIEWING
+          - EXCLUDED
+          - NEEDS_ACTION
+          - PUBLISHED
+          - WAITING_AI
+          - WITHDRAWN
+          - all
+      - in: query
+        name: status
+        schema:
+          type: string
+          enum:
+          - all
+          - candidate
+          - published
+          - withdrawn
+      - in: query
+        name: workflow_status
+        schema:
+          type: string
+          enum:
+          - ai_excluded
+          - ai_failed
+          - ai_pending
+          - all
+          - needs_action
+          - published
+          - withdrawn
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPolicyDetailList'
+          description: ''
+  /api/v1/admin/policies/{id}:
+    get:
+      operationId: v1_admin_policies_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 policy 的 UUID 字符串。
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PolicyDetail'
+          description: ''
+  /api/v1/admin/policies/{id}/correct:
+    post:
+      operationId: v1_admin_policies_correct_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 policy 的 UUID 字符串。
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PolicyCorrectionRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PolicyCorrectionRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PolicyCorrectionRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PolicyDetail'
+          description: ''
+  /api/v1/admin/policies/{id}/field-provenance:
+    get:
+      operationId: v1_admin_policies_field_provenance_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 policy 的 UUID 字符串。
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/admin/policies/{id}/mark-lead:
+    post:
+      operationId: v1_admin_policies_mark_lead_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 policy 的 UUID 字符串。
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DecisionRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/DecisionRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/DecisionRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Policy'
+          description: ''
+  /api/v1/admin/policies/{id}/metadata:
+    post:
+      operationId: v1_admin_policies_metadata_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 policy 的 UUID 字符串。
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MetadataDecisionRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/MetadataDecisionRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/MetadataDecisionRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Policy'
+          description: ''
+  /api/v1/admin/policies/{id}/pipeline-timeline:
+    get:
+      operationId: v1_admin_policies_pipeline_timeline_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 policy 的 UUID 字符串。
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/admin/policies/{id}/publish:
+    post:
+      operationId: v1_admin_policies_publish_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 policy 的 UUID 字符串。
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PublicationDecisionRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PublicationDecisionRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PublicationDecisionRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Policy'
+          description: ''
+  /api/v1/admin/policies/{id}/unlock-field:
+    post:
+      operationId: v1_admin_policies_unlock_field_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 policy 的 UUID 字符串。
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FieldUnlockRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/FieldUnlockRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/FieldUnlockRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/admin/policies/{id}/withdraw:
+    post:
+      operationId: v1_admin_policies_withdraw_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 policy 的 UUID 字符串。
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DecisionRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/DecisionRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/DecisionRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Policy'
+          description: ''
+  /api/v1/admin/policies/summary:
+    get:
+      operationId: v1_admin_policies_summary_retrieve
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PolicyReviewSummary'
+          description: ''
+  /api/v1/admin/policy-enrichments:
+    get:
+      operationId: v1_admin_policy_enrichments_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: 分页结果集中的页码。
+        schema:
+          type: integer
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedEnrichmentList'
+          description: ''
+  /api/v1/admin/policy-enrichments/{id}:
+    get:
+      operationId: v1_admin_policy_enrichments_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 policy enrichment 的 UUID 字符串。
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Enrichment'
+          description: ''
+  /api/v1/admin/policy-enrichments/{id}/retry:
+    post:
+      operationId: v1_admin_policy_enrichments_retry_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 policy enrichment 的 UUID 字符串。
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Enrichment'
+          description: ''
+  /api/v1/admin/policy-enrichments/configuration:
+    get:
+      operationId: v1_admin_policy_enrichments_configuration_retrieve
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/admin/policy-enrichments/enqueue:
+    post:
+      operationId: v1_admin_policy_enrichments_enqueue_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EnrichmentRequestRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/EnrichmentRequestRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/EnrichmentRequestRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Enrichment'
+          description: ''
+  /api/v1/admin/policy-enrichments/start-automation:
+    post:
+      operationId: v1_admin_policy_enrichments_start_automation_create
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/admin/policy-enrichments/stop-automation:
+    post:
+      operationId: v1_admin_policy_enrichments_stop_automation_create
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/admin/policy-relations:
+    get:
+      operationId: v1_admin_policy_relations_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: 分页结果集中的页码。
+        schema:
+          type: integer
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedRelationList'
+          description: ''
+    post:
+      operationId: v1_admin_policy_relations_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RelationRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RelationRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RelationRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Relation'
+          description: ''
+  /api/v1/admin/policy-relations/{id}:
+    get:
+      operationId: v1_admin_policy_relations_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 policy relation 的 UUID 字符串。
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Relation'
+          description: ''
+    patch:
+      operationId: v1_admin_policy_relations_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 policy relation 的 UUID 字符串。
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedRelationRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedRelationRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedRelationRequest'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Relation'
+          description: ''
+  /api/v1/admin/relation-review-candidates:
+    get:
+      operationId: v1_admin_relation_review_candidates_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: 分页结果集中的页码。
+        schema:
+          type: integer
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedRelationReviewCandidateList'
+          description: ''
+  /api/v1/admin/relation-review-candidates/{id}:
+    get:
+      operationId: v1_admin_relation_review_candidates_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 relation review candidate 的 UUID 字符串。
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RelationReviewCandidate'
+          description: ''
+  /api/v1/admin/relation-review-candidates/{id}/approve:
+    post:
+      operationId: v1_admin_relation_review_candidates_approve_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 relation review candidate 的 UUID 字符串。
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RelationReviewCandidate'
+          description: ''
+  /api/v1/admin/relation-review-candidates/{id}/reject:
+    post:
+      operationId: v1_admin_relation_review_candidates_reject_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 relation review candidate 的 UUID 字符串。
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RelationReviewCandidate'
+          description: ''
+  /api/v1/admin/search-index:
+    get:
+      operationId: v1_admin_search_index_retrieve
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+    post:
+      operationId: v1_admin_search_index_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SearchIndexActionRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SearchIndexActionRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SearchIndexActionRequest'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/admin/source-check-runs:
+    get:
+      operationId: v1_admin_source_check_runs_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: 分页结果集中的页码。
+        schema:
+          type: integer
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSourceRunList'
+          description: ''
+  /api/v1/admin/source-check-runs/{id}:
+    get:
+      operationId: v1_admin_source_check_runs_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 source check run 的 UUID 字符串。
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SourceRun'
+          description: ''
+  /api/v1/admin/sources:
+    get:
+      operationId: v1_admin_sources_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: 分页结果集中的页码。
+        schema:
+          type: integer
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSourceList'
+          description: ''
+  /api/v1/admin/sources/{id}:
+    get:
+      operationId: v1_admin_sources_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 source 的 UUID 字符串。
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Source'
+          description: ''
+    patch:
+      operationId: v1_admin_sources_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 source 的 UUID 字符串。
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedSourceRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedSourceRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedSourceRequest'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Source'
+          description: ''
+  /api/v1/admin/sources/{id}/run-now:
+    post:
+      operationId: v1_admin_sources_run_now_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 source 的 UUID 字符串。
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SourceRun'
+          description: ''
+  /api/v1/auth/csrf:
+    get:
+      operationId: v1_auth_csrf_retrieve
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/auth/login:
+    post:
+      operationId: v1_auth_login_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/auth/logout:
+    post:
+      operationId: v1_auth_logout_create
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/auth/register:
+    post:
+      operationId: v1_auth_register_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/health:
+    get:
+      operationId: v1_health_retrieve
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/knowledge/pages:
+    get:
+      operationId: v1_knowledge_pages_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: 分页结果集中的页码。
+        schema:
+          type: integer
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedKnowledgePageListList'
+          description: ''
+  /api/v1/knowledge/pages/{slug}:
+    get:
+      operationId: v1_knowledge_pages_retrieve
+      parameters:
+      - in: path
+        name: slug
+        schema:
+          type: string
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/KnowledgePageDetail'
+          description: ''
+  /api/v1/me:
+    get:
+      operationId: v1_me_retrieve
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/notifications:
+    get:
+      operationId: v1_notifications_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: 分页结果集中的页码。
+        schema:
+          type: integer
+      - in: query
+        name: status
+        schema:
+          type: string
+          enum:
+          - all
+          - read
+          - unread
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedNotificationList'
+          description: ''
+  /api/v1/notifications/{id}:
+    get:
+      operationId: v1_notifications_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 notification 的 UUID 字符串。
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notification'
+          description: ''
+  /api/v1/notifications/{id}/read:
+    post:
+      operationId: v1_notifications_read_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 notification 的 UUID 字符串。
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Notification'
+          description: ''
+  /api/v1/notifications/read-all:
+    post:
+      operationId: v1_notifications_read_all_create
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MarkAllReadResult'
+          description: ''
+  /api/v1/opportunities:
+    get:
+      operationId: v1_opportunities_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: 分页结果集中的页码。
+        schema:
+          type: integer
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedOpportunityList'
+          description: ''
+  /api/v1/opportunities/{id}:
+    get:
+      operationId: v1_opportunities_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 opportunity 的 UUID 字符串。
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Opportunity'
+          description: ''
+  /api/v1/overview:
+    get:
+      operationId: v1_overview_retrieve
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/policies:
+    get:
+      operationId: v1_policies_list
+      parameters:
+      - in: query
+        name: business_domain
+        schema:
+          type: string
+      - in: query
+        name: city
+        schema:
+          type: string
+      - in: query
+        name: direction_tag
+        schema:
+          type: string
+      - in: query
+        name: document_type
+        schema:
+          type: string
+          enum:
+          - draft
+          - interpretation
+          - opportunity
+          - policy
+          - result
+          - unclassified
+      - in: query
+        name: geographic_level
+        schema:
+          type: string
+          enum:
+          - city
+          - national
+          - provincial
+          - unverified
+      - in: query
+        name: industry
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: 分页结果集中的页码。
+        schema:
+          type: integer
+      - in: query
+        name: province
+        schema:
+          type: string
+      - in: query
+        name: q
+        schema:
+          type: string
+      - in: query
+        name: region
+        schema:
+          type: string
+      - in: query
+        name: source_grade
+        schema:
+          type: string
+          enum:
+          - L1
+          - L2
+          - L3
+          - L4
+          - unverified
+      - in: query
+        name: topic
+        schema:
+          type: string
+      - in: query
+        name: validity_status
+        schema:
+          type: string
+          enum:
+          - consultation
+          - effective
+          - expired
+          - not_effective
+          - repealed
+          - replaced
+          - unverified
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPolicyList'
+          description: ''
+  /api/v1/policies/{id}:
+    get:
+      operationId: v1_policies_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 policy 的 UUID 字符串。
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PolicyDetail'
+          description: ''
+  /api/v1/policies/{id}/evidence:
+    get:
+      operationId: v1_policies_evidence_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 policy 的 UUID 字符串。
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Policy'
+          description: ''
+  /api/v1/search:
+    post:
+      operationId: v1_search_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SearchRequestRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SearchRequestRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SearchRequestRequest'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/subscriptions:
+    get:
+      operationId: v1_subscriptions_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: 分页结果集中的页码。
+        schema:
+          type: integer
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSubscriptionList'
+          description: ''
+    post:
+      operationId: v1_subscriptions_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubscriptionRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SubscriptionRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SubscriptionRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription'
+          description: ''
+  /api/v1/subscriptions/{id}:
+    get:
+      operationId: v1_subscriptions_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 subscription 的 UUID 字符串。
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription'
+          description: ''
+    put:
+      operationId: v1_subscriptions_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 subscription 的 UUID 字符串。
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubscriptionRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SubscriptionRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SubscriptionRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription'
+          description: ''
+    patch:
+      operationId: v1_subscriptions_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 subscription 的 UUID 字符串。
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedSubscriptionRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedSubscriptionRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedSubscriptionRequest'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription'
+          description: ''
+    delete:
+      operationId: v1_subscriptions_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 subscription 的 UUID 字符串。
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/subscriptions/preview:
+    post:
+      operationId: v1_subscriptions_preview_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubscriptionRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SubscriptionRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SubscriptionRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SubscriptionPreviewResult'
+          description: ''
+  /api/v1/taxonomies:
+    get:
+      operationId: v1_taxonomies_retrieve
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+components:
+  schemas:
+    Attachment:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        url:
+          type: string
+          format: uri
+          maxLength: 2000
+        content_type:
+          type: string
+          maxLength: 100
+        size_bytes:
+          type: integer
+          maximum: 9223372036854775807
+          minimum: 0
+          format: int64
+        parse_status:
+          type: string
+          maxLength: 30
+      required:
+      - content_type
+      - id
+      - size_bytes
+      - url
+    Batch:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        opportunity:
+          type: string
+          format: uuid
+        name:
+          type: string
+          maxLength: 200
+        status:
+          $ref: '#/components/schemas/OpportunityStatusEnum'
+        starts_at:
+          type: string
+          format: date-time
+          nullable: true
+        deadline_at:
+          type: string
+          format: date-time
+          nullable: true
+        current_status:
+          type: string
+          readOnly: true
+        closing_soon:
+          type: boolean
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        verification_status:
+          $ref: '#/components/schemas/VerificationStatusEnum'
+        evidence_policy:
+          type: string
+          format: uuid
+        evidence_version:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        evidence_quote:
+          type: string
+        verified_by:
+          type: integer
+          readOnly: true
+          nullable: true
+        verified_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+      required:
+      - closing_soon
+      - created_at
+      - current_status
+      - evidence_policy
+      - evidence_quote
+      - evidence_version
+      - id
+      - name
+      - opportunity
+      - verified_at
+      - verified_by
+    BatchRequest:
+      type: object
+      properties:
+        opportunity:
+          type: string
+          format: uuid
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+        status:
+          $ref: '#/components/schemas/OpportunityStatusEnum'
+        starts_at:
+          type: string
+          format: date-time
+          nullable: true
+        deadline_at:
+          type: string
+          format: date-time
+          nullable: true
+        verification_status:
+          $ref: '#/components/schemas/VerificationStatusEnum'
+        evidence_policy:
+          type: string
+          format: uuid
+        evidence_version:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        evidence_quote:
+          type: string
+          minLength: 1
+      required:
+      - evidence_policy
+      - evidence_quote
+      - evidence_version
+      - name
+      - opportunity
+    BlankEnum:
+      enum:
+      - ''
+    CategoryEnum:
+      enum:
+      - fiscal
+      - tax
+      - finance
+      - pilot
+      - honor
+      - qualification
+      - market
+      - other
+      type: string
+      description: |-
+        * `fiscal` - 财政资金支持
+        * `tax` - 税费优惠
+        * `finance` - 融资支持
+        * `pilot` - 项目与试点
+        * `honor` - 荣誉与认定
+        * `qualification` - 资质与目录
+        * `market` - 市场与推广支持
+        * `other` - 其他政策支持
+    DecisionRequest:
+      type: object
+      properties:
+        version:
+          type: integer
+          minimum: 1
+      required:
+      - version
+    DiscoveredItem:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        source:
+          type: string
+          format: uuid
+          readOnly: true
+        url:
+          type: string
+          format: uri
+          readOnly: true
+        title:
+          type: string
+          readOnly: true
+        status:
+          type: string
+          readOnly: true
+        policy:
+          type: string
+          format: uuid
+          readOnly: true
+          nullable: true
+        attempts:
+          type: integer
+          readOnly: true
+        error_code:
+          type: string
+          readOnly: true
+        error_detail:
+          type: string
+          readOnly: true
+        retry_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        scope_assessment:
+          readOnly: true
+        attachment_issues:
+          readOnly: true
+      required:
+      - attachment_issues
+      - attempts
+      - created_at
+      - error_code
+      - error_detail
+      - id
+      - policy
+      - retry_at
+      - scope_assessment
+      - source
+      - status
+      - title
+      - url
+    DiscoveredItemSummary:
+      type: object
+      properties:
+        total:
+          type: integer
+        discovered:
+          type: integer
+        processing:
+          type: integer
+        failed:
+          type: integer
+        imported:
+          type: integer
+        indexed:
+          type: integer
+        excluded:
+          type: integer
+        needs_review:
+          type: integer
+        needs_attention_links:
+          type: integer
+      required:
+      - discovered
+      - excluded
+      - failed
+      - imported
+      - indexed
+      - needs_attention_links
+      - needs_review
+      - processing
+      - total
+    DocumentRoleEnum:
+      enum:
+      - POLICY_BASIS
+      - APPLICATION_NOTICE
+      - APPLICATION_GUIDE
+      - SUPPLEMENT_NOTICE
+      - EXTENSION_NOTICE
+      - CONSULTATION_DRAFT
+      - PUBLICITY_RESULT
+      - FINAL_RESULT
+      - FUND_ALLOCATION
+      - OFFICIAL_INTERPRETATION
+      - OTHER
+      type: string
+      description: |-
+        * `POLICY_BASIS` - 政策依据
+        * `APPLICATION_NOTICE` - 申报通知
+        * `APPLICATION_GUIDE` - 申报指南
+        * `SUPPLEMENT_NOTICE` - 补充通知
+        * `EXTENSION_NOTICE` - 延期通知
+        * `CONSULTATION_DRAFT` - 征求意见稿
+        * `PUBLICITY_RESULT` - 结果公示
+        * `FINAL_RESULT` - 正式结果
+        * `FUND_ALLOCATION` - 资金下达
+        * `OFFICIAL_INTERPRETATION` - 官方解读
+        * `OTHER` - 其他
+    DocumentTypeEnum:
+      enum:
+      - unclassified
+      - policy
+      - opportunity
+      - result
+      - interpretation
+      - draft
+      type: string
+      description: |-
+        * `unclassified` - 待分类
+        * `policy` - 政策与制度文件
+        * `opportunity` - 政策机会文件
+        * `result` - 政策执行结果
+        * `interpretation` - 官方解读
+        * `draft` - 征求意见稿
+    Enrichment:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        policy:
+          type: string
+          format: uuid
+          readOnly: true
+        title:
+          type: string
+          readOnly: true
+        policy_version:
+          type: integer
+          readOnly: true
+        status:
+          type: string
+          readOnly: true
+        attempts:
+          type: integer
+          readOnly: true
+        error_code:
+          type: string
+          readOnly: true
+        model:
+          type: string
+          readOnly: true
+        prompt_version:
+          type: string
+          readOnly: true
+        result:
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - attempts
+      - created_at
+      - error_code
+      - id
+      - model
+      - policy
+      - policy_version
+      - prompt_version
+      - result
+      - status
+      - title
+      - updated_at
+    EnrichmentRequestRequest:
+      type: object
+      properties:
+        policy:
+          type: string
+          format: uuid
+        version:
+          type: integer
+          minimum: 1
+      required:
+      - policy
+      - version
+    FieldUnlockRequest:
+      type: object
+      properties:
+        version:
+          type: integer
+          minimum: 1
+        field_name:
+          type: string
+          minLength: 1
+          maxLength: 80
+      required:
+      - field_name
+      - version
+    FormalSourceGradeEnum:
+      enum:
+      - L1
+      - L2
+      - L3
+      type: string
+      description: |-
+        * `` - 全部
+        * `L1` - 官方原始
+        * `L2` - 官方转载
+        * `L3` - 政府官方业务平台
+    GeographicLevelEnum:
+      enum:
+      - unverified
+      - national
+      - provincial
+      - city
+      type: string
+      description: |-
+        * `unverified` - 待核验
+        * `national` - 国家级
+        * `provincial` - 省级
+        * `city` - 地级市级
+    IndustryEnum:
+      enum:
+      - water_environment
+      type: string
+      description: "* `` - \n* `water_environment` - water_environment"
+    KindEnum:
+      enum:
+      - superior
+      - implements
+      - supports
+      - application
+      - supplements
+      - extends
+      - interprets
+      - finalizes
+      - revises
+      - replaces
+      - repeals
+      - publicizes
+      - lists
+      - allocates
+      - approves
+      - accepts
+      type: string
+      description: |-
+        * `superior` - 上位
+        * `implements` - 实施
+        * `supports` - 配套
+        * `application` - 申报通知
+        * `supplements` - 补充
+        * `extends` - 延期
+        * `interprets` - 解读
+        * `finalizes` - 征求→正式
+        * `revises` - 修订
+        * `replaces` - 替代
+        * `repeals` - 废止
+        * `publicizes` - 公示
+        * `lists` - 正式名单
+        * `allocates` - 资金下达
+        * `approves` - 项目批复
+        * `accepts` - 验收结果
+    KnowledgeBuild:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        kind:
+          type: string
+          readOnly: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/KnowledgeBuildStatusEnum'
+          readOnly: true
+        attempts:
+          type: integer
+          readOnly: true
+        input_hash:
+          type: string
+          readOnly: true
+        result:
+          readOnly: true
+        error_code:
+          type: string
+          readOnly: true
+        requested_by:
+          type: string
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - attempts
+      - created_at
+      - error_code
+      - id
+      - input_hash
+      - kind
+      - requested_by
+      - result
+      - status
+      - updated_at
+    KnowledgeBuildStatusEnum:
+      enum:
+      - queued
+      - running
+      - succeeded
+      - failed
+      type: string
+      description: |-
+        * `queued` - 等待构建
+        * `running` - 正在构建
+        * `succeeded` - 构建完成
+        * `failed` - 构建失败
+    KnowledgePageDetail:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        slug:
+          type: string
+          maxLength: 300
+          pattern: ^[-a-zA-Z0-9_]+$
+        page_type:
+          $ref: '#/components/schemas/PageTypeEnum'
+        title:
+          type: string
+          maxLength: 500
+        abstract:
+          type: string
+        status:
+          $ref: '#/components/schemas/KnowledgePageStatusEnum'
+        source_count:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        revision:
+          type: integer
+          readOnly: true
+        built_at:
+          type: string
+          format: date-time
+          nullable: true
+        body:
+          type: string
+          readOnly: true
+        citations:
+          readOnly: true
+        source_versions:
+          readOnly: true
+        model:
+          type: string
+          readOnly: true
+        prompt_version:
+          type: string
+          readOnly: true
+        sources:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+          readOnly: true
+      required:
+      - body
+      - citations
+      - id
+      - model
+      - page_type
+      - prompt_version
+      - revision
+      - slug
+      - source_versions
+      - sources
+      - title
+    KnowledgePageList:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        slug:
+          type: string
+          maxLength: 300
+          pattern: ^[-a-zA-Z0-9_]+$
+        page_type:
+          $ref: '#/components/schemas/PageTypeEnum'
+        title:
+          type: string
+          maxLength: 500
+        abstract:
+          type: string
+        status:
+          $ref: '#/components/schemas/KnowledgePageStatusEnum'
+        source_count:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        revision:
+          type: integer
+          readOnly: true
+        built_at:
+          type: string
+          format: date-time
+          nullable: true
+      required:
+      - id
+      - page_type
+      - revision
+      - slug
+      - title
+    KnowledgePageStatusEnum:
+      enum:
+      - published
+      - stale
+      - archived
+      type: string
+      description: |-
+        * `published` - 已发布
+        * `stale` - 需要更新
+        * `archived` - 已归档
+    LoginRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          minLength: 1
+          maxLength: 150
+        password:
+          type: string
+          writeOnly: true
+          minLength: 1
+          maxLength: 256
+      required:
+      - password
+      - username
+    MarkAllReadResult:
+      type: object
+      properties:
+        updated:
+          type: integer
+      required:
+      - updated
+    MetadataDecisionRequest:
+      type: object
+      properties:
+        version:
+          type: integer
+          minimum: 1
+        validity_status:
+          $ref: '#/components/schemas/ValidityStatusEnum'
+        validity_evidence:
+          type: string
+          maxLength: 5000
+      required:
+      - validity_evidence
+      - validity_status
+      - version
+    ModeEnum:
+      enum:
+      - keyword
+      - natural
+      type: string
+      description: |-
+        * `keyword` - keyword
+        * `natural` - natural
+    Notification:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        title:
+          type: string
+          maxLength: 500
+        policy_id:
+          type: string
+          format: uuid
+          readOnly: true
+        reasons: {}
+        read_at:
+          type: string
+          format: date-time
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - id
+      - policy_id
+      - title
+    Opportunity:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        policy:
+          type: string
+          format: uuid
+        policy_title:
+          type: string
+          readOnly: true
+        policy_version:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          maxLength: 500
+        category:
+          $ref: '#/components/schemas/CategoryEnum'
+        status:
+          $ref: '#/components/schemas/OpportunityStatusEnum'
+        acquisition_method:
+          type: string
+          maxLength: 24
+        eligible_subjects: {}
+        eligible_projects: {}
+        eligible_products: {}
+        support_content:
+          type: string
+        support_method:
+          type: string
+        amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,16}(?:\.\d{0,4})?$
+          nullable: true
+        amount_unit:
+          type: string
+          maxLength: 30
+        percentage:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,4}(?:\.\d{0,4})?$
+          nullable: true
+        max_amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,16}(?:\.\d{0,4})?$
+          nullable: true
+        min_amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,16}(?:\.\d{0,4})?$
+          nullable: true
+        calculation_basis:
+          type: string
+        requirements: {}
+        exclusion_conditions: {}
+        prerequisites: {}
+        regions: {}
+        competent_authorities: {}
+        acceptance_authorities: {}
+        recommendation_authorities: {}
+        application_channels: {}
+        missing_information: {}
+        evidence_details: {}
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        batches:
+          type: array
+          items:
+            $ref: '#/components/schemas/Batch'
+          readOnly: true
+        verification_status:
+          $ref: '#/components/schemas/VerificationStatusEnum'
+        evidence_policy:
+          type: string
+          format: uuid
+        evidence_version:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        evidence_quote:
+          type: string
+        verified_by:
+          type: integer
+          readOnly: true
+          nullable: true
+        verified_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+      required:
+      - batches
+      - category
+      - created_at
+      - evidence_policy
+      - evidence_quote
+      - evidence_version
+      - id
+      - policy
+      - policy_title
+      - policy_version
+      - title
+      - verified_at
+      - verified_by
+    OpportunityLevelEnum:
+      enum:
+      - NONE
+      - SUPPORT_SIGNAL
+      - FORMAL_OPPORTUNITY
+      type: string
+      description: |-
+        * `NONE` - 没有政策机会
+        * `SUPPORT_SIGNAL` - 政策支持方向
+        * `FORMAL_OPPORTUNITY` - 正式政策机会
+    OpportunityRequest:
+      type: object
+      properties:
+        policy:
+          type: string
+          format: uuid
+        title:
+          type: string
+          minLength: 1
+          maxLength: 500
+        category:
+          $ref: '#/components/schemas/CategoryEnum'
+        status:
+          $ref: '#/components/schemas/OpportunityStatusEnum'
+        acquisition_method:
+          type: string
+          minLength: 1
+          maxLength: 24
+        eligible_subjects: {}
+        eligible_projects: {}
+        eligible_products: {}
+        support_content:
+          type: string
+        support_method:
+          type: string
+        amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,16}(?:\.\d{0,4})?$
+          nullable: true
+        amount_unit:
+          type: string
+          maxLength: 30
+        percentage:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,4}(?:\.\d{0,4})?$
+          nullable: true
+        max_amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,16}(?:\.\d{0,4})?$
+          nullable: true
+        min_amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,16}(?:\.\d{0,4})?$
+          nullable: true
+        calculation_basis:
+          type: string
+        requirements: {}
+        exclusion_conditions: {}
+        prerequisites: {}
+        regions: {}
+        competent_authorities: {}
+        acceptance_authorities: {}
+        recommendation_authorities: {}
+        application_channels: {}
+        missing_information: {}
+        evidence_details: {}
+        verification_status:
+          $ref: '#/components/schemas/VerificationStatusEnum'
+        evidence_policy:
+          type: string
+          format: uuid
+        evidence_version:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        evidence_quote:
+          type: string
+          minLength: 1
+      required:
+      - category
+      - evidence_policy
+      - evidence_quote
+      - evidence_version
+      - policy
+      - title
+    OpportunityStatusEnum:
+      enum:
+      - not_started
+      - open
+      - closed
+      - ongoing
+      - suspended
+      - publicity
+      - completed
+      - unverified
+      type: string
+      description: |-
+        * `not_started` - 未开始
+        * `open` - 申报中
+        * `closed` - 已截止
+        * `ongoing` - 长期有效/常态化受理
+        * `suspended` - 暂停/中止
+        * `publicity` - 结果公示中
+        * `completed` - 已完成
+        * `unverified` - 待核实
+    PageTypeEnum:
+      enum:
+      - policy
+      - chain
+      - topic
+      - region
+      type: string
+      description: |-
+        * `policy` - 政策知识页
+        * `chain` - 政策链
+        * `topic` - 业务专题
+        * `region` - 地区专题
+    PaginatedBatchList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Batch'
+    PaginatedDiscoveredItemList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/DiscoveredItem'
+    PaginatedEnrichmentList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Enrichment'
+    PaginatedKnowledgeBuildList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/KnowledgeBuild'
+    PaginatedKnowledgePageDetailList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/KnowledgePageDetail'
+    PaginatedKnowledgePageListList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/KnowledgePageList'
+    PaginatedNotificationList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Notification'
+    PaginatedOpportunityList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Opportunity'
+    PaginatedPolicyDetailList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/PolicyDetail'
+    PaginatedPolicyList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Policy'
+    PaginatedRelationList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Relation'
+    PaginatedRelationReviewCandidateList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/RelationReviewCandidate'
+    PaginatedSourceList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Source'
+    PaginatedSourceRunList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SourceRun'
+    PaginatedSubscriptionList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Subscription'
+    PaginatedSystemConfigDocumentList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SystemConfigDocument'
+    PaginatedSystemConfigReleaseList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/SystemConfigRelease'
+    PatchedBatchRequest:
+      type: object
+      properties:
+        opportunity:
+          type: string
+          format: uuid
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+        status:
+          $ref: '#/components/schemas/OpportunityStatusEnum'
+        starts_at:
+          type: string
+          format: date-time
+          nullable: true
+        deadline_at:
+          type: string
+          format: date-time
+          nullable: true
+        verification_status:
+          $ref: '#/components/schemas/VerificationStatusEnum'
+        evidence_policy:
+          type: string
+          format: uuid
+        evidence_version:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        evidence_quote:
+          type: string
+          minLength: 1
+    PatchedOpportunityRequest:
+      type: object
+      properties:
+        policy:
+          type: string
+          format: uuid
+        title:
+          type: string
+          minLength: 1
+          maxLength: 500
+        category:
+          $ref: '#/components/schemas/CategoryEnum'
+        status:
+          $ref: '#/components/schemas/OpportunityStatusEnum'
+        acquisition_method:
+          type: string
+          minLength: 1
+          maxLength: 24
+        eligible_subjects: {}
+        eligible_projects: {}
+        eligible_products: {}
+        support_content:
+          type: string
+        support_method:
+          type: string
+        amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,16}(?:\.\d{0,4})?$
+          nullable: true
+        amount_unit:
+          type: string
+          maxLength: 30
+        percentage:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,4}(?:\.\d{0,4})?$
+          nullable: true
+        max_amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,16}(?:\.\d{0,4})?$
+          nullable: true
+        min_amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,16}(?:\.\d{0,4})?$
+          nullable: true
+        calculation_basis:
+          type: string
+        requirements: {}
+        exclusion_conditions: {}
+        prerequisites: {}
+        regions: {}
+        competent_authorities: {}
+        acceptance_authorities: {}
+        recommendation_authorities: {}
+        application_channels: {}
+        missing_information: {}
+        evidence_details: {}
+        verification_status:
+          $ref: '#/components/schemas/VerificationStatusEnum'
+        evidence_policy:
+          type: string
+          format: uuid
+        evidence_version:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        evidence_quote:
+          type: string
+          minLength: 1
+    PatchedRelationRequest:
+      type: object
+      properties:
+        from_policy:
+          type: string
+          format: uuid
+        to_policy:
+          type: string
+          format: uuid
+        kind:
+          $ref: '#/components/schemas/KindEnum'
+        verification_status:
+          $ref: '#/components/schemas/VerificationStatusEnum'
+        evidence_policy:
+          type: string
+          format: uuid
+        evidence_version:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        evidence_quote:
+          type: string
+          minLength: 1
+    PatchedSourceRequest:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+        interval_minutes:
+          type: integer
+          maximum: 2147483647
+          minimum: 30
+    PatchedSubscriptionRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        keywords:
+          type: string
+          maxLength: 200
+        topic:
+          oneOf:
+          - $ref: '#/components/schemas/TopicEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        document_type:
+          oneOf:
+          - $ref: '#/components/schemas/PublicationDocumentTypeEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        region:
+          type: string
+          maxLength: 100
+        target_view:
+          $ref: '#/components/schemas/TargetViewEnum'
+        geographic_level:
+          type: string
+          maxLength: 20
+        province:
+          type: string
+          maxLength: 100
+        city:
+          type: string
+          maxLength: 100
+        business_domain:
+          type: string
+          maxLength: 80
+        direction_tag:
+          type: string
+          maxLength: 80
+        validity_status:
+          type: string
+          maxLength: 24
+        opportunity_category:
+          type: string
+          maxLength: 24
+        opportunity_status:
+          type: string
+          maxLength: 24
+        acquisition_method:
+          type: string
+          maxLength: 24
+        eligible_keywords:
+          type: string
+          maxLength: 300
+        authority_keywords:
+          type: string
+          maxLength: 300
+        has_deadline:
+          type: boolean
+          nullable: true
+        deadline_within_days:
+          type: integer
+          maximum: 32767
+          minimum: 0
+          nullable: true
+        active:
+          type: boolean
+    PatchedSystemConfigDocumentRequest:
+      type: object
+      properties:
+        release:
+          type: string
+          format: uuid
+        key:
+          type: string
+          minLength: 1
+          maxLength: 100
+        content: {}
+    Policy:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        title:
+          type: string
+          maxLength: 500
+        document_number:
+          type: string
+          maxLength: 200
+        issuer:
+          type: string
+          maxLength: 200
+        publication_date:
+          type: string
+          format: date
+        region:
+          type: string
+          maxLength: 100
+        geographic_level:
+          $ref: '#/components/schemas/GeographicLevelEnum'
+        province:
+          type: string
+          maxLength: 100
+        city:
+          type: string
+          maxLength: 100
+        source_grade:
+          $ref: '#/components/schemas/SourceGradeEnum'
+        topics: {}
+        industry:
+          type: string
+          maxLength: 50
+        business_domains: {}
+        direction_tags: {}
+        scope_evidence: {}
+        document_type:
+          $ref: '#/components/schemas/DocumentTypeEnum'
+        document_role:
+          $ref: '#/components/schemas/DocumentRoleEnum'
+        opportunity_level:
+          $ref: '#/components/schemas/OpportunityLevelEnum'
+        support_signals: {}
+        validity_status:
+          $ref: '#/components/schemas/ValidityStatusEnum'
+        summary:
+          type: string
+        summary_method:
+          type: string
+          maxLength: 20
+        summary_evidence: {}
+        structured_keywords: {}
+        extraction_version:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        source_url:
+          type: string
+          format: uri
+          maxLength: 2000
+        status:
+          $ref: '#/components/schemas/PolicyStatusEnum'
+        version:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        published_at:
+          type: string
+          format: date-time
+          nullable: true
+        is_demo:
+          type: boolean
+      required:
+      - id
+      - issuer
+      - publication_date
+      - source_url
+      - title
+    PolicyCorrectionRequest:
+      type: object
+      properties:
+        version:
+          type: integer
+          minimum: 1
+        summary:
+          type: string
+          minLength: 1
+          maxLength: 10000
+        document_type:
+          $ref: '#/components/schemas/PublicationDocumentTypeEnum'
+        source_grade:
+          $ref: '#/components/schemas/SourceGradeEnum'
+        geographic_level:
+          $ref: '#/components/schemas/GeographicLevelEnum'
+        province:
+          type: string
+          maxLength: 100
+        city:
+          type: string
+          maxLength: 100
+        validity_status:
+          $ref: '#/components/schemas/ValidityStatusEnum'
+        validity_evidence:
+          type: string
+          maxLength: 5000
+        business_domains:
+          type: array
+          items:
+            type: string
+            minLength: 1
+            maxLength: 80
+        direction_tags:
+          type: array
+          items:
+            type: string
+            minLength: 1
+            maxLength: 80
+        document_role:
+          type: string
+          minLength: 1
+          maxLength: 32
+        opportunity_level:
+          type: string
+          minLength: 1
+          maxLength: 24
+        support_signals:
+          type: array
+          items:
+            type: string
+            minLength: 1
+            maxLength: 500
+      required:
+      - version
+    PolicyDetail:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        title:
+          type: string
+          maxLength: 500
+        document_number:
+          type: string
+          maxLength: 200
+        issuer:
+          type: string
+          maxLength: 200
+        publication_date:
+          type: string
+          format: date
+        region:
+          type: string
+          maxLength: 100
+        geographic_level:
+          $ref: '#/components/schemas/GeographicLevelEnum'
+        province:
+          type: string
+          maxLength: 100
+        city:
+          type: string
+          maxLength: 100
+        source_grade:
+          $ref: '#/components/schemas/SourceGradeEnum'
+        topics: {}
+        industry:
+          type: string
+          maxLength: 50
+        business_domains: {}
+        direction_tags: {}
+        scope_evidence: {}
+        document_type:
+          $ref: '#/components/schemas/DocumentTypeEnum'
+        document_role:
+          $ref: '#/components/schemas/DocumentRoleEnum'
+        opportunity_level:
+          $ref: '#/components/schemas/OpportunityLevelEnum'
+        support_signals: {}
+        validity_status:
+          $ref: '#/components/schemas/ValidityStatusEnum'
+        summary:
+          type: string
+        summary_method:
+          type: string
+          maxLength: 20
+        summary_evidence: {}
+        structured_keywords: {}
+        extraction_version:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        source_url:
+          type: string
+          format: uri
+          maxLength: 2000
+        status:
+          $ref: '#/components/schemas/PolicyStatusEnum'
+        version:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        published_at:
+          type: string
+          format: date-time
+          nullable: true
+        is_demo:
+          type: boolean
+        body:
+          type: string
+        sources:
+          type: array
+          items:
+            $ref: '#/components/schemas/PolicySource'
+          readOnly: true
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Attachment'
+          readOnly: true
+        relations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Relation'
+          readOnly: true
+        opportunities:
+          type: array
+          items:
+            $ref: '#/components/schemas/Opportunity'
+          readOnly: true
+        validity_evidence:
+          type: string
+        ai_enrichment:
+          type: object
+          additionalProperties: {}
+          readOnly: true
+        pipeline:
+          type: object
+          additionalProperties: {}
+          readOnly: true
+      required:
+      - ai_enrichment
+      - attachments
+      - body
+      - id
+      - issuer
+      - opportunities
+      - pipeline
+      - publication_date
+      - relations
+      - source_url
+      - sources
+      - title
+    PolicyReviewSummary:
+      type: object
+      properties:
+        total:
+          type: integer
+        stages:
+          type: object
+          additionalProperties:
+            type: integer
+        needs_action:
+          type: integer
+        ai_pending:
+          type: integer
+        ai_failed:
+          type: integer
+        ai_excluded:
+          type: integer
+        published:
+          type: integer
+        withdrawn:
+          type: integer
+      required:
+      - ai_excluded
+      - ai_failed
+      - ai_pending
+      - needs_action
+      - published
+      - stages
+      - total
+      - withdrawn
+    PolicySource:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        url:
+          type: string
+          format: uri
+          maxLength: 2000
+        resolved_url:
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 2000
+          - type: string
+            maxLength: 0
+        publisher:
+          type: string
+          maxLength: 200
+        publication_date:
+          type: string
+          format: date
+          nullable: true
+        source_grade:
+          $ref: '#/components/schemas/SourceGradeEnum'
+        source_grade_label:
+          type: string
+          readOnly: true
+        role:
+          $ref: '#/components/schemas/RoleEnum'
+        role_label:
+          type: string
+          readOnly: true
+        is_primary:
+          type: boolean
+        match_method:
+          type: string
+          maxLength: 40
+        match_confidence:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,1}(?:\.\d{0,3})?$
+      required:
+      - id
+      - role_label
+      - source_grade_label
+      - url
+    PolicyStatusEnum:
+      enum:
+      - candidate
+      - published
+      - withdrawn
+      type: string
+      description: |-
+        * `candidate` - 待审核
+        * `published` - 已发布
+        * `withdrawn` - 已撤下
+    PublicationDecisionRequest:
+      type: object
+      properties:
+        version:
+          type: integer
+          minimum: 1
+        source_grade:
+          $ref: '#/components/schemas/SourceGradeEnum'
+        geographic_level:
+          $ref: '#/components/schemas/GeographicLevelEnum'
+        province:
+          type: string
+          maxLength: 100
+        city:
+          type: string
+          maxLength: 100
+        document_type:
+          $ref: '#/components/schemas/PublicationDocumentTypeEnum'
+        allow_incomplete_attachments:
+          type: boolean
+          default: false
+      required:
+      - version
+    PublicationDocumentTypeEnum:
+      enum:
+      - policy
+      - opportunity
+      - result
+      - interpretation
+      - draft
+      type: string
+      description: |-
+        * `` - 全部类型
+        * `policy` - 政策与制度文件
+        * `opportunity` - 政策机会文件
+        * `result` - 政策执行结果
+        * `interpretation` - 官方解读
+        * `draft` - 征求意见稿
+    RegisterRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          minLength: 1
+          title: 用户名
+          description: 必填；长度为150个字符或以下；只能包含字母、数字、特殊字符“@”、“.”、“-”和“_”。
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        password:
+          type: string
+          writeOnly: true
+          minLength: 1
+          maxLength: 256
+        password_confirm:
+          type: string
+          writeOnly: true
+          minLength: 1
+          maxLength: 256
+      required:
+      - password
+      - password_confirm
+      - username
+    Relation:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        from_policy:
+          type: string
+          format: uuid
+        to_policy:
+          type: string
+          format: uuid
+        from_title:
+          type: string
+          readOnly: true
+        to_title:
+          type: string
+          readOnly: true
+        kind:
+          $ref: '#/components/schemas/KindEnum'
+        discovery:
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        verification_status:
+          $ref: '#/components/schemas/VerificationStatusEnum'
+        evidence_policy:
+          type: string
+          format: uuid
+        evidence_version:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        evidence_quote:
+          type: string
+        verified_by:
+          type: integer
+          readOnly: true
+          nullable: true
+        verified_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+      required:
+      - created_at
+      - discovery
+      - evidence_policy
+      - evidence_quote
+      - evidence_version
+      - from_policy
+      - from_title
+      - id
+      - kind
+      - to_policy
+      - to_title
+      - verified_at
+      - verified_by
+    RelationRequest:
+      type: object
+      properties:
+        from_policy:
+          type: string
+          format: uuid
+        to_policy:
+          type: string
+          format: uuid
+        kind:
+          $ref: '#/components/schemas/KindEnum'
+        verification_status:
+          $ref: '#/components/schemas/VerificationStatusEnum'
+        evidence_policy:
+          type: string
+          format: uuid
+        evidence_version:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        evidence_quote:
+          type: string
+          minLength: 1
+      required:
+      - evidence_policy
+      - evidence_quote
+      - evidence_version
+      - from_policy
+      - kind
+      - to_policy
+    RelationReviewCandidate:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        scan:
+          type: string
+          format: uuid
+          readOnly: true
+        from_policy:
+          type: string
+          format: uuid
+          readOnly: true
+        to_policy:
+          type: string
+          format: uuid
+          readOnly: true
+        from_title:
+          type: string
+          readOnly: true
+        to_title:
+          type: string
+          readOnly: true
+        from_source_url:
+          type: string
+          readOnly: true
+        to_source_url:
+          type: string
+          readOnly: true
+        proposed_kind:
+          type: string
+          readOnly: true
+        evidence_policy:
+          type: string
+          format: uuid
+          readOnly: true
+          nullable: true
+        evidence_title:
+          type: string
+          readOnly: true
+          nullable: true
+        evidence_quote:
+          type: string
+          readOnly: true
+        confidence:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,1}(?:\.\d{0,4})?$
+          readOnly: true
+          nullable: true
+        model_reason:
+          type: string
+          readOnly: true
+        rejection_reason:
+          type: string
+          readOnly: true
+        source_versions:
+          readOnly: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/RelationReviewCandidateStatusEnum'
+          readOnly: true
+        reviewed_by:
+          type: integer
+          readOnly: true
+          nullable: true
+        reviewed_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        relation:
+          type: string
+          format: uuid
+          readOnly: true
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - confidence
+      - created_at
+      - evidence_policy
+      - evidence_quote
+      - evidence_title
+      - from_policy
+      - from_source_url
+      - from_title
+      - id
+      - model_reason
+      - proposed_kind
+      - rejection_reason
+      - relation
+      - reviewed_at
+      - reviewed_by
+      - scan
+      - source_versions
+      - status
+      - to_policy
+      - to_source_url
+      - to_title
+    RelationReviewCandidateStatusEnum:
+      enum:
+      - pending
+      - approved
+      - rejected
+      - superseded
+      type: string
+      description: |-
+        * `pending` - 待人工复审
+        * `approved` - 人工确认有关系
+        * `rejected` - 人工确认无关系
+        * `superseded` - 已由后续结果替代
+    RoleEnum:
+      enum:
+      - primary
+      - original
+      - repost
+      - additional
+      type: string
+      description: |-
+        * `primary` - 主来源
+        * `original` - 官方原始
+        * `repost` - 官方转载
+        * `additional` - 其他来源
+    SearchIndexActionRequest:
+      type: object
+      properties:
+        rebuild:
+          type: boolean
+          default: false
+    SearchRequestRequest:
+      type: object
+      properties:
+        industry:
+          default: ''
+          oneOf:
+          - $ref: '#/components/schemas/IndustryEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        business_domain:
+          type: string
+          default: ''
+          maxLength: 80
+        direction_tag:
+          type: string
+          default: ''
+          maxLength: 80
+        q:
+          type: string
+          default: ''
+          maxLength: 500
+        mode:
+          allOf:
+          - $ref: '#/components/schemas/ModeEnum'
+          default: keyword
+        view:
+          allOf:
+          - $ref: '#/components/schemas/ViewEnum'
+          default: policy
+        sort:
+          allOf:
+          - $ref: '#/components/schemas/SortEnum'
+          default: comprehensive
+        page:
+          type: integer
+          maximum: 10000
+          minimum: 1
+          default: 1
+        document_type:
+          default: ''
+          oneOf:
+          - $ref: '#/components/schemas/DocumentTypeEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        geographic_level:
+          default: ''
+          oneOf:
+          - $ref: '#/components/schemas/GeographicLevelEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        source_grade:
+          default: ''
+          oneOf:
+          - $ref: '#/components/schemas/FormalSourceGradeEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        province:
+          type: string
+          default: ''
+          maxLength: 100
+        city:
+          type: string
+          default: ''
+          maxLength: 100
+        region:
+          type: string
+          default: ''
+          maxLength: 100
+        topic:
+          default: ''
+          oneOf:
+          - $ref: '#/components/schemas/TopicEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        validity_status:
+          default: ''
+          oneOf:
+          - $ref: '#/components/schemas/ValidityStatusEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        category:
+          default: ''
+          oneOf:
+          - $ref: '#/components/schemas/CategoryEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        opportunity_status:
+          default: ''
+          oneOf:
+          - $ref: '#/components/schemas/OpportunityStatusEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+    SortEnum:
+      enum:
+      - comprehensive
+      - latest
+      - relevance
+      - deadline
+      type: string
+      description: |-
+        * `comprehensive` - comprehensive
+        * `latest` - latest
+        * `relevance` - relevance
+        * `deadline` - deadline
+    Source:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          readOnly: true
+        url:
+          type: string
+          format: uri
+          readOnly: true
+        enabled:
+          type: boolean
+        interval_minutes:
+          type: integer
+          maximum: 2147483647
+          minimum: 30
+        verification_status:
+          type: string
+          readOnly: true
+        last_success_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        next_check_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        cooldown_until:
+          type: string
+          format: date-time
+          nullable: true
+          readOnly: true
+        cooldown_reason:
+          type: string
+          readOnly: true
+        crawl_state:
+          type: string
+          readOnly: true
+        notes:
+          type: string
+          readOnly: true
+      required:
+      - cooldown_reason
+      - cooldown_until
+      - crawl_state
+      - id
+      - last_success_at
+      - name
+      - next_check_at
+      - notes
+      - url
+      - verification_status
+    SourceGradeEnum:
+      enum:
+      - unverified
+      - L1
+      - L2
+      - L3
+      - L4
+      type: string
+      description: |-
+        * `unverified` - 待核验
+        * `L1` - 官方原始
+        * `L2` - 官方转载
+        * `L3` - 政府官方业务平台
+        * `L4` - 非官方线索
+    SourceRun:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        source:
+          type: string
+          format: uuid
+        status:
+          type: string
+          maxLength: 30
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        finished_at:
+          type: string
+          format: date-time
+          nullable: true
+        discovered:
+          type: integer
+          maximum: 2147483647
+          minimum: 0
+        progress: {}
+        error_code:
+          type: string
+          maxLength: 80
+        error_message:
+          type: string
+      required:
+      - created_at
+      - id
+      - source
+    Subscription:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          maxLength: 100
+        keywords:
+          type: string
+          maxLength: 200
+        topic:
+          oneOf:
+          - $ref: '#/components/schemas/TopicEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        document_type:
+          oneOf:
+          - $ref: '#/components/schemas/PublicationDocumentTypeEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        region:
+          type: string
+          maxLength: 100
+        target_view:
+          $ref: '#/components/schemas/TargetViewEnum'
+        geographic_level:
+          type: string
+          maxLength: 20
+        province:
+          type: string
+          maxLength: 100
+        city:
+          type: string
+          maxLength: 100
+        business_domain:
+          type: string
+          maxLength: 80
+        direction_tag:
+          type: string
+          maxLength: 80
+        validity_status:
+          type: string
+          maxLength: 24
+        opportunity_category:
+          type: string
+          maxLength: 24
+        opportunity_status:
+          type: string
+          maxLength: 24
+        acquisition_method:
+          type: string
+          maxLength: 24
+        eligible_keywords:
+          type: string
+          maxLength: 300
+        authority_keywords:
+          type: string
+          maxLength: 300
+        has_deadline:
+          type: boolean
+          nullable: true
+        deadline_within_days:
+          type: integer
+          maximum: 32767
+          minimum: 0
+          nullable: true
+        active:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - id
+      - name
+    SubscriptionPreviewResult:
+      type: object
+      properties:
+        count:
+          type: integer
+        items:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+      required:
+      - count
+      - items
+    SubscriptionRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 100
+        keywords:
+          type: string
+          maxLength: 200
+        topic:
+          oneOf:
+          - $ref: '#/components/schemas/TopicEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        document_type:
+          oneOf:
+          - $ref: '#/components/schemas/PublicationDocumentTypeEnum'
+          - $ref: '#/components/schemas/BlankEnum'
+        region:
+          type: string
+          maxLength: 100
+        target_view:
+          $ref: '#/components/schemas/TargetViewEnum'
+        geographic_level:
+          type: string
+          maxLength: 20
+        province:
+          type: string
+          maxLength: 100
+        city:
+          type: string
+          maxLength: 100
+        business_domain:
+          type: string
+          maxLength: 80
+        direction_tag:
+          type: string
+          maxLength: 80
+        validity_status:
+          type: string
+          maxLength: 24
+        opportunity_category:
+          type: string
+          maxLength: 24
+        opportunity_status:
+          type: string
+          maxLength: 24
+        acquisition_method:
+          type: string
+          maxLength: 24
+        eligible_keywords:
+          type: string
+          maxLength: 300
+        authority_keywords:
+          type: string
+          maxLength: 300
+        has_deadline:
+          type: boolean
+          nullable: true
+        deadline_within_days:
+          type: integer
+          maximum: 32767
+          minimum: 0
+          nullable: true
+        active:
+          type: boolean
+      required:
+      - name
+    SystemConfigDocument:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        release:
+          type: string
+          format: uuid
+        key:
+          type: string
+          maxLength: 100
+        content: {}
+        checksum:
+          type: string
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - checksum
+      - id
+      - key
+      - release
+      - updated_at
+    SystemConfigDocumentRequest:
+      type: object
+      properties:
+        release:
+          type: string
+          format: uuid
+        key:
+          type: string
+          minLength: 1
+          maxLength: 100
+        content: {}
+      required:
+      - key
+      - release
+    SystemConfigRelease:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        version:
+          type: string
+          maxLength: 80
+        schema_version:
+          type: string
+          maxLength: 20
+        status:
+          allOf:
+          - $ref: '#/components/schemas/SystemConfigReleaseStatusEnum'
+          readOnly: true
+        checksum:
+          type: string
+          readOnly: true
+        document_count:
+          type: integer
+          readOnly: true
+        created_by:
+          type: string
+          readOnly: true
+        published_by:
+          type: string
+          readOnly: true
+        published_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - checksum
+      - created_at
+      - created_by
+      - document_count
+      - id
+      - published_at
+      - published_by
+      - status
+      - updated_at
+      - version
+    SystemConfigReleaseRequest:
+      type: object
+      properties:
+        version:
+          type: string
+          minLength: 1
+          maxLength: 80
+        schema_version:
+          type: string
+          minLength: 1
+          maxLength: 20
+      required:
+      - version
+    SystemConfigReleaseStatusEnum:
+      enum:
+      - draft
+      - published
+      - archived
+      type: string
+      description: |-
+        * `draft` - 草稿
+        * `published` - 已发布
+        * `archived` - 已归档
+    TargetViewEnum:
+      enum:
+      - policy
+      - opportunity
+      - all
+      type: string
+      description: |-
+        * `policy` - 政策文件
+        * `opportunity` - 政策机会
+        * `all` - 政策与机会
+    TopicEnum:
+      enum:
+      - 水务
+      - 环保
+      - 人工智能＋
+      type: string
+      description: "* `` - \n* `水务` - 水务\n* `环保` - 环保\n* `人工智能＋` - 人工智能＋"
+    ValidityStatusEnum:
+      enum:
+      - consultation
+      - not_effective
+      - effective
+      - expired
+      - repealed
+      - replaced
+      - unverified
+      type: string
+      description: |-
+        * `consultation` - 征求意见
+        * `not_effective` - 尚未生效
+        * `effective` - 现行有效
+        * `expired` - 已失效
+        * `repealed` - 已废止
+        * `replaced` - 已被替代/已修订
+        * `unverified` - 待核实
+    VerificationStatusEnum:
+      enum:
+      - pending
+      - verified
+      - rejected
+      type: string
+      description: |-
+        * `pending` - 待核验
+        * `verified` - 已核验
+        * `rejected` - 核验不通过
+    ViewEnum:
+      enum:
+      - policy
+      - opportunity
+      type: string
+      description: |-
+        * `policy` - policy
+        * `opportunity` - opportunity
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid
