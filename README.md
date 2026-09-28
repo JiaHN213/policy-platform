@@ -57,7 +57,7 @@ cd policy-platform
 python scripts/prepare_compose.py
 ```
 
-将示例中的 `OWNER/REPO` 换成实际仓库路径。脚本根据 [`.env.example`](.env.example) 生成 `.env.compose`，并为数据库和 Django 生成随机密钥。已有 `.env.compose` 时脚本不会覆盖它。**不要把 `.env.compose`、API 密钥或数据库备份上传到 GitHub。**
+脚本根据 [`.env.example`](.env.example) 生成 `.env.compose`，并为数据库和 Django 生成随机密钥。已有 `.env.compose` 时脚本不会覆盖它。
 
 可以先不配置 AI，完成部署后再从网页配置。若希望尽快开始 AI 审核，可在 `.env.compose` 中填写模型服务信息：
 
@@ -143,7 +143,7 @@ API 文档位于 [http://127.0.0.1:8080/api/docs/](http://127.0.0.1:8080/api/doc
 docker compose --env-file .env.compose --profile search up --build -d
 ```
 
-已有政策的索引可在管理页面检查和重建，后续发布内容由后台同步。此 Compose 的 OpenSearch 关闭了内置安全插件，9200 端口仅绑定本机；不要将该端口直接暴露到公网。
+已有政策的索引可在管理页面检查和重建，后续发布内容由后台同步。
 
 ## 数据保存、更新与备份
 
