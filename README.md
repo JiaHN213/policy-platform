@@ -117,6 +117,10 @@ docker compose --env-file .env.compose exec api python apps/api/manage.py create
 | 内部人员 | `/admin/quality` 质量评测 | 检查分类、机会识别和引用质量 |
 | 内部人员 | `/admin/configuration` 系统配置 | 设置文件库、检查计划、识别规则及 AI 模型 |
 
+## 界面截图与功能说明
+
+[点击查看系统界面展示](docs/界面展示.md)，浏览客户工作台、内部管理页面及各页面功能截图；也可以[查看 PDF 版本](docs/界面展示.pdf)。
+
 API 文档位于 [http://127.0.0.1:8080/api/docs/](http://127.0.0.1:8080/api/docs/)。
 
 ## 常用配置
