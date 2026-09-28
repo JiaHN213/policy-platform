@@ -26,6 +26,38 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/admin/ai-models": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["v1_admin_ai_models_list"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/admin/ai-models/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["v1_admin_ai_models_retrieve"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch: operations["v1_admin_ai_models_partial_update"];
+    trace?: never;
+  };
   "/api/v1/admin/config/documents": {
     parameters: {
       query?: never;
@@ -308,6 +340,22 @@ export interface paths {
     get?: never;
     put?: never;
     post: operations["v1_admin_knowledge_builds_retry_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/admin/knowledge/builds/progress": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["v1_admin_knowledge_builds_progress_retrieve"];
+    put?: never;
+    post?: never;
     delete?: never;
     options?: never;
     head?: never;
@@ -810,6 +858,262 @@ export interface paths {
     patch: operations["v1_admin_policy_relations_partial_update"];
     trace?: never;
   };
+  "/api/v1/admin/publication-consumers": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["v1_admin_publication_consumers_list"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/admin/publication-consumers/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["v1_admin_publication_consumers_retrieve"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/admin/publication-consumers/{id}/retry": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["v1_admin_publication_consumers_retry_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/admin/publication-consumers/summary": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["v1_admin_publication_consumers_summary_retrieve"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/admin/quality/runs": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["v1_admin_quality_runs_list"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/admin/quality/runs/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["v1_admin_quality_runs_retrieve"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/admin/quality/runs/{id}/results": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["v1_admin_quality_runs_results_retrieve"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/admin/quality/runs/evaluate": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["v1_admin_quality_runs_evaluate_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/admin/quality/samples": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["v1_admin_quality_samples_list"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/admin/quality/samples/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["v1_admin_quality_samples_retrieve"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/admin/quality/samples/{id}/label": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["v1_admin_quality_samples_label_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/admin/quality/samples/{id}/retire": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["v1_admin_quality_samples_retire_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/admin/quality/samples/add": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["v1_admin_quality_samples_add_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/admin/quality/samples/policies": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["v1_admin_quality_samples_policies_retrieve"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/admin/quality/samples/seed": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["v1_admin_quality_samples_seed_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/admin/quality/samples/summary": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["v1_admin_quality_samples_summary_retrieve"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/admin/relation-review-candidates": {
     parameters: {
       query?: never;
@@ -931,7 +1235,7 @@ export interface paths {
     };
     get: operations["v1_admin_sources_list"];
     put?: never;
-    post?: never;
+    post: operations["v1_admin_sources_create"];
     delete?: never;
     options?: never;
     head?: never;
@@ -948,7 +1252,7 @@ export interface paths {
     get: operations["v1_admin_sources_retrieve"];
     put?: never;
     post?: never;
-    delete?: never;
+    delete: operations["v1_admin_sources_destroy"];
     options?: never;
     head?: never;
     patch: operations["v1_admin_sources_partial_update"];
@@ -1342,6 +1646,21 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
   schemas: {
+    AIModelProfile: {
+      /** Format: uuid */
+      readonly id: string;
+      readonly purpose: components["schemas"]["PurposeEnum"];
+      readonly purpose_label: string;
+      enabled?: boolean;
+      /** Format: uri */
+      base_url: string;
+      model: string;
+      concurrency?: number;
+      readonly has_api_key: boolean;
+      readonly configured: boolean;
+      /** Format: date-time */
+      readonly updated_at: string;
+    };
     Attachment: {
       /** Format: uuid */
       readonly id: string;
@@ -1370,6 +1689,7 @@ export interface components {
       verification_status?: components["schemas"]["VerificationStatusEnum"];
       /** Format: uuid */
       evidence_policy: string;
+      /** Format: int64 */
       evidence_version: number;
       evidence_quote: string;
       readonly verified_by: number | null;
@@ -1388,6 +1708,7 @@ export interface components {
       verification_status?: components["schemas"]["VerificationStatusEnum"];
       /** Format: uuid */
       evidence_policy: string;
+      /** Format: int64 */
       evidence_version: number;
       evidence_quote: string;
     };
@@ -1413,6 +1734,34 @@ export interface components {
       | "qualification"
       | "market"
       | "other";
+    /**
+     * @description * `nanning_v1` - 南宁市政策文件库
+     *     * `gov_library_html_v1` - 中国政府网政策文件库
+     * @enum {string}
+     */
+    CollectionTypeEnum: "nanning_v1" | "gov_library_html_v1";
+    /**
+     * @description * `search` - 搜索同步
+     *     * `subscription` - 订阅通知
+     *     * `wiki` - Wiki 知识构建
+     *     * `statistics` - 统计审计
+     * @enum {string}
+     */
+    ConsumerEnum: "search" | "subscription" | "wiki" | "statistics";
+    CreateSampleRequestRequest: {
+      kind: components["schemas"]["EvaluationSampleKindEnum"];
+      /** Format: uuid */
+      policy_id?: string;
+      /** Format: uuid */
+      related_policy_id?: string;
+      /** Format: uuid */
+      page_id?: string;
+      relation_kind?: components["schemas"]["RelationKindEnum"];
+    };
+    CreateSampleResponse: {
+      created: boolean;
+      sample: components["schemas"]["Sample"];
+    };
     DecisionRequest: {
       version: number;
     };
@@ -1513,6 +1862,20 @@ export interface components {
       policy: string;
       version: number;
     };
+    /**
+     * @description * `opportunity` - 政策机会识别
+     *     * `relation` - Wiki政策关系
+     *     * `knowledge` - Wiki知识页证据
+     * @enum {string}
+     */
+    EvaluationSampleKindEnum: "opportunity" | "relation" | "knowledge";
+    /**
+     * @description * `pending` - 待人工标注
+     *     * `labeled` - 已人工标注
+     *     * `retired` - 已停用
+     * @enum {string}
+     */
+    EvaluationSampleStatusEnum: "pending" | "labeled" | "retired";
     FieldUnlockRequest: {
       version: number;
       field_name: string;
@@ -1539,42 +1902,6 @@ export interface components {
      * @enum {string}
      */
     IndustryEnum: "water_environment";
-    /**
-     * @description * `superior` - 上位
-     *     * `implements` - 实施
-     *     * `supports` - 配套
-     *     * `application` - 申报通知
-     *     * `supplements` - 补充
-     *     * `extends` - 延期
-     *     * `interprets` - 解读
-     *     * `finalizes` - 征求→正式
-     *     * `revises` - 修订
-     *     * `replaces` - 替代
-     *     * `repeals` - 废止
-     *     * `publicizes` - 公示
-     *     * `lists` - 正式名单
-     *     * `allocates` - 资金下达
-     *     * `approves` - 项目批复
-     *     * `accepts` - 验收结果
-     * @enum {string}
-     */
-    KindEnum:
-      | "superior"
-      | "implements"
-      | "supports"
-      | "application"
-      | "supplements"
-      | "extends"
-      | "interprets"
-      | "finalizes"
-      | "revises"
-      | "replaces"
-      | "repeals"
-      | "publicizes"
-      | "lists"
-      | "allocates"
-      | "approves"
-      | "accepts";
     KnowledgeBuild: {
       /** Format: uuid */
       readonly id: string;
@@ -1606,6 +1933,7 @@ export interface components {
       title: string;
       abstract?: string;
       status?: components["schemas"]["KnowledgePageStatusEnum"];
+      /** Format: int64 */
       source_count?: number;
       readonly revision: number;
       /** Format: date-time */
@@ -1627,6 +1955,7 @@ export interface components {
       title: string;
       abstract?: string;
       status?: components["schemas"]["KnowledgePageStatusEnum"];
+      /** Format: int64 */
       source_count?: number;
       readonly revision: number;
       /** Format: date-time */
@@ -1639,6 +1968,17 @@ export interface components {
      * @enum {string}
      */
     KnowledgePageStatusEnum: "published" | "stale" | "archived";
+    LabelRequestRequest: {
+      prediction_hash: string;
+      label_version: number;
+      notes: string;
+      opportunity_level?: components["schemas"]["OpportunityLevelEnum"];
+      verdict?: boolean;
+      evidence_supported: boolean;
+      /** Format: uuid */
+      evidence_policy_id?: string | null;
+      evidence_quote?: string;
+    };
     LoginRequest: {
       username: string;
       password: string;
@@ -1711,6 +2051,7 @@ export interface components {
       verification_status?: components["schemas"]["VerificationStatusEnum"];
       /** Format: uuid */
       evidence_policy: string;
+      /** Format: int64 */
       evidence_version: number;
       evidence_quote: string;
       readonly verified_by: number | null;
@@ -1759,6 +2100,7 @@ export interface components {
       verification_status?: components["schemas"]["VerificationStatusEnum"];
       /** Format: uuid */
       evidence_policy: string;
+      /** Format: int64 */
       evidence_version: number;
       evidence_quote: string;
     };
@@ -1790,6 +2132,21 @@ export interface components {
      * @enum {string}
      */
     PageTypeEnum: "policy" | "chain" | "topic" | "region";
+    PaginatedAIModelProfileList: {
+      /** @example 123 */
+      count: number;
+      /**
+       * Format: uri
+       * @example http://api.example.org/accounts/?page=4
+       */
+      next?: string | null;
+      /**
+       * Format: uri
+       * @example http://api.example.org/accounts/?page=2
+       */
+      previous?: string | null;
+      results: components["schemas"]["AIModelProfile"][];
+    };
     PaginatedBatchList: {
       /** @example 123 */
       count: number;
@@ -1940,6 +2297,21 @@ export interface components {
       previous?: string | null;
       results: components["schemas"]["Policy"][];
     };
+    PaginatedPublicationConsumptionList: {
+      /** @example 123 */
+      count: number;
+      /**
+       * Format: uri
+       * @example http://api.example.org/accounts/?page=4
+       */
+      next?: string | null;
+      /**
+       * Format: uri
+       * @example http://api.example.org/accounts/?page=2
+       */
+      previous?: string | null;
+      results: components["schemas"]["PublicationConsumption"][];
+    };
     PaginatedRelationList: {
       /** @example 123 */
       count: number;
@@ -1969,6 +2341,36 @@ export interface components {
        */
       previous?: string | null;
       results: components["schemas"]["RelationReviewCandidate"][];
+    };
+    PaginatedRunList: {
+      /** @example 123 */
+      count: number;
+      /**
+       * Format: uri
+       * @example http://api.example.org/accounts/?page=4
+       */
+      next?: string | null;
+      /**
+       * Format: uri
+       * @example http://api.example.org/accounts/?page=2
+       */
+      previous?: string | null;
+      results: components["schemas"]["Run"][];
+    };
+    PaginatedSampleList: {
+      /** @example 123 */
+      count: number;
+      /**
+       * Format: uri
+       * @example http://api.example.org/accounts/?page=4
+       */
+      next?: string | null;
+      /**
+       * Format: uri
+       * @example http://api.example.org/accounts/?page=2
+       */
+      previous?: string | null;
+      results: components["schemas"]["Sample"][];
     };
     PaginatedSourceList: {
       /** @example 123 */
@@ -2045,6 +2447,14 @@ export interface components {
       previous?: string | null;
       results: components["schemas"]["SystemConfigRelease"][];
     };
+    PatchedAIModelProfileRequest: {
+      enabled?: boolean;
+      /** Format: uri */
+      base_url?: string;
+      model?: string;
+      concurrency?: number;
+      api_key?: string;
+    };
     PatchedBatchRequest: {
       /** Format: uuid */
       opportunity?: string;
@@ -2057,6 +2467,7 @@ export interface components {
       verification_status?: components["schemas"]["VerificationStatusEnum"];
       /** Format: uuid */
       evidence_policy?: string;
+      /** Format: int64 */
       evidence_version?: number;
       evidence_quote?: string;
     };
@@ -2095,6 +2506,7 @@ export interface components {
       verification_status?: components["schemas"]["VerificationStatusEnum"];
       /** Format: uuid */
       evidence_policy?: string;
+      /** Format: int64 */
       evidence_version?: number;
       evidence_quote?: string;
     };
@@ -2103,16 +2515,26 @@ export interface components {
       from_policy?: string;
       /** Format: uuid */
       to_policy?: string;
-      kind?: components["schemas"]["KindEnum"];
+      kind?: components["schemas"]["RelationKindEnum"];
       verification_status?: components["schemas"]["VerificationStatusEnum"];
       /** Format: uuid */
       evidence_policy?: string;
+      /** Format: int64 */
       evidence_version?: number;
       evidence_quote?: string;
     };
     PatchedSourceRequest: {
+      name?: string;
+      /** Format: uri */
+      url?: string;
+      collection_type?: components["schemas"]["CollectionTypeEnum"];
       enabled?: boolean;
+      /** Format: int64 */
       interval_minutes?: number;
+      schedule_mode?: components["schemas"]["ScheduleModeEnum"];
+      /** Format: time */
+      daily_check_time?: string | null;
+      notes?: string;
     };
     PatchedSubscriptionRequest: {
       name?: string;
@@ -2136,6 +2558,7 @@ export interface components {
       eligible_keywords?: string;
       authority_keywords?: string;
       has_deadline?: boolean | null;
+      /** Format: int64 */
       deadline_within_days?: number | null;
       active?: boolean;
     };
@@ -2172,10 +2595,12 @@ export interface components {
       summary_method?: string;
       summary_evidence?: unknown;
       structured_keywords?: unknown;
+      /** Format: int64 */
       extraction_version?: number;
       /** Format: uri */
       source_url: string;
       status?: components["schemas"]["PolicyStatusEnum"];
+      /** Format: int64 */
       version?: number;
       /** Format: date-time */
       published_at?: string | null;
@@ -2224,10 +2649,12 @@ export interface components {
       summary_method?: string;
       summary_evidence?: unknown;
       structured_keywords?: unknown;
+      /** Format: int64 */
       extraction_version?: number;
       /** Format: uri */
       source_url: string;
       status?: components["schemas"]["PolicyStatusEnum"];
+      /** Format: int64 */
       version?: number;
       /** Format: date-time */
       published_at?: string | null;
@@ -2282,6 +2709,48 @@ export interface components {
      * @enum {string}
      */
     PolicyStatusEnum: "candidate" | "published" | "withdrawn";
+    PublicationConsumption: {
+      /** Format: uuid */
+      readonly id: string;
+      /** Format: uuid */
+      readonly event: string;
+      /** Format: uuid */
+      readonly policy_id: string;
+      readonly policy_title: string;
+      readonly policy_version: number;
+      readonly event_label: string;
+      readonly consumer: components["schemas"]["ConsumerEnum"];
+      readonly consumer_label: string;
+      readonly status: components["schemas"]["PublicationConsumptionStatusEnum"];
+      readonly status_label: string;
+      readonly attempts: number;
+      readonly failures: number;
+      /** Format: date-time */
+      readonly retry_at: string | null;
+      readonly last_error: string;
+      readonly last_success_version: number | null;
+      /** Format: date-time */
+      readonly succeeded_at: string | null;
+      readonly result: unknown;
+      /** Format: uuid */
+      readonly wiki_build: string | null;
+      readonly can_retry: boolean;
+      /** Format: date-time */
+      readonly created_at: string;
+      /** Format: date-time */
+      readonly updated_at: string;
+    };
+    /**
+     * @description * `pending` - 等待处理
+     *     * `running` - 正在处理
+     *     * `waiting` - 等待知识构建完成
+     *     * `retry` - 等待自动重试
+     *     * `failed` - 需要处理
+     *     * `succeeded` - 已完成
+     * @enum {string}
+     */
+    PublicationConsumptionStatusEnum:
+      "pending" | "running" | "waiting" | "retry" | "failed" | "succeeded";
     PublicationDecisionRequest: {
       version: number;
       source_grade?: components["schemas"]["SourceGradeEnum"];
@@ -2303,6 +2772,14 @@ export interface components {
      */
     PublicationDocumentTypeEnum:
       "policy" | "opportunity" | "result" | "interpretation" | "draft";
+    /**
+     * @description * `review` - 政策自动审核与摘要
+     *     * `search` - 自然语言检索与归纳
+     *     * `wiki_synthesis` - Wiki 知识页综合
+     *     * `wiki_relations` - 政策关系发现
+     * @enum {string}
+     */
+    PurposeEnum: "review" | "search" | "wiki_synthesis" | "wiki_relations";
     RegisterRequest: {
       /**
        * 用户名
@@ -2321,28 +2798,66 @@ export interface components {
       to_policy: string;
       readonly from_title: string;
       readonly to_title: string;
-      kind: components["schemas"]["KindEnum"];
+      kind: components["schemas"]["RelationKindEnum"];
       readonly discovery: unknown;
       /** Format: date-time */
       readonly created_at: string;
       verification_status?: components["schemas"]["VerificationStatusEnum"];
       /** Format: uuid */
       evidence_policy: string;
+      /** Format: int64 */
       evidence_version: number;
       evidence_quote: string;
       readonly verified_by: number | null;
       /** Format: date-time */
       readonly verified_at: string | null;
     };
+    /**
+     * @description * `superior` - 上位
+     *     * `implements` - 实施
+     *     * `supports` - 配套
+     *     * `application` - 申报通知
+     *     * `supplements` - 补充
+     *     * `extends` - 延期
+     *     * `interprets` - 解读
+     *     * `finalizes` - 征求→正式
+     *     * `revises` - 修订
+     *     * `replaces` - 替代
+     *     * `repeals` - 废止
+     *     * `publicizes` - 公示
+     *     * `lists` - 正式名单
+     *     * `allocates` - 资金下达
+     *     * `approves` - 项目批复
+     *     * `accepts` - 验收结果
+     * @enum {string}
+     */
+    RelationKindEnum:
+      | "superior"
+      | "implements"
+      | "supports"
+      | "application"
+      | "supplements"
+      | "extends"
+      | "interprets"
+      | "finalizes"
+      | "revises"
+      | "replaces"
+      | "repeals"
+      | "publicizes"
+      | "lists"
+      | "allocates"
+      | "approves"
+      | "accepts";
     RelationRequest: {
       /** Format: uuid */
       from_policy: string;
       /** Format: uuid */
       to_policy: string;
-      kind: components["schemas"]["KindEnum"];
+      kind: components["schemas"]["RelationKindEnum"];
       verification_status?: components["schemas"]["VerificationStatusEnum"];
       /** Format: uuid */
       evidence_policy: string;
+      /** Format: int64 */
       evidence_version: number;
       evidence_quote: string;
     };
@@ -2395,11 +2910,97 @@ export interface components {
      * @enum {string}
      */
     RoleEnum: "primary" | "original" | "repost" | "additional";
+    Run: {
+      /** Format: uuid */
+      readonly id: string;
+      readonly status: string;
+      readonly protocol_version: string;
+      readonly config_version: string;
+      readonly metrics: unknown;
+      /** Format: date-time */
+      readonly created_at: string;
+    };
+    Sample: {
+      /** Format: uuid */
+      readonly id: string;
+      readonly kind: components["schemas"]["EvaluationSampleKindEnum"];
+      readonly kind_label: string;
+      readonly title: string;
+      /** Format: uuid */
+      readonly policy: string | null;
+      /** Format: uuid */
+      readonly related_policy: string | null;
+      /** Format: uuid */
+      readonly page: string | null;
+      readonly relation_kind: string;
+      readonly origin: string;
+      readonly status: components["schemas"]["EvaluationSampleStatusEnum"];
+      readonly status_label: string;
+      readonly gold: unknown;
+      readonly label_version: number;
+      /** Format: date-time */
+      readonly labeled_at: string | null;
+      /** @default  */
+      readonly labeled_by_name: string;
+      /** Format: date-time */
+      readonly created_at: string;
+    };
+    SampleDetail: {
+      /** Format: uuid */
+      readonly id: string;
+      readonly kind: components["schemas"]["EvaluationSampleKindEnum"];
+      readonly kind_label: string;
+      readonly title: string;
+      /** Format: uuid */
+      readonly policy: string | null;
+      /** Format: uuid */
+      readonly related_policy: string | null;
+      /** Format: uuid */
+      readonly page: string | null;
+      readonly relation_kind: string;
+      readonly origin: string;
+      readonly status: components["schemas"]["EvaluationSampleStatusEnum"];
+      readonly status_label: string;
+      readonly gold: unknown;
+      readonly label_version: number;
+      /** Format: date-time */
+      readonly labeled_at: string | null;
+      /** @default  */
+      readonly labeled_by_name: string;
+      /** Format: date-time */
+      readonly created_at: string;
+      readonly snapshot: unknown;
+      readonly stale_reason: string;
+      readonly prediction: {
+        [key: string]: unknown;
+      } | null;
+      readonly prediction_hash: string;
+    };
+    /**
+     * @description * `interval` - 按间隔检查
+     *     * `daily` - 每天定时检查
+     * @enum {string}
+     */
+    ScheduleModeEnum: "interval" | "daily";
+    /**
+     * @description * `all` - all
+     *     * `title` - title
+     *     * `document_number` - document_number
+     *     * `issuer` - issuer
+     * @enum {string}
+     */
+    ScopeEnum: "all" | "title" | "document_number" | "issuer";
     SearchIndexActionRequest: {
       /** @default false */
       rebuild: boolean;
     };
     SearchRequestRequest: {
+      /** @default all */
+      scope: components["schemas"]["ScopeEnum"];
+      /** @default  */
+      published_from: string;
+      /** @default  */
+      published_to: string;
       /** @default  */
       industry:
         | components["schemas"]["IndustryEnum"]
@@ -2463,11 +3064,17 @@ export interface components {
     Source: {
       /** Format: uuid */
       readonly id: string;
-      readonly name: string;
+      name: string;
       /** Format: uri */
-      readonly url: string;
+      url: string;
+      collection_type?: components["schemas"]["CollectionTypeEnum"];
+      readonly collection_type_label: string;
       enabled?: boolean;
+      /** Format: int64 */
       interval_minutes?: number;
+      schedule_mode?: components["schemas"]["ScheduleModeEnum"];
+      /** Format: time */
+      daily_check_time?: string | null;
       readonly verification_status: string;
       /** Format: date-time */
       readonly last_success_at: string | null;
@@ -2477,7 +3084,7 @@ export interface components {
       readonly cooldown_until: string | null;
       readonly cooldown_reason: string;
       readonly crawl_state: string;
-      readonly notes: string;
+      notes?: string;
     };
     /**
      * @description * `unverified` - 待核验
@@ -2488,6 +3095,19 @@ export interface components {
      * @enum {string}
      */
     SourceGradeEnum: "unverified" | "L1" | "L2" | "L3" | "L4";
+    SourceRequest: {
+      name: string;
+      /** Format: uri */
+      url: string;
+      collection_type?: components["schemas"]["CollectionTypeEnum"];
+      enabled?: boolean;
+      /** Format: int64 */
+      interval_minutes?: number;
+      schedule_mode?: components["schemas"]["ScheduleModeEnum"];
+      /** Format: time */
+      daily_check_time?: string | null;
+      notes?: string;
+    };
     SourceRun: {
       /** Format: uuid */
       readonly id: string;
@@ -2498,6 +3118,7 @@ export interface components {
       readonly created_at: string;
       /** Format: date-time */
       finished_at?: string | null;
+      /** Format: int64 */
       discovered?: number;
       progress?: unknown;
       error_code?: string;
@@ -2527,6 +3148,7 @@ export interface components {
       eligible_keywords?: string;
       authority_keywords?: string;
       has_deadline?: boolean | null;
+      /** Format: int64 */
       deadline_within_days?: number | null;
       active?: boolean;
       /** Format: date-time */
@@ -2560,6 +3182,7 @@ export interface components {
       eligible_keywords?: string;
       authority_keywords?: string;
       has_deadline?: boolean | null;
+      /** Format: int64 */
       deadline_within_days?: number | null;
       active?: boolean;
     };
@@ -2791,6 +3414,78 @@ export interface operations {
           "application/json": {
             [key: string]: unknown;
           };
+        };
+      };
+    };
+  };
+  v1_admin_ai_models_list: {
+    parameters: {
+      query?: {
+        /** @description 分页结果集中的页码。 */
+        page?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PaginatedAIModelProfileList"];
+        };
+      };
+    };
+  };
+  v1_admin_ai_models_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 标识此 ai model profile 的 UUID 字符串。 */
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["AIModelProfile"];
+        };
+      };
+    };
+  };
+  v1_admin_ai_models_partial_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 标识此 ai model profile 的 UUID 字符串。 */
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        "application/json": components["schemas"]["PatchedAIModelProfileRequest"];
+        "application/x-www-form-urlencoded": components["schemas"]["PatchedAIModelProfileRequest"];
+        "multipart/form-data": components["schemas"]["PatchedAIModelProfileRequest"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["AIModelProfile"];
         };
       };
     };
@@ -3319,6 +4014,27 @@ export interface operations {
       };
     };
   };
+  v1_admin_knowledge_builds_progress_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            [key: string]: unknown;
+          };
+        };
+      };
+    };
+  };
   v1_admin_knowledge_builds_sync_create: {
     parameters: {
       query?: never;
@@ -3677,6 +4393,7 @@ export interface operations {
         page?: number;
         q?: string;
         stage?:
+          | "AI_PROCESSING"
           | "AI_REVIEWING"
           | "EXCLUDED"
           | "NEEDS_ACTION"
@@ -4220,6 +4937,352 @@ export interface operations {
       };
     };
   };
+  v1_admin_publication_consumers_list: {
+    parameters: {
+      query?: {
+        /** @description 分页结果集中的页码。 */
+        page?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PaginatedPublicationConsumptionList"];
+        };
+      };
+    };
+  };
+  v1_admin_publication_consumers_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 标识此 publication consumption 的 UUID 字符串。 */
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PublicationConsumption"];
+        };
+      };
+    };
+  };
+  v1_admin_publication_consumers_retry_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 标识此 publication consumption 的 UUID 字符串。 */
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PublicationConsumption"];
+        };
+      };
+    };
+  };
+  v1_admin_publication_consumers_summary_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PublicationConsumption"];
+        };
+      };
+    };
+  };
+  v1_admin_quality_runs_list: {
+    parameters: {
+      query?: {
+        /** @description 分页结果集中的页码。 */
+        page?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PaginatedRunList"];
+        };
+      };
+    };
+  };
+  v1_admin_quality_runs_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 标识此 evaluation run 的 UUID 字符串。 */
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Run"];
+        };
+      };
+    };
+  };
+  v1_admin_quality_runs_results_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 标识此 evaluation run 的 UUID 字符串。 */
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Run"];
+        };
+      };
+    };
+  };
+  v1_admin_quality_runs_evaluate_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Run"];
+        };
+      };
+    };
+  };
+  v1_admin_quality_samples_list: {
+    parameters: {
+      query?: {
+        /** @description 分页结果集中的页码。 */
+        page?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PaginatedSampleList"];
+        };
+      };
+    };
+  };
+  v1_admin_quality_samples_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 标识此 evaluation sample 的 UUID 字符串。 */
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["SampleDetail"];
+        };
+      };
+    };
+  };
+  v1_admin_quality_samples_label_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 标识此 evaluation sample 的 UUID 字符串。 */
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["LabelRequestRequest"];
+        "application/x-www-form-urlencoded": components["schemas"]["LabelRequestRequest"];
+        "multipart/form-data": components["schemas"]["LabelRequestRequest"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["SampleDetail"];
+        };
+      };
+    };
+  };
+  v1_admin_quality_samples_retire_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 标识此 evaluation sample 的 UUID 字符串。 */
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Sample"];
+        };
+      };
+    };
+  };
+  v1_admin_quality_samples_add_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateSampleRequestRequest"];
+        "application/x-www-form-urlencoded": components["schemas"]["CreateSampleRequestRequest"];
+        "multipart/form-data": components["schemas"]["CreateSampleRequestRequest"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["CreateSampleResponse"];
+        };
+      };
+    };
+  };
+  v1_admin_quality_samples_policies_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Sample"];
+        };
+      };
+    };
+  };
+  v1_admin_quality_samples_seed_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Sample"];
+        };
+      };
+    };
+  };
+  v1_admin_quality_samples_summary_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Sample"];
+        };
+      };
+    };
+  };
   v1_admin_relation_review_candidates_list: {
     parameters: {
       query?: {
@@ -4422,6 +5485,31 @@ export interface operations {
       };
     };
   };
+  v1_admin_sources_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["SourceRequest"];
+        "application/x-www-form-urlencoded": components["schemas"]["SourceRequest"];
+        "multipart/form-data": components["schemas"]["SourceRequest"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Source"];
+        };
+      };
+    };
+  };
   v1_admin_sources_retrieve: {
     parameters: {
       query?: never;
@@ -4441,6 +5529,27 @@ export interface operations {
         content: {
           "application/json": components["schemas"]["Source"];
         };
+      };
+    };
+  };
+  v1_admin_sources_destroy: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 标识此 source 的 UUID 字符串。 */
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description No response body */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
       };
     };
   };

@@ -2,6 +2,7 @@ from urllib.parse import urlparse
 
 from django.db import transaction
 from django.utils import timezone
+from drf_spectacular.utils import extend_schema_field
 from rest_framework import permissions, serializers, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -330,9 +331,11 @@ class AIModelProfileSerializer(serializers.ModelSerializer):
             "updated_at",
         ]
 
+    @extend_schema_field(serializers.BooleanField())
     def get_has_api_key(self, obj):
         return bool(obj.api_key)
 
+    @extend_schema_field(serializers.BooleanField())
     def get_configured(self, obj):
         return get_ai_profile(obj.purpose).configured
 

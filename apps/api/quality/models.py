@@ -9,6 +9,11 @@ class EvaluationSample(Record):
         RELATION = "relation", "Wiki政策关系"
         KNOWLEDGE = "knowledge", "Wiki知识页证据"
 
+    class Status(models.TextChoices):
+        PENDING = "pending", "待人工标注"
+        LABELED = "labeled", "已人工标注"
+        RETIRED = "retired", "已停用"
+
     key = models.CharField(max_length=64, unique=True)
     kind = models.CharField(max_length=20, choices=Kind.choices, db_index=True)
     title = models.CharField(max_length=1000)
@@ -22,8 +27,8 @@ class EvaluationSample(Record):
     origin = models.CharField(max_length=50, default="manual")
     status = models.CharField(
         max_length=20,
-        choices=[("pending", "待人工标注"), ("labeled", "已人工标注"), ("retired", "已停用")],
-        default="pending",
+        choices=Status.choices,
+        default=Status.PENDING,
         db_index=True,
     )
     gold = models.JSONField(default=dict)

@@ -86,6 +86,9 @@ REST_FRAMEWORK = {
 SPECTACULAR_SETTINGS = {
     "ENUM_NAME_OVERRIDES": {
         "PolicyStatusEnum": "policies.models.Policy.Status",
+        "RelationKindEnum": "policies.taxonomy.RelationKind",
+        "EvaluationSampleKindEnum": "quality.models.EvaluationSample.Kind",
+        "EvaluationSampleStatusEnum": "quality.models.EvaluationSample.Status",
         "ValidityStatusEnum": "policies.taxonomy.ValidityStatus",
         "GeographicLevelEnum": "policies.models.Policy.GeographicLevel",
         "SourceGradeEnum": "policies.models.Policy.SourceGrade",

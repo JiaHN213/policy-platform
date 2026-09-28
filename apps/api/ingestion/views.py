@@ -4,7 +4,7 @@ from urllib.parse import urlparse
 from django.db import transaction
 from django.db.models import Count
 from django.utils import timezone
-from drf_spectacular.utils import OpenApiParameter, extend_schema
+from drf_spectacular.utils import OpenApiParameter, extend_schema, extend_schema_field
 from rest_framework import permissions, serializers, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -58,6 +58,7 @@ class SourceSerializer(serializers.ModelSerializer):
             "crawl_state",
         ]
 
+    @extend_schema_field(serializers.CharField())
     def get_collection_type_label(self, obj):
         return {
             "nanning_v1": "南宁市政策文件库",
