@@ -1,5 +1,7 @@
 "use client";
 
+import PolicyBody from "@/components/policy/PolicyBody";
+
 import {
 api,
 safeExternalUrl,
@@ -26,6 +28,8 @@ Timeline
 import { AttachmentLinks,documentTypeLabel,ErrorBox,ProvenanceTags } from "@/components/policy/common";
 
 import { AIReviewSummary,type PolicyPipelineState } from "@/components/management/ReviewSupport";
+import ReadableText from "./ReadableText";
+import CustomerPolicyContent from "./CustomerPolicyContent";
 export default function PolicyDrawer({
   id,
   onClose,
@@ -86,6 +90,9 @@ export default function PolicyDrawer({
     },
     onError: (error) => message.error(error.message),
   });
+  if (!review) return <Drawer open={!!id} onClose={onClose} title="政策速览" rootClassName="policy-reading-drawer" size="min(760px, 96vw)">
+    {query.isLoading ? <Skeleton active /> : query.error ? <ErrorBox error={query.error} /> : query.data && <CustomerPolicyContent key={id} policy={query.data} compact onSelect={onSelect} onRead={onClose} />}
+  </Drawer>;
   return (
     <Drawer open={!!id} onClose={onClose} title="政策详情" size={720}>
       {query.isLoading ? (
@@ -103,6 +110,7 @@ export default function PolicyDrawer({
               />
             )}
             <h2 className="detail-title">{query.data.title}</h2>
+            {query.data.evidence_readiness?.status === "incomplete" && <Alert type="warning" showIcon title="关键条件待核对" description={String(query.data.evidence_readiness.reason)} className="space-bottom" />}
             <Tag>
               政策效力：
               {taxonomy.data?.validity_statuses?.find(
@@ -215,7 +223,7 @@ export default function PolicyDrawer({
                 ? "AI 摘要与结构化关键词"
                 : "原文摘录与结构化关键词"}
             </h3>
-            <p>{query.data.summary || "尚未提取"}</p>
+            <ReadableText text={query.data.summary || "尚未提取"} />
             {query.data.summary_method === "ai" && (
               <details>
                 <summary>查看 AI 摘要的原文依据（摘要仍需核对）</summary>
@@ -311,7 +319,7 @@ export default function PolicyDrawer({
             )}
             <h3>政策正文与附件</h3>
             <AttachmentLinks policy={query.data} />
-            <div className="policy-body">{query.data.body}</div>
+            <PolicyBody text={query.data.body} />
             <div className="detail-footer">
               <CheckCircleOutlined />{" "}
               {query.data.status === "published"

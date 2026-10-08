@@ -1,9 +1,11 @@
+from pathlib import Path
 from urllib.parse import urlparse
 
+from accounts.permissions import IsSystemManager
 from django.db import transaction
 from django.utils import timezone
 from drf_spectacular.utils import extend_schema_field
-from rest_framework import permissions, serializers, status, viewsets
+from rest_framework import serializers, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
@@ -23,13 +25,8 @@ from core.models import (
 )
 
 
-class SystemConfigPermission(permissions.BasePermission):
-    def has_permission(self, request, view):
-        return (
-            request.user.is_authenticated
-            and request.user.is_staff
-            and request.user.has_perm("policies.change_policy")
-        )
+class SystemConfigPermission(IsSystemManager):
+    pass
 
 
 class SystemConfigDocumentSerializer(serializers.ModelSerializer):
@@ -317,6 +314,8 @@ class AIModelProfileSerializer(serializers.ModelSerializer):
             "base_url",
             "model",
             "concurrency",
+            "thinking", "context_tokens", "max_output_tokens",
+            "input_price", "output_price", "currency",
             "api_key",
             "has_api_key",
             "configured",
@@ -347,8 +346,15 @@ class AIModelProfileSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({"base_url": "请输入正确的模型服务地址。"})
         if parsed.username or parsed.password:
             raise serializers.ValidationError({"base_url": "模型服务地址不能包含用户名或密码。"})
+        if (Path("/.dockerenv").exists() and parsed.hostname in {"localhost", "127.0.0.1", "::1"}
+                and parsed.port == 11434):
+            raise serializers.ValidationError({"base_url": "应用正在 Docker 中运行。本机 Ollama 请使用 http://host.docker.internal:11434/v1；localhost 指向应用容器，无法连接电脑上的模型。"})
         if "api_key" in attrs and not attrs["api_key"]:
             attrs.pop("api_key")
+        context = attrs.get("context_tokens", getattr(instance, "context_tokens", None))
+        output = attrs.get("max_output_tokens", getattr(instance, "max_output_tokens", None))
+        if context and output and output >= context:
+            raise serializers.ValidationError({"max_output_tokens": "输出上限必须小于上下文长度，需为政策原文和指令留出空间。"})
         return attrs
 
     def update(self, instance, validated_data):

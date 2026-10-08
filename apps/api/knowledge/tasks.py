@@ -13,6 +13,43 @@ from .services import knowledge_fingerprint, sync_all
 logger = logging.getLogger(__name__)
 
 
+@shared_task(soft_time_limit=540, time_limit=600)
+def repair_relation(job_id):
+    from .repair import process
+
+    process(job_id)
+
+
+@shared_task(soft_time_limit=540, time_limit=600)
+def refresh_relation_pages(job_id):
+    from .repair import refresh
+
+    refresh(job_id)
+
+
+@shared_task(soft_time_limit=540, time_limit=600)
+def dispatch_relation_repairs():
+    from .models import RelationRepair
+    from .repair import enabled
+
+    if not enabled():
+        return
+    now = timezone.now()
+    job = (RelationRepair.objects.filter(
+        Q(status="queued") | Q(status="running", lease_until__lte=now))
+        .filter(Q(retry_at__isnull=True) | Q(retry_at__lte=now))
+        .order_by("created_at").first())
+    if job:
+        # A lease and attempt token in process prevent duplicate delivery effects.
+        repair_relation.delay(str(job.pk))
+    pending_refresh = RelationRepair.objects.filter(
+        status="succeeded", result__page_refresh__in=["pending", "running"]
+    ).filter(Q(lease_until__isnull=True) | Q(lease_until__lte=now)).filter(
+        Q(retry_at__isnull=True) | Q(retry_at__lte=now)).order_by("updated_at").first()
+    if pending_refresh:
+        refresh_relation_pages.delay(str(pending_refresh.pk))
+
+
 def enqueue_sync(requested_by=None, force=False):
     digest = knowledge_fingerprint()
     with transaction.atomic():

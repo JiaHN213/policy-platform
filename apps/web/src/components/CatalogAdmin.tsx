@@ -1,6 +1,9 @@
 "use client";
 
+import PolicyBody from "@/components/policy/PolicyBody";
+
 import { useState } from "react";
+import { PolicyPair, RepairCard, RepairSummary, type Repair } from "@/components/RelationRepair";
 import RelationBuildProgress, { useRelationProgress, type ReviewScope } from "@/components/RelationBuildProgress";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
@@ -34,6 +37,7 @@ type CatalogItem = {
   kind?: string;
   status?: string;
   verification_status?: string;
+  repair?: Repair | null;
   [key: string]: unknown;
 };
 const paths: Record<string, string> = {
@@ -223,6 +227,7 @@ export default function CatalogAdmin() {
       {kind !== "opportunity" && <RelationBuildProgress onReviewScope={(scope) => {
         setKind("relation_review"); setReviewScope(scope); setReviewStatus("pending"); setPage(1);
       }} />}
+      {kind === "relation_review" && <RepairSummary scope={reviewScope} />}
       {records.error ? (
         <Alert type="error" title={records.error.message} />
       ) : !records.data?.items.length ? (
@@ -262,6 +267,8 @@ export default function CatalogAdmin() {
               <blockquote>
                 {String(record.evidence_quote || "模型未提供有效证据")}
               </blockquote>
+              <RepairCard id={record.id} repair={record.repair} pending={record.status === "pending"}
+                from={String(record.from_policy)} to={String(record.to_policy)} />
               <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
                 <Button
                   href={safeExternalUrl(String(record.from_source_url))}
@@ -578,9 +585,7 @@ export default function CatalogAdmin() {
                     )}
                     <Divider />
                     <strong>政策全文</strong>
-                    <div className="policy-body" style={{ marginTop: 12 }}>
-                      {policyDetail.data.body || "暂无可核验正文"}
-                    </div>
+                    <PolicyBody text={policyDetail.data.body || "暂无可核验正文"} />
                   </>
                 ) : (
                   <Empty description="选择政策文件后显示全文与附件" />
@@ -612,6 +617,7 @@ export default function CatalogAdmin() {
           )}
           {kind === "relation_review" && editing && (
             <>
+              <PolicyPair from={String(editing.from_policy)} to={String(editing.to_policy)} />
               <Alert
                 type="warning"
                 showIcon

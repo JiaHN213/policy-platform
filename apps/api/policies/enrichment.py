@@ -9,7 +9,9 @@ from decimal import Decimal
 from urllib.parse import urlparse
 
 import httpx
-from core.ai_runtime import get_ai_profile
+from core.ai_capacity import shared_capacity
+from core.ai_runtime import apply_generation_settings, get_ai_profile
+from core.ai_usage import request_json
 from core.business_config import config_version, get_config
 from core.models import AuditRecord
 from django.db import transaction
@@ -30,6 +32,8 @@ from .grounding import (
 )
 from .models import Evidence, Policy, PolicyEnrichment, PublicationEvent
 from .opportunity_config import opportunity_context, opportunity_material
+from .recovery_context import RecoveryInterrupted
+from .recovery_context import current as recovery_context
 from .taxonomy import DocumentRole, OpportunityLevel, ValidityStatus
 
 PROMPT_VERSION = "policy-enrichment-v7"
@@ -226,7 +230,16 @@ def configured(purpose="review"):
     return get_ai_profile(purpose).configured
 
 
-def model_json(instruction, data, schema, *, max_tokens=None, purpose="review"):
+@shared_capacity
+def model_json(instruction, data, schema, *, max_tokens=None, purpose="review", attempts=2):
+    recovery = recovery_context.get() if purpose == "review" else None
+    call_key = None
+    if recovery:
+        recovery.guard("正在校验输入与读取分段检查点")
+        call_key, cached = recovery.cached(instruction, data, schema)
+        if cached is not None:
+            return cached
+        instruction += "\n本次为失败恢复：请严格按Schema输出完整而精简的JSON；引用只复制连续原文，禁止拼接或改写。"
     profile = get_ai_profile(purpose)
     if not profile.configured:
         raise RuntimeError("AI_NOT_CONFIGURED")
@@ -271,19 +284,23 @@ def model_json(instruction, data, schema, *, max_tokens=None, purpose="review"):
                 "max_tokens": output_token_limit,
             }
             headers = {"Authorization": f"Bearer {profile.api_key}"}
-        for attempt in range(2):
-            response = client.post(endpoint, headers=headers, json=payload)
-            response.raise_for_status()
-            body = response.json()
+        apply_generation_settings(profile, payload)
+        for attempt in range(max(1, min(attempts, 2))):
+            if recovery:
+                recovery.before_request(len(content))
+            body = request_json(client, profile, endpoint, headers=headers, payload=payload)
             answer = (
                 body["message"]["content"]
                 if local_model
                 else body["choices"][0]["message"]["content"]
             )
             try:
-                return schema.model_validate_json(answer)
+                validated = schema.model_validate_json(answer)
+                if recovery:
+                    recovery.save_checkpoint(call_key, validated)
+                return validated
             except PydanticValidationError as exc:
-                if attempt:
+                if attempt == max(1, min(attempts, 2)) - 1:
                     raise ValueError("MODEL_INVALID_OUTPUT") from exc
                 messages[0]["content"] += (
                     "\n上一次结构化输出不完整或不符合Schema。本次务必输出完整、简洁的JSON，减少条目数量。"
@@ -293,9 +310,18 @@ def model_json(instruction, data, schema, *, max_tokens=None, purpose="review"):
 def summarize(policy):
     if not policy.body.strip():
         raise ValueError("BODY_EMPTY_OR_TOO_LARGE")
+    recovery = recovery_context.get()
+    if recovery and recovery.quote_repair:
+        points = extractive_summary_fallback(policy.body)
+        if not points:
+            raise ValueError("INVALID_SUMMARY_QUOTE")
+        return {"summary": "\n".join(p["text"] for p in points), "summary_evidence": points,
+                "structured_keywords": [], "grounding_diagnostics": [],
+                "grounding_warnings": [{"code": "EXTRACTIVE_SUMMARY_FALLBACK", "count": 1}]}
+    sample_limit = 60000 if recovery else 120000
     summary_body = (
         opportunity_material(policy.body, limit=60000)
-        if len(policy.body) > 120000
+        if len(policy.body) > sample_limit
         else policy.body
     )
     points, terms, diagnostics = [], {}, []
@@ -304,7 +330,7 @@ def summarize(policy):
         "INVALID_KEYWORD_SKIPPED": 0,
         "INVALID_SYNTHESIS_QUOTE_SKIPPED": 0,
         "EXTRACTIVE_SUMMARY_FALLBACK": 0,
-        "LONG_DOCUMENT_SAMPLED": int(len(policy.body) > 120000),
+        "LONG_DOCUMENT_SAMPLED": int(len(policy.body) > sample_limit),
     }
     # Every character is covered; overlap helps preserve sentences at chunk boundaries.
     for offset in range(0, len(summary_body), 4500):
@@ -764,25 +790,17 @@ def eligible():
 
 def assess_attachment_sufficiency(policy, output):
     """Separate technical parse completeness from evidence sufficiency for publication."""
-    pending_snapshots = list(policy.snapshots.exclude(parse_status="parsed"))
-    attachment_issues = []
-    for item in policy.discovereditem_set.all():
-        attachment_issues.extend((item.metadata or {}).get("attachment_issues") or [])
-    unresolved_urls = sorted(
-        {
-            str(item.get("url", ""))
-            for item in attachment_issues
-            if item.get("url")
-        }
-        | {snapshot.url for snapshot in pending_snapshots}
-    )
-    if not unresolved_urls:
+    from .readiness import evidence_readiness
+
+    readiness = evidence_readiness(policy)
+    unresolved_urls = readiness["unresolved_urls"]
+    if readiness["status"] == "available":
         return {
             "complete": True,
             "sufficient": True,
             "unresolved_count": 0,
             "unresolved_urls": [],
-            "reason": "正文和附件均已完成解析。",
+            "reason": "已登记正文和附件无未完成解析项；仍需核对申报条件。",
         }
 
     metadata = output.get("metadata") or {}
@@ -810,26 +828,28 @@ def assess_attachment_sufficiency(policy, output):
         and len(policy.body.strip()) >= minimum_length
         and summary_grounded
         and review_grounded
-        and len(unresolved_urls) <= 20
+        and readiness["unresolved_count"] <= 20
+        and not readiness["unlocated_issue"]
     )
     return {
         "complete": False,
         "sufficient": sufficient,
-        "unresolved_count": len(unresolved_urls),
+        "unresolved_count": readiness["unresolved_count"],
+        "eligibility_ready": False,
         "unresolved_urls": unresolved_urls[:20],
         "minimum_body_length": minimum_length,
         "body_length": len(policy.body.strip()),
         "summary_grounded": summary_grounded,
         "review_grounded": review_grounded,
         "reason": (
-            "附件尚未全部解析，但官方网页正文和AI引用证据足以支撑政策发布。"
+            "正文及引用支持基础信息发布；附件尚未全部解析，关键申报条件仍需核对。"
             if sufficient
             else "附件可能承载关键事实，当前正文不足以安全替代附件。"
         ),
     }
 
 
-def process_one(job_id):
+def process_one(job_id, *, recovery_token=None, guard=None, finish=None):
     task_config_version = config_version()
     review_profile = get_ai_profile("review")
     with transaction.atomic():
@@ -837,8 +857,10 @@ def process_one(job_id):
         now = timezone.now()
         reuse_result = bool((job.result or {}).get("reuse_validated_ai_result"))
         if (
+            job.recovery_token != recovery_token
+            or
             (job.status == "succeeded" and not reuse_result)
-            or job.attempts >= 3
+            or (job.attempts >= 3 and recovery_token is None)
             or (job.lease_until and job.lease_until > now)
             or (job.retry_at and job.retry_at > now)
         ):
@@ -858,6 +880,8 @@ def process_one(job_id):
             else None
         )
     try:
+        if guard:
+            guard("正在恢复审核")
         policy = eligible().get(pk=job.policy_id, version=job.policy_version)
         output = cached_output or run_graph(policy)
         output.pop("reuse_validated_ai_result", None)
@@ -866,13 +890,15 @@ def process_one(job_id):
         output["grounding_version"] = PROMPT_VERSION
         with transaction.atomic():
             current = PolicyEnrichment.objects.select_for_update().get(pk=job.pk)
-            if current.attempts != attempt or current.status != "running":
+            if current.attempts != attempt or current.status != "running" or current.recovery_token != recovery_token:
                 return
             locked = {
                 str(p.pk): p
                 for p in Policy.objects.select_for_update().filter(pk=policy.pk).order_by("id")
             }
             source = locked[str(policy.pk)]
+            if guard:
+                guard("正在校验证据并保存审核结果")
             review_result = output["review"]
             review_result.setdefault("document_role", DocumentRole.OTHER)
             review_result.setdefault(
@@ -1193,8 +1219,15 @@ def process_one(job_id):
                 },
             )
             current.status, current.error_code, current.lease_until = "succeeded", "", None
+            current.finished_at = timezone.now()
             current.result = output
             current.save()
+            if finish:
+                finish(source, output)
+    except RecoveryInterrupted as exc:
+        if recovery_context.get():
+            recovery_context.get().interruption = str(exc)
+        return
     except Exception as exc:
         # Store safe codes only: provider errors may contain request text or credentials.
         allowed_codes = {
@@ -1217,6 +1250,7 @@ def process_one(job_id):
             safe = "MODEL_OR_PROCESSING_ERROR"
         PolicyEnrichment.objects.filter(pk=job.pk, attempts=attempt, status="running").update(
             status="failed",
+            finished_at=timezone.now(),
             error_code=safe,
             lease_until=None,
             retry_at=timezone.now() + timedelta(minutes=5),

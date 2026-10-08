@@ -1,7 +1,8 @@
 from celery import shared_task
 from policies.event_tasks import dispatch_publication_consumers
 
-from .services import create_deadline_reminders
+from .delivery import deadline_reminders, deliver_digests
+from .following import sync_pending_follows
 
 
 @shared_task
@@ -11,4 +12,9 @@ def deliver_pending():
 
 @shared_task
 def deliver_deadline_reminders():
-    return create_deadline_reminders()
+    return deadline_reminders()
+
+
+@shared_task
+def maintain_subscriptions():
+    return {"synced": sync_pending_follows(), "digests": deliver_digests()}

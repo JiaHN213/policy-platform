@@ -1,0 +1,383 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AgentRuntimeConfigV1",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "release_version": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80
+    },
+    "enabled": {
+      "type": "boolean"
+    },
+    "pilot_organization_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 36
+      },
+      "uniqueItems": true
+    },
+    "shared_model_concurrency": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 4
+    },
+    "await_input_days": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 30
+    },
+    "workflows": {
+      "type": "object",
+      "properties": {
+        "enterprise": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "model_purpose": {
+              "type": "string",
+              "enum": [
+                "enterprise",
+                "search",
+                "review",
+                "wiki_relations",
+                "wiki_synthesis"
+              ]
+            },
+            "budget": {
+              "type": "object",
+              "properties": {
+                "model_requests": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 20
+                },
+                "tool_calls": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 50
+                },
+                "supplement_rounds": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 3
+                },
+                "active_seconds": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 1800
+                },
+                "max_input_tokens": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 24576
+                },
+                "max_output_tokens": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 4096
+                },
+                "graph_steps": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 40
+                }
+              },
+              "required": [
+                "model_requests",
+                "tool_calls",
+                "supplement_rounds",
+                "active_seconds",
+                "max_input_tokens",
+                "max_output_tokens",
+                "graph_steps"
+              ],
+              "additionalProperties": false
+            },
+            "fallback": {
+              "type": "string",
+              "enum": [
+                "legacy_company_graph"
+              ]
+            }
+          },
+          "required": [
+            "enabled",
+            "model_purpose",
+            "budget",
+            "fallback"
+          ],
+          "additionalProperties": false
+        },
+        "matching": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "model_purpose": {
+              "type": "string",
+              "enum": [
+                "enterprise",
+                "search",
+                "review",
+                "wiki_relations",
+                "wiki_synthesis"
+              ]
+            },
+            "budget": {
+              "type": "object",
+              "properties": {
+                "model_requests": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 20
+                },
+                "tool_calls": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 50
+                },
+                "supplement_rounds": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 3
+                },
+                "active_seconds": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 1800
+                },
+                "max_input_tokens": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 24576
+                },
+                "max_output_tokens": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 4096
+                },
+                "graph_steps": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 40
+                }
+              },
+              "required": [
+                "model_requests",
+                "tool_calls",
+                "supplement_rounds",
+                "active_seconds",
+                "max_input_tokens",
+                "max_output_tokens",
+                "graph_steps"
+              ],
+              "additionalProperties": false
+            },
+            "fallback": {
+              "type": "string",
+              "enum": [
+                "legacy_tag_matching"
+              ]
+            }
+          },
+          "required": [
+            "enabled",
+            "model_purpose",
+            "budget",
+            "fallback"
+          ],
+          "additionalProperties": false
+        },
+        "wiki": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "model_purpose": {
+              "type": "string",
+              "enum": [
+                "enterprise",
+                "search",
+                "review",
+                "wiki_relations",
+                "wiki_synthesis"
+              ]
+            },
+            "budget": {
+              "type": "object",
+              "properties": {
+                "model_requests": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 20
+                },
+                "tool_calls": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 50
+                },
+                "supplement_rounds": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 3
+                },
+                "active_seconds": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 1800
+                },
+                "max_input_tokens": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 24576
+                },
+                "max_output_tokens": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 4096
+                },
+                "graph_steps": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 40
+                }
+              },
+              "required": [
+                "model_requests",
+                "tool_calls",
+                "supplement_rounds",
+                "active_seconds",
+                "max_input_tokens",
+                "max_output_tokens",
+                "graph_steps"
+              ],
+              "additionalProperties": false
+            },
+            "fallback": {
+              "type": "string",
+              "enum": [
+                "legacy_relation_pipeline"
+              ]
+            }
+          },
+          "required": [
+            "enabled",
+            "model_purpose",
+            "budget",
+            "fallback"
+          ],
+          "additionalProperties": false
+        },
+        "repair": {
+          "type": "object",
+          "properties": {
+            "enabled": {
+              "type": "boolean"
+            },
+            "model_purpose": {
+              "type": "string",
+              "enum": [
+                "enterprise",
+                "search",
+                "review",
+                "wiki_relations",
+                "wiki_synthesis"
+              ]
+            },
+            "budget": {
+              "type": "object",
+              "properties": {
+                "model_requests": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 20
+                },
+                "tool_calls": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 50
+                },
+                "supplement_rounds": {
+                  "type": "integer",
+                  "minimum": 0,
+                  "maximum": 3
+                },
+                "active_seconds": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 1800
+                },
+                "max_input_tokens": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 24576
+                },
+                "max_output_tokens": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 4096
+                },
+                "graph_steps": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "maximum": 40
+                }
+              },
+              "required": [
+                "model_requests",
+                "tool_calls",
+                "supplement_rounds",
+                "active_seconds",
+                "max_input_tokens",
+                "max_output_tokens",
+                "graph_steps"
+              ],
+              "additionalProperties": false
+            },
+            "fallback": {
+              "type": "string",
+              "enum": [
+                "legacy_review_pipeline"
+              ]
+            }
+          },
+          "required": [
+            "enabled",
+            "model_purpose",
+            "budget",
+            "fallback"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "enterprise",
+        "matching",
+        "wiki",
+        "repair"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "schema_version",
+    "release_version",
+    "enabled",
+    "pilot_organization_ids",
+    "shared_model_concurrency",
+    "await_input_days",
+    "workflows"
+  ],
+  "additionalProperties": false
+}

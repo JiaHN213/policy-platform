@@ -26,6 +26,22 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/account": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["v1_account_retrieve"];
+    put?: never;
+    post?: never;
+    delete: operations["v1_account_destroy"];
+    options?: never;
+    head?: never;
+    patch: operations["v1_account_partial_update"];
+    trace?: never;
+  };
   "/api/v1/admin/ai-models": {
     parameters: {
       query?: never;
@@ -56,6 +72,22 @@ export interface paths {
     options?: never;
     head?: never;
     patch: operations["v1_admin_ai_models_partial_update"];
+    trace?: never;
+  };
+  "/api/v1/admin/ai-usage": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["v1_admin_ai_usage_retrieve"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
     trace?: never;
   };
   "/api/v1/admin/config/documents": {
@@ -298,6 +330,38 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/admin/enterprise-research-settings": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["v1_admin_enterprise_research_settings_retrieve"];
+    put?: never;
+    post: operations["v1_admin_enterprise_research_settings_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch: operations["v1_admin_enterprise_research_settings_partial_update"];
+    trace?: never;
+  };
+  "/api/v1/admin/enterprise-settings/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["v1_admin_enterprise_settings_retrieve"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch: operations["v1_admin_enterprise_settings_partial_update"];
+    trace?: never;
+  };
   "/api/v1/admin/knowledge/builds": {
     parameters: {
       query?: never;
@@ -474,6 +538,22 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/admin/matching-observations": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["v1_admin_matching_observations_retrieve"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/admin/opportunities": {
     parameters: {
       query?: never;
@@ -536,6 +616,22 @@ export interface paths {
     options?: never;
     head?: never;
     patch: operations["v1_admin_opportunity_batches_partial_update"];
+    trace?: never;
+  };
+  "/api/v1/admin/pipeline-status": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["v1_admin_pipeline_status_retrieve"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
     trace?: never;
   };
   "/api/v1/admin/policies": {
@@ -1114,6 +1210,38 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/admin/recommendation-settings": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["v1_admin_recommendation_settings_retrieve"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch: operations["v1_admin_recommendation_settings_partial_update"];
+    trace?: never;
+  };
+  "/api/v1/admin/recommendation-statistics": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["v1_admin_recommendation_statistics_retrieve"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/admin/relation-review-candidates": {
     parameters: {
       query?: never;
@@ -1176,6 +1304,166 @@ export interface paths {
     options?: never;
     head?: never;
     patch?: never;
+    trace?: never;
+  };
+  "/api/v1/admin/relation-review-candidates/{id}/repair": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["v1_admin_relation_review_candidates_repair_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/admin/relation-review-candidates/{id}/stop-repair": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["v1_admin_relation_review_candidates_stop_repair_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/admin/relation-review-candidates/repair-batch": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["v1_admin_relation_review_candidates_repair_batch_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/admin/relation-review-candidates/repair-stats": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["v1_admin_relation_review_candidates_repair_stats_retrieve"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/admin/review-recoveries": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["v1_admin_review_recoveries_list"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/admin/review-recoveries/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["v1_admin_review_recoveries_retrieve"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/admin/review-recoveries/{id}/resume": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["v1_admin_review_recoveries_resume_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/admin/review-recoveries/{id}/stop": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["v1_admin_review_recoveries_stop_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/admin/review-recoveries/enqueue": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["v1_admin_review_recoveries_enqueue_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/admin/review-recoveries/settings": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["v1_admin_review_recoveries_settings_retrieve"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch: operations["v1_admin_review_recoveries_settings_partial_update"];
     trace?: never;
   };
   "/api/v1/admin/search-index": {
@@ -1274,6 +1562,102 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/admin/task-monitor": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["v1_admin_task_monitor_retrieve"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/admin/task-monitor/dashboard": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["v1_admin_task_monitor_dashboard_retrieve"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/admin/user-settings/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["v1_admin_user_settings_retrieve"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch: operations["v1_admin_user_settings_partial_update"];
+    trace?: never;
+  };
+  "/api/v1/admin/users": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["v1_admin_users_list"];
+    put?: never;
+    post: operations["v1_admin_users_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/admin/users/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["v1_admin_users_retrieve"];
+    put?: never;
+    post?: never;
+    delete: operations["v1_admin_users_destroy"];
+    options?: never;
+    head?: never;
+    patch: operations["v1_admin_users_partial_update"];
+    trace?: never;
+  };
+  "/api/v1/admin/worker-status": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["v1_admin_worker_status_retrieve"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/auth/csrf": {
     parameters: {
       query?: never;
@@ -1338,6 +1722,326 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/enterprise-projects": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["v1_enterprise_projects_list"];
+    put?: never;
+    post: operations["v1_enterprise_projects_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/enterprise-projects/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["v1_enterprise_projects_retrieve"];
+    put?: never;
+    post?: never;
+    delete: operations["v1_enterprise_projects_destroy"];
+    options?: never;
+    head?: never;
+    patch: operations["v1_enterprise_projects_partial_update"];
+    trace?: never;
+  };
+  "/api/v1/enterprise-projects/{id}/follow-subscriptions": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["v1_enterprise_projects_follow_subscriptions_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/enterprise-research": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["v1_enterprise_research_list"];
+    put?: never;
+    post: operations["v1_enterprise_research_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/enterprise-research/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["v1_enterprise_research_retrieve"];
+    put?: never;
+    post?: never;
+    delete: operations["v1_enterprise_research_destroy"];
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/enterprise-research/{id}/regenerate": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["v1_enterprise_research_regenerate_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/enterprise-research/{id}/resume": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["v1_enterprise_research_resume_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/enterprise-research/{id}/saved-result": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["v1_enterprise_research_saved_result_retrieve"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/enterprise-research/{id}/stop": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["v1_enterprise_research_stop_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/enterprise-research/{id}/task": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["v1_enterprise_research_task_retrieve"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/enterprise-research/dashboard": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["v1_enterprise_research_dashboard_retrieve"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/enterprise-research/saved-results": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["v1_enterprise_research_saved_results_retrieve"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/enterprise-research/tasks": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["v1_enterprise_research_tasks_retrieve"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/enterprises": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["v1_enterprises_list"];
+    put?: never;
+    post: operations["v1_enterprises_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/enterprises/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["v1_enterprises_retrieve"];
+    put?: never;
+    post?: never;
+    delete: operations["v1_enterprises_destroy"];
+    options?: never;
+    head?: never;
+    patch: operations["v1_enterprises_partial_update"];
+    trace?: never;
+  };
+  "/api/v1/enterprises/{id}/home": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["v1_enterprises_home_retrieve"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/enterprises/{id}/matches": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["v1_enterprises_matches_retrieve"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/enterprises/{id}/matching-workflow": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["v1_enterprises_matching_workflow_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/enterprises/{id}/subscription-plan": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["v1_enterprises_subscription_plan_retrieve"];
+    put?: never;
+    post: operations["v1_enterprises_subscription_plan_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/enterprises/options": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["v1_enterprises_options_retrieve"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/health": {
     parameters: {
       query?: never;
@@ -1386,6 +2090,70 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/matching-studies": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["v1_matching_studies_list"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/matching-studies/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["v1_matching_studies_retrieve"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/matching-studies/{id}/label/{case_id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["v1_matching_studies_label_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/matching-studies/sample": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["v1_matching_studies_sample_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/me": {
     parameters: {
       query?: never;
@@ -1428,7 +2196,7 @@ export interface paths {
     get: operations["v1_notifications_retrieve"];
     put?: never;
     post?: never;
-    delete?: never;
+    delete: operations["v1_notifications_destroy"];
     options?: never;
     head?: never;
     patch?: never;
@@ -1448,6 +2216,22 @@ export interface paths {
     options?: never;
     head?: never;
     patch?: never;
+    trace?: never;
+  };
+  "/api/v1/notifications/preferences": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["v1_notifications_preferences_retrieve"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch: operations["v1_notifications_preferences_partial_update"];
     trace?: never;
   };
   "/api/v1/notifications/read-all": {
@@ -1562,6 +2346,86 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/policy-watches": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["v1_policy_watches_list"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/policy-watches/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["v1_policy_watches_retrieve"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/policy-watches/configure": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["v1_policy_watches_configure_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/policy-watches/feedback/{recommendation_id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["v1_policy_watches_feedback_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/policy-watches/results": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["v1_policy_watches_results_retrieve"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/search": {
     parameters: {
       query?: never;
@@ -1572,6 +2436,38 @@ export interface paths {
     get?: never;
     put?: never;
     post: operations["v1_search_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/search/summary": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["v1_search_summary_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/source-coverage": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["v1_source_coverage_retrieve"];
+    put?: never;
+    post?: never;
     delete?: never;
     options?: never;
     head?: never;
@@ -1608,6 +2504,38 @@ export interface paths {
     options?: never;
     head?: never;
     patch: operations["v1_subscriptions_partial_update"];
+    trace?: never;
+  };
+  "/api/v1/subscriptions/{id}/history": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["v1_subscriptions_history_retrieve"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/subscriptions/{id}/restore": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post: operations["v1_subscriptions_restore_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
     trace?: never;
   };
   "/api/v1/subscriptions/preview": {
@@ -1656,6 +2584,14 @@ export interface components {
       base_url: string;
       model: string;
       concurrency?: number;
+      thinking?: boolean;
+      context_tokens?: number | null;
+      max_output_tokens?: number | null;
+      /** Format: decimal */
+      input_price?: string | null;
+      /** Format: decimal */
+      output_price?: string | null;
+      currency?: components["schemas"]["CurrencyEnum"];
       readonly has_api_key: boolean;
       readonly configured: boolean;
       /** Format: date-time */
@@ -1712,6 +2648,22 @@ export interface components {
     };
     /** @enum {unknown} */
     BlankEnum: "";
+    Case: {
+      /** Format: uuid */
+      readonly id: string;
+      /** Format: uuid */
+      readonly policy: string | null;
+      readonly snapshot: unknown;
+      readonly predicted: boolean;
+      readonly prediction: unknown;
+      readonly verdict: string;
+      readonly evidence_supported: boolean | null;
+      readonly notes: string;
+      readonly quote: string;
+      readonly label_version: number;
+      /** Format: date-time */
+      readonly labeled_at: string | null;
+    };
     /**
      * @description * `fiscal` - 财政资金支持
      *     * `tax` - 税费优惠
@@ -1760,6 +2712,12 @@ export interface components {
       created: boolean;
       sample: components["schemas"]["Sample"];
     };
+    /**
+     * @description * `CNY` - 人民币
+     *     * `USD` - 美元
+     * @enum {string}
+     */
+    CurrencyEnum: "CNY" | "USD";
     DecisionRequest: {
       version: number;
     };
@@ -1860,6 +2818,22 @@ export interface components {
       policy: string;
       version: number;
     };
+    EnterpriseResearchRun: {
+      /** Format: uuid */
+      readonly id: string;
+      readonly kind: string;
+      /** Format: uuid */
+      readonly profile: string | null;
+      readonly inputs: unknown;
+      readonly status: string;
+      readonly stage: string;
+      readonly result: unknown;
+      readonly error: string;
+      /** Format: date-time */
+      readonly created_at: string;
+      /** Format: date-time */
+      readonly finished_at: string | null;
+    };
     /**
      * @description * `opportunity` - 政策机会识别
      *     * `relation` - Wiki政策关系
@@ -1870,10 +2844,24 @@ export interface components {
     /**
      * @description * `pending` - 待人工标注
      *     * `labeled` - 已人工标注
+     *     * `needs_help` - 待协助判断
      *     * `retired` - 已停用
      * @enum {string}
      */
-    EvaluationSampleStatusEnum: "pending" | "labeled" | "retired";
+    EvaluationSampleStatusEnum:
+      "pending" | "labeled" | "needs_help" | "retired";
+    /**
+     * @description * `useful` - useful
+     *     * `irrelevant` - irrelevant
+     *     * `missing_information` - missing_information
+     * @enum {string}
+     */
+    FeedbackEnum: "useful" | "irrelevant" | "missing_information";
+    FeedbackInputRequest: {
+      feedback: components["schemas"]["FeedbackEnum"];
+      /** @default  */
+      feedback_note: string;
+    };
     FieldUnlockRequest: {
       version: number;
       field_name: string;
@@ -1900,6 +2888,13 @@ export interface components {
      * @enum {string}
      */
     IndustryEnum: "water_environment";
+    /**
+     * @description * `1` - 1
+     *     * `6` - 6
+     *     * `24` - 24
+     * @enum {integer}
+     */
+    IntervalHoursEnum: 1 | 6 | 24;
     KnowledgeBuild: {
       /** Format: uuid */
       readonly id: string;
@@ -1964,46 +2959,88 @@ export interface components {
      * @enum {string}
      */
     KnowledgePageStatusEnum: "published" | "stale" | "archived";
+    LabelInputRequest: {
+      verdict: components["schemas"]["VerdictEnum"];
+      evidence_supported?: boolean | null;
+      notes: string;
+      /** @default  */
+      quote: string;
+      label_version: number;
+    };
     LabelRequestRequest: {
       prediction_hash: string;
       label_version: number;
       notes: string;
       opportunity_level?: components["schemas"]["OpportunityLevelEnum"];
       verdict?: boolean;
-      evidence_supported: boolean;
+      /** @default false */
+      unsure: boolean;
+      evidence_supported?: boolean | null;
       /** Format: uuid */
       evidence_policy_id?: string | null;
       evidence_quote?: string;
     };
+    /**
+     * @description * `` -
+     *     * `high` - high
+     *     * `medium` - medium
+     *     * `low` - low
+     *     * `insufficient` - insufficient
+     * @enum {string}
+     */
+    LevelEnum: "high" | "medium" | "low" | "insufficient";
     LoginRequest: {
       username: string;
       password: string;
     };
+    MaintenanceRerunInputRequest: {
+      /** @default false */
+      maintenance: boolean;
+      maintenance_reason?: string;
+    };
     MarkAllReadResult: {
       updated: number;
     };
+    /**
+     * @description * `policies` - policies
+     *     * `opportunities` - opportunities
+     * @enum {string}
+     */
+    MatchingViewEnum: "policies" | "opportunities";
     MetadataDecisionRequest: {
       version: number;
       validity_status: components["schemas"]["ValidityStatusEnum"];
       validity_evidence: string;
     };
-    /**
-     * @description * `keyword` - keyword
-     *     * `natural` - natural
-     * @enum {string}
-     */
-    ModeEnum: "keyword" | "natural";
     Notification: {
       /** Format: uuid */
       readonly id: string;
       title: string;
       /** Format: uuid */
-      readonly policy_id: string;
+      readonly policy_id: string | null;
       reasons?: unknown;
       /** Format: date-time */
       read_at?: string | null;
       /** Format: date-time */
       readonly created_at: string;
+      kind?: string;
+      readonly items: {
+        [key: string]: unknown;
+      }[];
+    };
+    NotificationPreference: {
+      update_mode?: components["schemas"]["UpdateModeEnum"];
+      digest_hour: number;
+      deadline_enabled?: boolean;
+      deadline_days: number[];
+    };
+    Observation: {
+      current: {
+        [key: string]: unknown;
+      };
+      history: {
+        [key: string]: unknown;
+      }[];
     };
     Opportunity: {
       /** Format: uuid */
@@ -2291,6 +3328,21 @@ export interface components {
       previous?: string | null;
       results: components["schemas"]["Policy"][];
     };
+    PaginatedProjectList: {
+      /** @example 123 */
+      count: number;
+      /**
+       * Format: uri
+       * @example http://api.example.org/accounts/?page=4
+       */
+      next?: string | null;
+      /**
+       * Format: uri
+       * @example http://api.example.org/accounts/?page=2
+       */
+      previous?: string | null;
+      results: components["schemas"]["Project"][];
+    };
     PaginatedPublicationConsumptionList: {
       /** @example 123 */
       count: number;
@@ -2305,6 +3357,21 @@ export interface components {
        */
       previous?: string | null;
       results: components["schemas"]["PublicationConsumption"][];
+    };
+    PaginatedRecoveryList: {
+      /** @example 123 */
+      count: number;
+      /**
+       * Format: uri
+       * @example http://api.example.org/accounts/?page=4
+       */
+      next?: string | null;
+      /**
+       * Format: uri
+       * @example http://api.example.org/accounts/?page=2
+       */
+      previous?: string | null;
+      results: components["schemas"]["Recovery"][];
     };
     PaginatedRelationList: {
       /** @example 123 */
@@ -2396,6 +3463,21 @@ export interface components {
       previous?: string | null;
       results: components["schemas"]["SourceRun"][];
     };
+    PaginatedStudyList: {
+      /** @example 123 */
+      count: number;
+      /**
+       * Format: uri
+       * @example http://api.example.org/accounts/?page=4
+       */
+      next?: string | null;
+      /**
+       * Format: uri
+       * @example http://api.example.org/accounts/?page=2
+       */
+      previous?: string | null;
+      results: components["schemas"]["Study"][];
+    };
     PaginatedSubscriptionList: {
       /** @example 123 */
       count: number;
@@ -2441,12 +3523,50 @@ export interface components {
       previous?: string | null;
       results: components["schemas"]["SystemConfigRelease"][];
     };
+    PaginatedUserOutputList: {
+      /** @example 123 */
+      count: number;
+      /**
+       * Format: uri
+       * @example http://api.example.org/accounts/?page=4
+       */
+      next?: string | null;
+      /**
+       * Format: uri
+       * @example http://api.example.org/accounts/?page=2
+       */
+      previous?: string | null;
+      results: components["schemas"]["UserOutput"][];
+    };
+    PaginatedWatchList: {
+      /** @example 123 */
+      count: number;
+      /**
+       * Format: uri
+       * @example http://api.example.org/accounts/?page=4
+       */
+      next?: string | null;
+      /**
+       * Format: uri
+       * @example http://api.example.org/accounts/?page=2
+       */
+      previous?: string | null;
+      results: components["schemas"]["Watch"][];
+    };
     PatchedAIModelProfileRequest: {
       enabled?: boolean;
       /** Format: uri */
       base_url?: string;
       model?: string;
       concurrency?: number;
+      thinking?: boolean;
+      context_tokens?: number | null;
+      max_output_tokens?: number | null;
+      /** Format: decimal */
+      input_price?: string | null;
+      /** Format: decimal */
+      output_price?: string | null;
+      currency?: components["schemas"]["CurrencyEnum"];
       api_key?: string;
     };
     PatchedBatchRequest: {
@@ -2463,6 +3583,12 @@ export interface components {
       evidence_policy?: string;
       evidence_version?: number;
       evidence_quote?: string;
+    };
+    PatchedNotificationPreferenceRequest: {
+      update_mode?: components["schemas"]["UpdateModeEnum"];
+      digest_hour?: number;
+      deadline_enabled?: boolean;
+      deadline_days?: number[];
     };
     PatchedOpportunityRequest: {
       /** Format: uuid */
@@ -2502,6 +3628,54 @@ export interface components {
       evidence_version?: number;
       evidence_quote?: string;
     };
+    PatchedPrivateAccountInputRequest: {
+      first_name?: string;
+      last_name?: string;
+      email?: string;
+      password?: string;
+      current_password?: string;
+      permission_version?: number;
+    };
+    PatchedProfileInputRequest: {
+      /** @default false */
+      start_matching: boolean;
+      name?: string;
+      data?: unknown;
+      revision?: number;
+      /** Format: uuid */
+      run_id?: string;
+      /** @default 0 */
+      candidate_index: number;
+      refresh_days?: components["schemas"]["RefreshDaysEnum"];
+      /** @default false */
+      auto_subscribe: boolean;
+      follow_subscriptions?: boolean;
+    };
+    PatchedProjectRequest: {
+      /** Format: uuid */
+      profile?: string;
+      name?: string;
+      description?: string;
+      data?: unknown;
+      revision?: number;
+    };
+    PatchedRecommendationConfigRequest: {
+      enabled?: boolean;
+      all_organizations?: boolean;
+      organizations?: unknown;
+      batch_size?: number;
+      daily_batches?: number;
+      daily_model_calls?: number;
+      model_calls_per_run?: number;
+      aggregation_minutes?: number;
+      retention_days?: number;
+    };
+    PatchedRecoverySettingsRequest: {
+      recovery_enabled?: boolean;
+      recovery_daily_limit?: number;
+      recovery_attempt_limit?: number;
+      recovery_cooldown_minutes?: number;
+    };
     PatchedRelationRequest: {
       /** Format: uuid */
       from_policy?: string;
@@ -2513,6 +3687,36 @@ export interface components {
       evidence_policy?: string;
       evidence_version?: number;
       evidence_quote?: string;
+    };
+    PatchedResearchSettingsRequest: {
+      enabled?: boolean;
+      provider?: components["schemas"]["ProviderEnum"];
+      searxng_url?: string;
+      api_key?: string;
+      /** @default false */
+      clear_api_key: boolean;
+      max_sources?: number;
+      daily_limit?: number;
+      agent_enabled?: boolean;
+      agent_all_organizations?: boolean;
+      agent_organizations?: string[];
+      agent_max_reads?: number;
+      agent_max_calls?: number;
+      agent_max_seconds?: number;
+      workflow_max_policies?: number;
+      workflow_max_calls?: number;
+      workflow_max_seconds?: number;
+      workflow_gap_fill?: boolean;
+      workflow_concurrency?: number;
+      workflow_cache_hours?: number;
+      workflow_retry_limit?: number;
+      workflow_daily_calls?: number;
+    };
+    PatchedScopedInputRequest: {
+      revision?: number;
+      overrides?: {
+        [key: string]: unknown;
+      };
     };
     PatchedSourceRequest: {
       name?: string;
@@ -2527,6 +3731,8 @@ export interface components {
       notes?: string;
     };
     PatchedSubscriptionRequest: {
+      revision?: number;
+      interest_regions?: string[];
       name?: string;
       keywords?: string;
       topic?:
@@ -2556,6 +3762,16 @@ export interface components {
       release?: string;
       key?: string;
       content?: unknown;
+    };
+    PatchedUserInputRequest: {
+      username?: string;
+      first_name?: string;
+      last_name?: string;
+      email?: string;
+      password?: string;
+      role?: components["schemas"]["UserInputRoleEnum"];
+      is_active?: boolean;
+      permission_version?: number;
     };
     Policy: {
       /** Format: uuid */
@@ -2644,6 +3860,9 @@ export interface components {
       /** Format: date-time */
       published_at?: string | null;
       is_demo?: boolean;
+      readonly evidence_readiness: {
+        [key: string]: unknown;
+      };
       body: string;
       readonly sources: components["schemas"]["PolicySource"][];
       readonly attachments: components["schemas"]["Attachment"][];
@@ -2680,7 +3899,7 @@ export interface components {
       publication_date?: string | null;
       source_grade?: components["schemas"]["SourceGradeEnum"];
       readonly source_grade_label: string;
-      role?: components["schemas"]["RoleEnum"];
+      role?: components["schemas"]["PolicySourceRoleEnum"];
       readonly role_label: string;
       is_primary?: boolean;
       match_method?: string;
@@ -2688,12 +3907,104 @@ export interface components {
       match_confidence?: string;
     };
     /**
+     * @description * `primary` - 主来源
+     *     * `original` - 官方原始
+     *     * `repost` - 官方转载
+     *     * `additional` - 其他来源
+     * @enum {string}
+     */
+    PolicySourceRoleEnum: "primary" | "original" | "repost" | "additional";
+    /**
      * @description * `candidate` - 待审核
      *     * `published` - 已发布
      *     * `withdrawn` - 已撤下
      * @enum {string}
      */
     PolicyStatusEnum: "candidate" | "published" | "withdrawn";
+    Profile: {
+      /** Format: uuid */
+      readonly id: string;
+      readonly name: string;
+      readonly data: unknown;
+      readonly evidence: unknown;
+      readonly revision: number;
+      /** Format: date-time */
+      readonly confirmed_at: string | null;
+      /** Format: date-time */
+      readonly updated_at: string;
+      readonly can_edit: boolean;
+      readonly refresh_days: number;
+      /** Format: date-time */
+      readonly next_research_at: string | null;
+      readonly research_method: string;
+      readonly subscription_result:
+        components["schemas"]["ProfileSubscriptionResult"] | null;
+      readonly follow_subscriptions: boolean;
+      readonly follow_status: string;
+      readonly matching_task: unknown;
+    };
+    ProfileInputRequest: {
+      /** @default false */
+      start_matching: boolean;
+      name: string;
+      data?: unknown;
+      revision?: number;
+      /** Format: uuid */
+      run_id?: string;
+      /** @default 0 */
+      candidate_index: number;
+      refresh_days?: components["schemas"]["RefreshDaysEnum"];
+      /** @default false */
+      auto_subscribe: boolean;
+      follow_subscriptions?: boolean;
+    };
+    ProfileSubscriptionResult: {
+      created_count: number;
+      existing_count: number;
+      status: components["schemas"]["ProfileSubscriptionResultStatusEnum"];
+      message: string;
+    };
+    /**
+     * @description * `created` - created
+     *     * `unchanged` - unchanged
+     *     * `unavailable` - unavailable
+     * @enum {string}
+     */
+    ProfileSubscriptionResultStatusEnum:
+      "created" | "unchanged" | "unavailable";
+    Project: {
+      /** Format: uuid */
+      readonly id: string;
+      /** Format: uuid */
+      profile: string;
+      name: string;
+      description?: string;
+      data?: unknown;
+      revision?: number;
+      /** Format: date-time */
+      readonly updated_at: string;
+      readonly follow_subscriptions: boolean;
+      readonly follow_status: string;
+    };
+    ProjectFollowInputRequest: {
+      enabled: boolean;
+      revision: number;
+    };
+    ProjectRequest: {
+      /** Format: uuid */
+      profile: string;
+      name: string;
+      description?: string;
+      data?: unknown;
+      revision?: number;
+    };
+    /**
+     * @description * `tavily` - Tavily
+     *     * `brave` - Brave Search
+     *     * `searxng` - SearXNG（本地部署）
+     * @enum {string}
+     */
+    ProviderEnum: "tavily" | "brave" | "searxng";
     PublicationConsumption: {
       /** Format: uuid */
       readonly id: string;
@@ -2759,12 +4070,79 @@ export interface components {
       "policy" | "opportunity" | "result" | "interpretation" | "draft";
     /**
      * @description * `review` - 政策自动审核与摘要
-     *     * `search` - 自然语言检索与归纳
+     *     * `search` - 搜索意图解析
+     *     * `search_summary` - 搜索结果归纳
      *     * `wiki_synthesis` - Wiki 知识页综合
      *     * `wiki_relations` - 政策关系发现
+     *     * `enterprise` - 企业与项目资料提取
+     *     * `enterprise_match` - 企业政策匹配解读
      * @enum {string}
      */
-    PurposeEnum: "review" | "search" | "wiki_synthesis" | "wiki_relations";
+    PurposeEnum:
+      | "review"
+      | "search"
+      | "search_summary"
+      | "wiki_synthesis"
+      | "wiki_relations"
+      | "enterprise"
+      | "enterprise_match";
+    RecommendationConfig: {
+      enabled?: boolean;
+      all_organizations?: boolean;
+      organizations?: unknown;
+      readonly organization_options: {
+        [key: string]: unknown;
+      }[];
+      batch_size: number;
+      daily_batches: number;
+      daily_model_calls: number;
+      model_calls_per_run: number;
+      aggregation_minutes: number;
+      retention_days: number;
+    };
+    Recovery: {
+      /** Format: uuid */
+      readonly id: string;
+      /** Format: uuid */
+      readonly policy: string;
+      readonly policy_title: string;
+      /** Format: uuid */
+      readonly source_job: string;
+      readonly policy_version: number;
+      readonly status: string;
+      readonly category: string;
+      readonly stage: string;
+      readonly message: string;
+      readonly attempts: number;
+      /** Format: date-time */
+      readonly retry_at: string | null;
+      readonly automatic: boolean;
+      readonly details: {
+        [key: string]: unknown;
+      };
+      /** Format: date-time */
+      readonly created_at: string;
+      /** Format: date-time */
+      readonly updated_at: string;
+    };
+    RecoveryRequestRequest: {
+      /** Format: uuid */
+      enrichment: string;
+    };
+    RecoverySettings: {
+      recovery_enabled?: boolean;
+      recovery_daily_limit: number;
+      recovery_attempt_limit: number;
+      recovery_cooldown_minutes: number;
+    };
+    /**
+     * @description * `0` - 0
+     *     * `7` - 7
+     *     * `30` - 30
+     *     * `90` - 90
+     * @enum {integer}
+     */
+    RefreshDaysEnum: 0 | 7 | 30 | 90;
     RegisterRequest: {
       /**
        * 用户名
@@ -2832,6 +4210,49 @@ export interface components {
       | "allocates"
       | "approves"
       | "accepts";
+    RelationRepair: {
+      /** Format: uuid */
+      id: string;
+      status: components["schemas"]["RelationRepairStatusEnum"];
+      stage: string;
+      outcome: string;
+      attempts: number;
+      message: string;
+      result: {
+        [key: string]: unknown;
+      };
+      /** Format: date-time */
+      updated_at: string;
+      can_retry: boolean;
+    };
+    RelationRepairBatch: {
+      queued: number;
+      cached: number;
+      skipped: string[];
+    };
+    RelationRepairMessage: {
+      message: string;
+    };
+    RelationRepairStats: {
+      queued?: number;
+      running?: number;
+      valid_relation?: number;
+      no_relation?: number;
+      needs_review?: number;
+      failed?: number;
+      cancelled?: number;
+      new_relations?: number;
+    };
+    /**
+     * @description * `queued` - queued
+     *     * `running` - running
+     *     * `succeeded` - succeeded
+     *     * `failed` - failed
+     *     * `cancelled` - cancelled
+     * @enum {string}
+     */
+    RelationRepairStatusEnum:
+      "queued" | "running" | "succeeded" | "failed" | "cancelled";
     RelationRequest: {
       /** Format: uuid */
       from_policy: string;
@@ -2875,6 +4296,7 @@ export interface components {
       readonly relation: string | null;
       /** Format: date-time */
       readonly created_at: string;
+      readonly repair: components["schemas"]["RelationRepair"] | null;
     };
     /**
      * @description * `pending` - 待人工复审
@@ -2886,13 +4308,66 @@ export interface components {
     RelationReviewCandidateStatusEnum:
       "pending" | "approved" | "rejected" | "superseded";
     /**
-     * @description * `primary` - 主来源
-     *     * `original` - 官方原始
-     *     * `repost` - 官方转载
-     *     * `additional` - 其他来源
+     * @description * `company` - company
+     *     * `project` - project
+     *     * `explanation` - explanation
      * @enum {string}
      */
-    RoleEnum: "primary" | "original" | "repost" | "additional";
+    ResearchInputKindEnum: "company" | "project" | "explanation";
+    ResearchInputRequest: {
+      /** @default company */
+      kind: components["schemas"]["ResearchInputKindEnum"];
+      name?: string;
+      city?: string;
+      credit_code?: string;
+      website?: string;
+      description?: string;
+      /** Format: uuid */
+      profile_id?: string;
+      /** Format: uuid */
+      project_id?: string;
+      /** Format: uuid */
+      policy_id?: string;
+      /** @default policies */
+      matching_view: components["schemas"]["MatchingViewEnum"];
+      /** @default search */
+      source_mode: components["schemas"]["SourceModeEnum"];
+      introduction?: string;
+      /** Format: binary */
+      file?: string;
+      /** Format: uuid */
+      retry_run_id?: string;
+    };
+    ResearchSettings: {
+      enabled?: boolean;
+      provider?: components["schemas"]["ProviderEnum"];
+      searxng_url?: string;
+      readonly has_api_key: boolean;
+      max_sources: number;
+      daily_limit: number;
+      agent_enabled?: boolean;
+      agent_all_organizations?: boolean;
+      agent_organizations?: string[];
+      agent_max_reads?: number;
+      agent_max_calls?: number;
+      agent_max_seconds?: number;
+      readonly organization_options: {
+        [key: string]: unknown;
+      }[];
+      workflow_max_policies?: number;
+      workflow_max_calls?: number;
+      workflow_max_seconds?: number;
+      workflow_gap_fill?: boolean;
+      workflow_concurrency?: number;
+      workflow_cache_hours?: number;
+      workflow_retry_limit?: number;
+      workflow_daily_calls?: number;
+    };
+    RestoreSubscriptionChangeRequest: {
+      /** Format: uuid */
+      change_id: string;
+      revision: number;
+    };
     Run: {
       /** Format: uuid */
       readonly id: string;
@@ -2973,11 +4448,39 @@ export interface components {
      * @enum {string}
      */
     ScopeEnum: "all" | "title" | "document_number" | "issuer";
+    /**
+     * @description * `connection` - connection
+     *     * `search` - search
+     * @enum {string}
+     */
+    SearchConnectionInputModeEnum: "connection" | "search";
+    SearchConnectionInputRequest: {
+      mode: components["schemas"]["SearchConnectionInputModeEnum"];
+      /** @default 南宁 水务 企业 */
+      query: string;
+    };
+    SearchConnectionOutput: {
+      connected: boolean;
+      message: string;
+      result_count?: number;
+      unavailable_engines?: number;
+      items?: {
+        [key: string]: unknown;
+      }[];
+    };
     SearchIndexActionRequest: {
       /** @default false */
       rebuild: boolean;
     };
+    /**
+     * @description * `keyword` - keyword
+     *     * `natural` - natural
+     * @enum {string}
+     */
+    SearchRequestModeEnum: "keyword" | "natural";
     SearchRequestRequest: {
+      /** @default false */
+      defer_summary: boolean;
       /** @default all */
       scope: components["schemas"]["ScopeEnum"];
       /** @default  */
@@ -2995,9 +4498,9 @@ export interface components {
       /** @default  */
       q: string;
       /** @default keyword */
-      mode: components["schemas"]["ModeEnum"];
+      mode: components["schemas"]["SearchRequestModeEnum"];
       /** @default policy */
-      view: components["schemas"]["ViewEnum"];
+      view: components["schemas"]["SearchRequestViewEnum"];
       /** @default comprehensive */
       sort: components["schemas"]["SortEnum"];
       /** @default 1 */
@@ -3035,6 +4538,23 @@ export interface components {
       opportunity_status:
         | components["schemas"]["OpportunityStatusEnum"]
         | components["schemas"]["BlankEnum"];
+    };
+    /**
+     * @description * `policy` - policy
+     *     * `opportunity` - opportunity
+     * @enum {string}
+     */
+    SearchRequestViewEnum: "policy" | "opportunity";
+    SearchSummaryRequestRequest: {
+      token: string;
+    };
+    SeedRequestRequest: {
+      /** @default 12 */
+      limit: number;
+      kind?: components["schemas"]["EvaluationSampleKindEnum"];
+    };
+    SeedResponse: {
+      created: number;
     };
     /**
      * @description * `comprehensive` - comprehensive
@@ -3077,6 +4597,14 @@ export interface components {
      * @enum {string}
      */
     SourceGradeEnum: "unverified" | "L1" | "L2" | "L3" | "L4";
+    /**
+     * @description * `search` - search
+     *     * `website` - website
+     *     * `text` - text
+     *     * `file` - file
+     * @enum {string}
+     */
+    SourceModeEnum: "search" | "website" | "text" | "file";
     SourceRequest: {
       name: string;
       /** Format: uri */
@@ -3104,7 +4632,58 @@ export interface components {
       error_code?: string;
       error_message?: string;
     };
+    Study: {
+      /** Format: uuid */
+      readonly id: string;
+      /** Format: uuid */
+      readonly profile: string;
+      /** Format: uuid */
+      readonly project: string | null;
+      readonly view: string;
+      readonly snapshot: unknown;
+      readonly selection: unknown;
+      readonly metrics: {
+        [key: string]: unknown;
+      };
+      /** Format: date-time */
+      readonly created_at: string;
+    };
+    StudyDetail: {
+      /** Format: uuid */
+      readonly id: string;
+      /** Format: uuid */
+      readonly profile: string;
+      /** Format: uuid */
+      readonly project: string | null;
+      readonly view: string;
+      readonly snapshot: unknown;
+      readonly selection: unknown;
+      readonly metrics: {
+        [key: string]: unknown;
+      };
+      /** Format: date-time */
+      readonly created_at: string;
+      readonly cases: components["schemas"]["Case"][];
+    };
+    StudyInputRequest: {
+      /** Format: uuid */
+      profile: string;
+      /** Format: uuid */
+      project?: string | null;
+      /** @default opportunities */
+      view: components["schemas"]["MatchingViewEnum"];
+      /** @default 20 */
+      limit: number;
+    };
     Subscription: {
+      /** Format: uuid */
+      readonly source_profile: string | null;
+      /** Format: uuid */
+      readonly source_project: string | null;
+      readonly managed: boolean;
+      revision?: number;
+      interest_regions?: string[];
+      readonly system_paused: boolean;
       /** Format: uuid */
       readonly id: string;
       name: string;
@@ -3133,6 +4712,12 @@ export interface components {
       /** Format: date-time */
       readonly created_at: string;
     };
+    SubscriptionPlanInputRequest: {
+      /** Format: uuid */
+      project_id?: string | null;
+      revision?: number;
+      enabled?: boolean;
+    };
     SubscriptionPreviewResult: {
       count: number;
       items: {
@@ -3140,6 +4725,8 @@ export interface components {
       }[];
     };
     SubscriptionRequest: {
+      revision?: number;
+      interest_regions?: string[];
       name: string;
       keywords?: string;
       topic?:
@@ -3225,6 +4812,69 @@ export interface components {
      */
     TopicEnum: "水务" | "环保" | "人工智能＋";
     /**
+     * @description * `daily` - 每日汇总
+     *     * `instant` - 即时通知
+     * @enum {string}
+     */
+    UpdateModeEnum: "daily" | "instant";
+    UserInputRequest: {
+      username?: string;
+      first_name?: string;
+      last_name?: string;
+      email?: string;
+      password?: string;
+      role?: components["schemas"]["UserInputRoleEnum"];
+      is_active?: boolean;
+      permission_version?: number;
+    };
+    /**
+     * @description * `customer` - customer
+     *     * `staff` - staff
+     *     * `admin` - admin
+     * @enum {string}
+     */
+    UserInputRoleEnum: "customer" | "staff" | "admin";
+    UserOutput: {
+      readonly id: number;
+      /**
+       * 用户名
+       * @description 必填；长度为150个字符或以下；只能包含字母、数字、特殊字符“@”、“.”、“-”和“_”。
+       */
+      readonly username: string;
+      /** 名字 */
+      readonly first_name: string;
+      /** 姓氏 */
+      readonly last_name: string;
+      /**
+       * 电子邮件地址
+       * Format: email
+       */
+      readonly email: string;
+      /**
+       * 有效
+       * @description 指明用户是否被认为是活跃的。以反选代替删除帐号。
+       */
+      readonly is_active: boolean;
+      /**
+       * 超级用户状态
+       * @description 指明该用户缺省拥有所有权限。
+       */
+      readonly is_superuser: boolean;
+      readonly role: string;
+      /**
+       * 加入日期
+       * Format: date-time
+       */
+      readonly date_joined: string;
+      /**
+       * 上次登录
+       * Format: date-time
+       */
+      readonly last_login: string | null;
+      readonly permission_version: number;
+      readonly enterprise_count: number;
+    };
+    /**
      * @description * `consultation` - 征求意见
      *     * `not_effective` - 尚未生效
      *     * `effective` - 现行有效
@@ -3243,18 +4893,79 @@ export interface components {
       | "replaced"
       | "unverified";
     /**
+     * @description * `relevant` - relevant
+     *     * `irrelevant` - irrelevant
+     *     * `unsure` - unsure
+     * @enum {string}
+     */
+    VerdictEnum: "relevant" | "irrelevant" | "unsure";
+    /**
      * @description * `pending` - 待核验
      *     * `verified` - 已核验
      *     * `rejected` - 核验不通过
      * @enum {string}
      */
     VerificationStatusEnum: "pending" | "verified" | "rejected";
-    /**
-     * @description * `policy` - policy
-     *     * `opportunity` - opportunity
-     * @enum {string}
-     */
-    ViewEnum: "policy" | "opportunity";
+    Watch: {
+      /** Format: uuid */
+      readonly id: string;
+      /** Format: uuid */
+      readonly profile: string;
+      /** Format: uuid */
+      readonly project: string | null;
+      readonly enabled: boolean;
+      readonly view: string;
+      readonly interval_hours: number;
+      readonly ai_explanations: boolean;
+      readonly consent_version: number;
+      /** Format: date-time */
+      readonly consented_at: string | null;
+      /** Format: date-time */
+      readonly next_run_at: string | null;
+      /** Format: date-time */
+      readonly last_run_at: string | null;
+      readonly message: string;
+      readonly latest_run: {
+        [key: string]: unknown;
+      } | null;
+    };
+    WatchInputRequest: {
+      /** Format: uuid */
+      profile: string;
+      /** Format: uuid */
+      project?: string | null;
+      enabled: boolean;
+      /** @default opportunities */
+      view: components["schemas"]["MatchingViewEnum"];
+      /** @default 24 */
+      interval_hours: components["schemas"]["IntervalHoursEnum"];
+      /** @default false */
+      ai_explanations: boolean;
+    };
+    WorkerGroup: {
+      key: string;
+      label: string;
+      consumer_count: number;
+      shared: boolean;
+      state: string;
+      message: string;
+    };
+    WorkerStatus: {
+      /** Format: date-time */
+      checked_at: string;
+      items: components["schemas"]["WorkerGroup"][];
+      notice: string;
+    };
+    WorkflowInputRequest: {
+      /** Format: uuid */
+      project_id?: string;
+      /** @default opportunities */
+      view: components["schemas"]["MatchingViewEnum"];
+      filters?: unknown;
+      /** @default  */
+      level:
+        components["schemas"]["LevelEnum"] | components["schemas"]["BlankEnum"];
+    };
   };
   responses: never;
   parameters: never;
@@ -3396,6 +5107,68 @@ export interface operations {
       };
     };
   };
+  v1_account_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["UserOutput"];
+        };
+      };
+    };
+  };
+  v1_account_destroy: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description No response body */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  v1_account_partial_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        "application/json": components["schemas"]["PatchedPrivateAccountInputRequest"];
+        "application/x-www-form-urlencoded": components["schemas"]["PatchedPrivateAccountInputRequest"];
+        "multipart/form-data": components["schemas"]["PatchedPrivateAccountInputRequest"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["UserOutput"];
+        };
+      };
+    };
+  };
   v1_admin_ai_models_list: {
     parameters: {
       query?: {
@@ -3464,6 +5237,27 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["AIModelProfile"];
+        };
+      };
+    };
+  };
+  v1_admin_ai_usage_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            [key: string]: unknown;
+          };
         };
       };
     };
@@ -3926,6 +5720,127 @@ export interface operations {
       };
     };
   };
+  v1_admin_enterprise_research_settings_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ResearchSettings"];
+        };
+      };
+    };
+  };
+  v1_admin_enterprise_research_settings_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["SearchConnectionInputRequest"];
+        "application/x-www-form-urlencoded": components["schemas"]["SearchConnectionInputRequest"];
+        "multipart/form-data": components["schemas"]["SearchConnectionInputRequest"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["SearchConnectionOutput"];
+        };
+      };
+    };
+  };
+  v1_admin_enterprise_research_settings_partial_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        "application/json": components["schemas"]["PatchedResearchSettingsRequest"];
+        "application/x-www-form-urlencoded": components["schemas"]["PatchedResearchSettingsRequest"];
+        "multipart/form-data": components["schemas"]["PatchedResearchSettingsRequest"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ResearchSettings"];
+        };
+      };
+    };
+  };
+  v1_admin_enterprise_settings_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            [key: string]: unknown;
+          };
+        };
+      };
+    };
+  };
+  v1_admin_enterprise_settings_partial_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        "application/json": components["schemas"]["PatchedScopedInputRequest"];
+        "application/x-www-form-urlencoded": components["schemas"]["PatchedScopedInputRequest"];
+        "multipart/form-data": components["schemas"]["PatchedScopedInputRequest"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            [key: string]: unknown;
+          };
+        };
+      };
+    };
+  };
   v1_admin_knowledge_builds_list: {
     parameters: {
       query?: {
@@ -4163,6 +6078,25 @@ export interface operations {
       };
     };
   };
+  v1_admin_matching_observations_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Observation"];
+        };
+      };
+    };
+  };
   v1_admin_opportunities_list: {
     parameters: {
       query?: {
@@ -4353,6 +6287,30 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["Batch"];
+        };
+      };
+    };
+  };
+  v1_admin_pipeline_status_retrieve: {
+    parameters: {
+      query?: {
+        item_id?: string;
+        mode?: "pending" | "recent";
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            [key: string]: unknown;
+          };
         };
       };
     };
@@ -5230,14 +7188,20 @@ export interface operations {
       path?: never;
       cookie?: never;
     };
-    requestBody?: never;
+    requestBody?: {
+      content: {
+        "application/json": components["schemas"]["SeedRequestRequest"];
+        "application/x-www-form-urlencoded": components["schemas"]["SeedRequestRequest"];
+        "multipart/form-data": components["schemas"]["SeedRequestRequest"];
+      };
+    };
     responses: {
       200: {
         headers: {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["Sample"];
+          "application/json": components["schemas"]["SeedResponse"];
         };
       };
     };
@@ -5257,6 +7221,71 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["Sample"];
+        };
+      };
+    };
+  };
+  v1_admin_recommendation_settings_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["RecommendationConfig"];
+        };
+      };
+    };
+  };
+  v1_admin_recommendation_settings_partial_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        "application/json": components["schemas"]["PatchedRecommendationConfigRequest"];
+        "application/x-www-form-urlencoded": components["schemas"]["PatchedRecommendationConfigRequest"];
+        "multipart/form-data": components["schemas"]["PatchedRecommendationConfigRequest"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["RecommendationConfig"];
+        };
+      };
+    };
+  };
+  v1_admin_recommendation_statistics_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            [key: string]: unknown;
+          };
         };
       };
     };
@@ -5345,6 +7374,254 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["RelationReviewCandidate"];
+        };
+      };
+    };
+  };
+  v1_admin_relation_review_candidates_repair_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 标识此 relation review candidate 的 UUID 字符串。 */
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["RelationRepair"];
+        };
+      };
+      202: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["RelationRepair"];
+        };
+      };
+    };
+  };
+  v1_admin_relation_review_candidates_stop_repair_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 标识此 relation review candidate 的 UUID 字符串。 */
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["RelationRepairMessage"];
+        };
+      };
+    };
+  };
+  v1_admin_relation_review_candidates_repair_batch_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["RelationRepairBatch"];
+        };
+      };
+    };
+  };
+  v1_admin_relation_review_candidates_repair_stats_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["RelationRepairStats"];
+        };
+      };
+    };
+  };
+  v1_admin_review_recoveries_list: {
+    parameters: {
+      query?: {
+        /** @description 分页结果集中的页码。 */
+        page?: number;
+        policy_id?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PaginatedRecoveryList"];
+        };
+      };
+    };
+  };
+  v1_admin_review_recoveries_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 标识此 review recovery 的 UUID 字符串。 */
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Recovery"];
+        };
+      };
+    };
+  };
+  v1_admin_review_recoveries_resume_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 标识此 review recovery 的 UUID 字符串。 */
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Recovery"];
+        };
+      };
+    };
+  };
+  v1_admin_review_recoveries_stop_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 标识此 review recovery 的 UUID 字符串。 */
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Recovery"];
+        };
+      };
+    };
+  };
+  v1_admin_review_recoveries_enqueue_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["RecoveryRequestRequest"];
+        "application/x-www-form-urlencoded": components["schemas"]["RecoveryRequestRequest"];
+        "multipart/form-data": components["schemas"]["RecoveryRequestRequest"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Recovery"];
+        };
+      };
+    };
+  };
+  v1_admin_review_recoveries_settings_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["RecoverySettings"];
+        };
+      };
+    };
+  };
+  v1_admin_review_recoveries_settings_partial_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        "application/json": components["schemas"]["PatchedRecoverySettingsRequest"];
+        "application/x-www-form-urlencoded": components["schemas"]["PatchedRecoverySettingsRequest"];
+        "multipart/form-data": components["schemas"]["PatchedRecoverySettingsRequest"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["RecoverySettings"];
         };
       };
     };
@@ -5581,6 +7858,237 @@ export interface operations {
       };
     };
   };
+  v1_admin_task_monitor_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            [key: string]: unknown;
+          };
+        };
+      };
+    };
+  };
+  v1_admin_task_monitor_dashboard_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            [key: string]: unknown;
+          };
+        };
+      };
+    };
+  };
+  v1_admin_user_settings_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            [key: string]: unknown;
+          };
+        };
+      };
+    };
+  };
+  v1_admin_user_settings_partial_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        "application/json": components["schemas"]["PatchedScopedInputRequest"];
+        "application/x-www-form-urlencoded": components["schemas"]["PatchedScopedInputRequest"];
+        "multipart/form-data": components["schemas"]["PatchedScopedInputRequest"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            [key: string]: unknown;
+          };
+        };
+      };
+    };
+  };
+  v1_admin_users_list: {
+    parameters: {
+      query?: {
+        /** @description 分页结果集中的页码。 */
+        page?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PaginatedUserOutputList"];
+        };
+      };
+    };
+  };
+  v1_admin_users_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        "application/json": components["schemas"]["UserInputRequest"];
+        "application/x-www-form-urlencoded": components["schemas"]["UserInputRequest"];
+        "multipart/form-data": components["schemas"]["UserInputRequest"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["UserOutput"];
+        };
+      };
+    };
+  };
+  v1_admin_users_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 标识此 用户 的 唯一整数值。 */
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["UserOutput"];
+        };
+      };
+    };
+  };
+  v1_admin_users_destroy: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 标识此 用户 的 唯一整数值。 */
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description No response body */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  v1_admin_users_partial_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 标识此 用户 的 唯一整数值。 */
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        "application/json": components["schemas"]["PatchedUserInputRequest"];
+        "application/x-www-form-urlencoded": components["schemas"]["PatchedUserInputRequest"];
+        "multipart/form-data": components["schemas"]["PatchedUserInputRequest"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["UserOutput"];
+        };
+      };
+    };
+  };
+  v1_admin_worker_status_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["WorkerStatus"];
+        };
+      };
+    };
+  };
   v1_auth_csrf_retrieve: {
     parameters: {
       query?: never;
@@ -5677,6 +8185,787 @@ export interface operations {
       };
     };
   };
+  v1_enterprise_projects_list: {
+    parameters: {
+      query?: {
+        /** @description 分页结果集中的页码。 */
+        page?: number;
+        /** @description 由系统管理员指定资料所属账号；省略则管理本人资料。 */
+        user_id?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PaginatedProjectList"];
+        };
+      };
+    };
+  };
+  v1_enterprise_projects_create: {
+    parameters: {
+      query?: {
+        /** @description 由系统管理员指定资料所属账号；省略则管理本人资料。 */
+        user_id?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ProjectRequest"];
+        "application/x-www-form-urlencoded": components["schemas"]["ProjectRequest"];
+        "multipart/form-data": components["schemas"]["ProjectRequest"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Project"];
+        };
+      };
+    };
+  };
+  v1_enterprise_projects_retrieve: {
+    parameters: {
+      query?: {
+        /** @description 由系统管理员指定资料所属账号；省略则管理本人资料。 */
+        user_id?: number;
+      };
+      header?: never;
+      path: {
+        /** @description 标识此 enterprise project 的 UUID 字符串。 */
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Project"];
+        };
+      };
+    };
+  };
+  v1_enterprise_projects_destroy: {
+    parameters: {
+      query?: {
+        /** @description 由系统管理员指定资料所属账号；省略则管理本人资料。 */
+        user_id?: number;
+      };
+      header?: never;
+      path: {
+        /** @description 标识此 enterprise project 的 UUID 字符串。 */
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description No response body */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  v1_enterprise_projects_partial_update: {
+    parameters: {
+      query?: {
+        /** @description 由系统管理员指定资料所属账号；省略则管理本人资料。 */
+        user_id?: number;
+      };
+      header?: never;
+      path: {
+        /** @description 标识此 enterprise project 的 UUID 字符串。 */
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        "application/json": components["schemas"]["PatchedProjectRequest"];
+        "application/x-www-form-urlencoded": components["schemas"]["PatchedProjectRequest"];
+        "multipart/form-data": components["schemas"]["PatchedProjectRequest"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Project"];
+        };
+      };
+    };
+  };
+  v1_enterprise_projects_follow_subscriptions_create: {
+    parameters: {
+      query?: {
+        /** @description 由系统管理员指定资料所属账号；省略则管理本人资料。 */
+        user_id?: number;
+      };
+      header?: never;
+      path: {
+        /** @description 标识此 enterprise project 的 UUID 字符串。 */
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ProjectFollowInputRequest"];
+        "application/x-www-form-urlencoded": components["schemas"]["ProjectFollowInputRequest"];
+        "multipart/form-data": components["schemas"]["ProjectFollowInputRequest"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Project"];
+        };
+      };
+    };
+  };
+  v1_enterprise_research_list: {
+    parameters: {
+      query?: {
+        /** @description 由系统管理员指定资料所属账号；省略则管理本人资料。 */
+        user_id?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            [key: string]: unknown;
+          };
+        };
+      };
+    };
+  };
+  v1_enterprise_research_create: {
+    parameters: {
+      query?: {
+        /** @description 由系统管理员指定资料所属账号；省略则管理本人资料。 */
+        user_id?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        "application/json": components["schemas"]["ResearchInputRequest"];
+        "application/x-www-form-urlencoded": components["schemas"]["ResearchInputRequest"];
+        "multipart/form-data": components["schemas"]["ResearchInputRequest"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["EnterpriseResearchRun"];
+        };
+      };
+    };
+  };
+  v1_enterprise_research_retrieve: {
+    parameters: {
+      query?: {
+        /** @description 由系统管理员指定资料所属账号；省略则管理本人资料。 */
+        user_id?: number;
+      };
+      header?: never;
+      path: {
+        /** @description 标识此 research run 的 UUID 字符串。 */
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["EnterpriseResearchRun"];
+        };
+      };
+    };
+  };
+  v1_enterprise_research_destroy: {
+    parameters: {
+      query?: {
+        /** @description 由系统管理员指定资料所属账号；省略则管理本人资料。 */
+        user_id?: number;
+      };
+      header?: never;
+      path: {
+        /** @description 标识此 research run 的 UUID 字符串。 */
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description No response body */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  v1_enterprise_research_regenerate_create: {
+    parameters: {
+      query?: {
+        /** @description 由系统管理员指定资料所属账号；省略则管理本人资料。 */
+        user_id?: number;
+      };
+      header?: never;
+      path: {
+        /** @description 标识此 research run 的 UUID 字符串。 */
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        "application/json": components["schemas"]["MaintenanceRerunInputRequest"];
+        "application/x-www-form-urlencoded": components["schemas"]["MaintenanceRerunInputRequest"];
+        "multipart/form-data": components["schemas"]["MaintenanceRerunInputRequest"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["EnterpriseResearchRun"];
+        };
+      };
+    };
+  };
+  v1_enterprise_research_resume_create: {
+    parameters: {
+      query?: {
+        /** @description 由系统管理员指定资料所属账号；省略则管理本人资料。 */
+        user_id?: number;
+      };
+      header?: never;
+      path: {
+        /** @description 标识此 research run 的 UUID 字符串。 */
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["EnterpriseResearchRun"];
+        };
+      };
+    };
+  };
+  v1_enterprise_research_saved_result_retrieve: {
+    parameters: {
+      query?: {
+        /** @description 由系统管理员指定资料所属账号；省略则管理本人资料。 */
+        user_id?: number;
+      };
+      header?: never;
+      path: {
+        /** @description 标识此 research run 的 UUID 字符串。 */
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            [key: string]: unknown;
+          };
+        };
+      };
+    };
+  };
+  v1_enterprise_research_stop_create: {
+    parameters: {
+      query?: {
+        /** @description 由系统管理员指定资料所属账号；省略则管理本人资料。 */
+        user_id?: number;
+      };
+      header?: never;
+      path: {
+        /** @description 标识此 research run 的 UUID 字符串。 */
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["EnterpriseResearchRun"];
+        };
+      };
+    };
+  };
+  v1_enterprise_research_task_retrieve: {
+    parameters: {
+      query?: {
+        /** @description 由系统管理员指定资料所属账号；省略则管理本人资料。 */
+        user_id?: number;
+      };
+      header?: never;
+      path: {
+        /** @description 标识此 research run 的 UUID 字符串。 */
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            [key: string]: unknown;
+          };
+        };
+      };
+    };
+  };
+  v1_enterprise_research_dashboard_retrieve: {
+    parameters: {
+      query?: {
+        days?: 1 | 30 | 7 | 90;
+        kind?: "company" | "explanation" | "project" | "workflow";
+        /** @description 由系统管理员指定资料所属账号；省略则管理本人资料。 */
+        user_id?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            [key: string]: unknown;
+          };
+        };
+      };
+    };
+  };
+  v1_enterprise_research_saved_results_retrieve: {
+    parameters: {
+      query?: {
+        /** @description 由系统管理员指定资料所属账号；省略则管理本人资料。 */
+        user_id?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            [key: string]: unknown;
+          };
+        };
+      };
+    };
+  };
+  v1_enterprise_research_tasks_retrieve: {
+    parameters: {
+      query?: {
+        days?: 1 | 30 | 7 | 90;
+        kind?: "company" | "explanation" | "project" | "workflow";
+        page?: number;
+        status?:
+          "completed" | "failed" | "paused" | "queued" | "running" | "waiting";
+        /** @description 由系统管理员指定资料所属账号；省略则管理本人资料。 */
+        user_id?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            [key: string]: unknown;
+          };
+        };
+      };
+    };
+  };
+  v1_enterprises_list: {
+    parameters: {
+      query?: {
+        /** @description 由系统管理员指定资料所属账号；省略则管理本人资料。 */
+        user_id?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            [key: string]: unknown;
+          };
+        };
+      };
+    };
+  };
+  v1_enterprises_create: {
+    parameters: {
+      query?: {
+        /** @description 由系统管理员指定资料所属账号；省略则管理本人资料。 */
+        user_id?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["ProfileInputRequest"];
+        "application/x-www-form-urlencoded": components["schemas"]["ProfileInputRequest"];
+        "multipart/form-data": components["schemas"]["ProfileInputRequest"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Profile"];
+        };
+      };
+    };
+  };
+  v1_enterprises_retrieve: {
+    parameters: {
+      query?: {
+        /** @description 由系统管理员指定资料所属账号；省略则管理本人资料。 */
+        user_id?: number;
+      };
+      header?: never;
+      path: {
+        /** @description 标识此 enterprise profile 的 UUID 字符串。 */
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Profile"];
+        };
+      };
+    };
+  };
+  v1_enterprises_destroy: {
+    parameters: {
+      query?: {
+        /** @description 由系统管理员指定资料所属账号；省略则管理本人资料。 */
+        user_id?: number;
+      };
+      header?: never;
+      path: {
+        /** @description 标识此 enterprise profile 的 UUID 字符串。 */
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description No response body */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  v1_enterprises_partial_update: {
+    parameters: {
+      query?: {
+        /** @description 由系统管理员指定资料所属账号；省略则管理本人资料。 */
+        user_id?: number;
+      };
+      header?: never;
+      path: {
+        /** @description 标识此 enterprise profile 的 UUID 字符串。 */
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        "application/json": components["schemas"]["PatchedProfileInputRequest"];
+        "application/x-www-form-urlencoded": components["schemas"]["PatchedProfileInputRequest"];
+        "multipart/form-data": components["schemas"]["PatchedProfileInputRequest"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Profile"];
+        };
+      };
+    };
+  };
+  v1_enterprises_home_retrieve: {
+    parameters: {
+      query?: {
+        /** @description 由系统管理员指定资料所属账号；省略则管理本人资料。 */
+        user_id?: number;
+      };
+      header?: never;
+      path: {
+        /** @description 标识此 enterprise profile 的 UUID 字符串。 */
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            [key: string]: unknown;
+          };
+        };
+      };
+    };
+  };
+  v1_enterprises_matches_retrieve: {
+    parameters: {
+      query?: {
+        /** @description 由系统管理员指定资料所属账号；省略则管理本人资料。 */
+        user_id?: number;
+      };
+      header?: never;
+      path: {
+        /** @description 标识此 enterprise profile 的 UUID 字符串。 */
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            [key: string]: unknown;
+          };
+        };
+      };
+    };
+  };
+  v1_enterprises_matching_workflow_create: {
+    parameters: {
+      query?: {
+        /** @description 由系统管理员指定资料所属账号；省略则管理本人资料。 */
+        user_id?: number;
+      };
+      header?: never;
+      path: {
+        /** @description 标识此 enterprise profile 的 UUID 字符串。 */
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        "application/json": components["schemas"]["WorkflowInputRequest"];
+        "application/x-www-form-urlencoded": components["schemas"]["WorkflowInputRequest"];
+        "multipart/form-data": components["schemas"]["WorkflowInputRequest"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            [key: string]: unknown;
+          };
+        };
+      };
+    };
+  };
+  v1_enterprises_subscription_plan_retrieve: {
+    parameters: {
+      query?: {
+        /** @description 由系统管理员指定资料所属账号；省略则管理本人资料。 */
+        user_id?: number;
+      };
+      header?: never;
+      path: {
+        /** @description 标识此 enterprise profile 的 UUID 字符串。 */
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            [key: string]: unknown;
+          };
+        };
+      };
+    };
+  };
+  v1_enterprises_subscription_plan_create: {
+    parameters: {
+      query?: {
+        /** @description 由系统管理员指定资料所属账号；省略则管理本人资料。 */
+        user_id?: number;
+      };
+      header?: never;
+      path: {
+        /** @description 标识此 enterprise profile 的 UUID 字符串。 */
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        "application/json": components["schemas"]["SubscriptionPlanInputRequest"];
+        "application/x-www-form-urlencoded": components["schemas"]["SubscriptionPlanInputRequest"];
+        "multipart/form-data": components["schemas"]["SubscriptionPlanInputRequest"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            [key: string]: unknown;
+          };
+        };
+      };
+    };
+  };
+  v1_enterprises_options_retrieve: {
+    parameters: {
+      query?: {
+        /** @description 由系统管理员指定资料所属账号；省略则管理本人资料。 */
+        user_id?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            [key: string]: unknown;
+          };
+        };
+      };
+    };
+  };
   v1_health_retrieve: {
     parameters: {
       query?: never;
@@ -5741,6 +9030,105 @@ export interface operations {
       };
     };
   };
+  v1_matching_studies_list: {
+    parameters: {
+      query?: {
+        /** @description 分页结果集中的页码。 */
+        page?: number;
+        profile?: string;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PaginatedStudyList"];
+        };
+      };
+    };
+  };
+  v1_matching_studies_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        /** @description 标识此 matching study 的 UUID 字符串。 */
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["StudyDetail"];
+        };
+      };
+    };
+  };
+  v1_matching_studies_label_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        case_id: string;
+        /** @description 标识此 matching study 的 UUID 字符串。 */
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["LabelInputRequest"];
+        "application/x-www-form-urlencoded": components["schemas"]["LabelInputRequest"];
+        "multipart/form-data": components["schemas"]["LabelInputRequest"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Case"];
+        };
+      };
+    };
+  };
+  v1_matching_studies_sample_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["StudyInputRequest"];
+        "application/x-www-form-urlencoded": components["schemas"]["StudyInputRequest"];
+        "multipart/form-data": components["schemas"]["StudyInputRequest"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["StudyDetail"];
+        };
+      };
+    };
+  };
   v1_me_retrieve: {
     parameters: {
       query?: never;
@@ -5768,6 +9156,8 @@ export interface operations {
         /** @description 分页结果集中的页码。 */
         page?: number;
         status?: "all" | "read" | "unread";
+        /** @description 由系统管理员指定资料所属账号；省略则管理本人资料。 */
+        user_id?: number;
       };
       header?: never;
       path?: never;
@@ -5787,7 +9177,10 @@ export interface operations {
   };
   v1_notifications_retrieve: {
     parameters: {
-      query?: never;
+      query?: {
+        /** @description 由系统管理员指定资料所属账号；省略则管理本人资料。 */
+        user_id?: number;
+      };
       header?: never;
       path: {
         /** @description 标识此 notification 的 UUID 字符串。 */
@@ -5807,9 +9200,36 @@ export interface operations {
       };
     };
   };
+  v1_notifications_destroy: {
+    parameters: {
+      query?: {
+        /** @description 由系统管理员指定资料所属账号；省略则管理本人资料。 */
+        user_id?: number;
+      };
+      header?: never;
+      path: {
+        /** @description 标识此 notification 的 UUID 字符串。 */
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      /** @description No response body */
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
   v1_notifications_read_create: {
     parameters: {
-      query?: never;
+      query?: {
+        /** @description 由系统管理员指定资料所属账号；省略则管理本人资料。 */
+        user_id?: number;
+      };
       header?: never;
       path: {
         /** @description 标识此 notification 的 UUID 字符串。 */
@@ -5825,13 +9245,66 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["Notification"];
+        };
+      };
+    };
+  };
+  v1_notifications_preferences_retrieve: {
+    parameters: {
+      query?: {
+        /** @description 由系统管理员指定资料所属账号；省略则管理本人资料。 */
+        user_id?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["NotificationPreference"];
+        };
+      };
+    };
+  };
+  v1_notifications_preferences_partial_update: {
+    parameters: {
+      query?: {
+        /** @description 由系统管理员指定资料所属账号；省略则管理本人资料。 */
+        user_id?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: {
+      content: {
+        "application/json": components["schemas"]["PatchedNotificationPreferenceRequest"];
+        "application/x-www-form-urlencoded": components["schemas"]["PatchedNotificationPreferenceRequest"];
+        "multipart/form-data": components["schemas"]["PatchedNotificationPreferenceRequest"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["NotificationPreference"];
         };
       };
     };
   };
   v1_notifications_read_all_create: {
     parameters: {
-      query?: never;
+      query?: {
+        /** @description 由系统管理员指定资料所属账号；省略则管理本人资料。 */
+        user_id?: number;
+      };
       header?: never;
       path?: never;
       cookie?: never;
@@ -6004,6 +9477,139 @@ export interface operations {
       };
     };
   };
+  v1_policy_watches_list: {
+    parameters: {
+      query?: {
+        /** @description 分页结果集中的页码。 */
+        page?: number;
+        /** @description 由系统管理员指定资料所属账号；省略则管理本人资料。 */
+        user_id?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["PaginatedWatchList"];
+        };
+      };
+    };
+  };
+  v1_policy_watches_retrieve: {
+    parameters: {
+      query?: {
+        /** @description 由系统管理员指定资料所属账号；省略则管理本人资料。 */
+        user_id?: number;
+      };
+      header?: never;
+      path: {
+        /** @description 标识此 policy watch 的 UUID 字符串。 */
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Watch"];
+        };
+      };
+    };
+  };
+  v1_policy_watches_configure_create: {
+    parameters: {
+      query?: {
+        /** @description 由系统管理员指定资料所属账号；省略则管理本人资料。 */
+        user_id?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["WatchInputRequest"];
+        "application/x-www-form-urlencoded": components["schemas"]["WatchInputRequest"];
+        "multipart/form-data": components["schemas"]["WatchInputRequest"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Watch"];
+        };
+      };
+    };
+  };
+  v1_policy_watches_feedback_create: {
+    parameters: {
+      query?: {
+        /** @description 由系统管理员指定资料所属账号；省略则管理本人资料。 */
+        user_id?: number;
+      };
+      header?: never;
+      path: {
+        recommendation_id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["FeedbackInputRequest"];
+        "application/x-www-form-urlencoded": components["schemas"]["FeedbackInputRequest"];
+        "multipart/form-data": components["schemas"]["FeedbackInputRequest"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            [key: string]: unknown;
+          };
+        };
+      };
+    };
+  };
+  v1_policy_watches_results_retrieve: {
+    parameters: {
+      query?: {
+        /** @description 由系统管理员指定资料所属账号；省略则管理本人资料。 */
+        user_id?: number;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            [key: string]: unknown;
+          };
+        };
+      };
+    };
+  };
   v1_search_create: {
     parameters: {
       query?: never;
@@ -6031,11 +9637,61 @@ export interface operations {
       };
     };
   };
+  v1_search_summary_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["SearchSummaryRequestRequest"];
+        "application/x-www-form-urlencoded": components["schemas"]["SearchSummaryRequestRequest"];
+        "multipart/form-data": components["schemas"]["SearchSummaryRequestRequest"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            [key: string]: unknown;
+          };
+        };
+      };
+    };
+  };
+  v1_source_coverage_retrieve: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            [key: string]: unknown;
+          };
+        };
+      };
+    };
+  };
   v1_subscriptions_list: {
     parameters: {
       query?: {
         /** @description 分页结果集中的页码。 */
         page?: number;
+        /** @description 由系统管理员指定资料所属账号；省略则管理本人资料。 */
+        user_id?: number;
       };
       header?: never;
       path?: never;
@@ -6055,7 +9711,10 @@ export interface operations {
   };
   v1_subscriptions_create: {
     parameters: {
-      query?: never;
+      query?: {
+        /** @description 由系统管理员指定资料所属账号；省略则管理本人资料。 */
+        user_id?: number;
+      };
       header?: never;
       path?: never;
       cookie?: never;
@@ -6080,7 +9739,10 @@ export interface operations {
   };
   v1_subscriptions_retrieve: {
     parameters: {
-      query?: never;
+      query?: {
+        /** @description 由系统管理员指定资料所属账号；省略则管理本人资料。 */
+        user_id?: number;
+      };
       header?: never;
       path: {
         /** @description 标识此 subscription 的 UUID 字符串。 */
@@ -6102,7 +9764,10 @@ export interface operations {
   };
   v1_subscriptions_update: {
     parameters: {
-      query?: never;
+      query?: {
+        /** @description 由系统管理员指定资料所属账号；省略则管理本人资料。 */
+        user_id?: number;
+      };
       header?: never;
       path: {
         /** @description 标识此 subscription 的 UUID 字符串。 */
@@ -6130,7 +9795,10 @@ export interface operations {
   };
   v1_subscriptions_destroy: {
     parameters: {
-      query?: never;
+      query?: {
+        /** @description 由系统管理员指定资料所属账号；省略则管理本人资料。 */
+        user_id?: number;
+      };
       header?: never;
       path: {
         /** @description 标识此 subscription 的 UUID 字符串。 */
@@ -6151,7 +9819,10 @@ export interface operations {
   };
   v1_subscriptions_partial_update: {
     parameters: {
-      query?: never;
+      query?: {
+        /** @description 由系统管理员指定资料所属账号；省略则管理本人资料。 */
+        user_id?: number;
+      };
       header?: never;
       path: {
         /** @description 标识此 subscription 的 UUID 字符串。 */
@@ -6177,9 +9848,70 @@ export interface operations {
       };
     };
   };
+  v1_subscriptions_history_retrieve: {
+    parameters: {
+      query?: {
+        /** @description 由系统管理员指定资料所属账号；省略则管理本人资料。 */
+        user_id?: number;
+      };
+      header?: never;
+      path: {
+        /** @description 标识此 subscription 的 UUID 字符串。 */
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            [key: string]: unknown;
+          };
+        };
+      };
+    };
+  };
+  v1_subscriptions_restore_create: {
+    parameters: {
+      query?: {
+        /** @description 由系统管理员指定资料所属账号；省略则管理本人资料。 */
+        user_id?: number;
+      };
+      header?: never;
+      path: {
+        /** @description 标识此 subscription 的 UUID 字符串。 */
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["RestoreSubscriptionChangeRequest"];
+        "application/x-www-form-urlencoded": components["schemas"]["RestoreSubscriptionChangeRequest"];
+        "multipart/form-data": components["schemas"]["RestoreSubscriptionChangeRequest"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["Subscription"];
+        };
+      };
+    };
+  };
   v1_subscriptions_preview_create: {
     parameters: {
-      query?: never;
+      query?: {
+        /** @description 由系统管理员指定资料所属账号；省略则管理本人资料。 */
+        user_id?: number;
+      };
       header?: never;
       path?: never;
       cookie?: never;

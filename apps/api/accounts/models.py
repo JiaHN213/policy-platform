@@ -6,6 +6,9 @@ from django.db import models
 class User(AbstractUser):
     permission_version = models.PositiveIntegerField(default=1)
 
+    class Meta(AbstractUser.Meta):
+        permissions = [("manage_system", "管理系统配置与运行监控")]
+
 
 class Organization(Record):
     name = models.CharField(max_length=200)

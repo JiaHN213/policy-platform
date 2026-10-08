@@ -160,3 +160,43 @@ def test_opensearch_terms_allow_cross_field_matches_and_natural_or(monkeypatch):
     assert query["minimum_should_match"] == 1
     assert len(query["should"]) == 2
     assert all(len(group["dis_max"]["queries"]) == 1 for group in query["should"])
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize("staff", [False, True])
+@pytest.mark.parametrize("backend", ["empty", "database", "index", "fallback"])
+def test_search_context_without_path_keeps_customer_fields(opensearch_catalog, monkeypatch, settings, staff, backend):
+    policies, client = opensearch_catalog
+    user = get_user_model().objects.get(username="opensearch-reader")
+    user.is_staff = staff
+    user.save(update_fields=["is_staff"])
+    client.force_authenticate(user)
+    settings.OPENSEARCH_ENABLED = backend in {"index", "fallback"}
+
+    def search(*args, **kwargs):
+        if backend == "fallback":
+            raise OpenSearchUnavailable("test outage")
+        return SearchHits(ids=[str(p.pk) for p in policies], total=len(policies))
+
+    monkeypatch.setattr("policies.search.search_policy_ids", search)
+    response = client.post("/api/v1/search", {"q": "" if backend == "empty" else "水务"}, format="json")
+    assert response.status_code == 200
+    assert response.data["count"] == len(policies)
+    expected_backend = {"empty": "postgresql", "database": "postgresql", "index": "opensearch", "fallback": "postgresql_fallback"}[backend]
+    assert response.data["search_backend"] == expected_backend
+    for item in response.data["items"]:
+        assert not {"extraction_version", "scope_evidence", "pipeline", "ai_enrichment", "support_signals"} & item.keys()
+
+
+@pytest.mark.django_db
+def test_staff_detail_with_user_only_context_is_not_internal(opensearch_catalog):
+    from types import SimpleNamespace
+
+    from policies.views import PolicyDetailSerializer
+
+    policies, _ = opensearch_catalog
+    user = get_user_model().objects.get(username="opensearch-reader")
+    user.is_staff = True
+    data = PolicyDetailSerializer(policies[0], context={"request": SimpleNamespace(user=user)}).data
+    assert data["body"] == policies[0].body
+    assert not {"pipeline", "ai_enrichment", "extraction_version", "scope_evidence"} & data.keys()

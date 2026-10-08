@@ -194,6 +194,7 @@ def import_record(record, source, claim=None):
             defaults={
                 "title": record["title"],
                 "status": "imported",
+                "parsed_at": timezone.now(),
                 "policy": policy,
                 "metadata": {
                     **(

@@ -282,7 +282,8 @@ def test_directed_relationship_verified_and_version_bound(catalog):
     assert len(client.get(f"/api/v1/policies/{a.pk}").json()["relations"]) == 1
     update_validity(a.pk, admin, 1, "effective", "本办法自公布之日起施行。")
     assert client.get(f"/api/v1/policies/{a.pk}").json()["relations"] == []
-    assert client.get("/api/v1/opportunities").json()["count"] == 0
+    # A validity-only correction keeps the unchanged body's opportunity evidence current.
+    assert client.get("/api/v1/opportunities").json()["count"] == 1
 
 
 @pytest.mark.django_db

@@ -15,6 +15,7 @@ from rest_framework.response import Response
 from rest_framework.throttling import AnonRateThrottle, SimpleRateThrottle
 from rest_framework.views import APIView
 
+from .permissions import can_manage_system
 from .services import DEFAULT_CAPABILITIES, access_decision
 
 
@@ -134,6 +135,7 @@ class MeView(APIView):
                 "id": user.id,
                 "username": user.username,
                 "is_staff": user.is_staff,
+                "can_manage_system": can_manage_system(user),
                 "permission_version": user.permission_version,
                 "capabilities": {c: access_decision(user, c) for c in DEFAULT_CAPABILITIES},
             }

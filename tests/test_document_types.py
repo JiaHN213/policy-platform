@@ -7,7 +7,7 @@ from policies.models import DocumentSnapshot, Policy, PublicationEvent
 from policies.services import fingerprint, publish_policy
 from rest_framework.exceptions import ValidationError
 from rest_framework.test import APIClient
-from subscriptions.models import Notification, Subscription
+from subscriptions.models import Notification, NotificationPreference, Subscription
 from subscriptions.services import deliver_event
 
 
@@ -99,6 +99,7 @@ def test_classification_is_required_and_saved_with_publication():
 def test_type_subscription_matches_publication_and_keeps_legacy_all_types():
     admin = get_user_model().objects.create_superuser("admin")
     customer = get_user_model().objects.create_user("customer")
+    NotificationPreference.objects.create(user=customer, update_mode="instant")
     client = APIClient()
     client.force_authenticate(customer)
     for kind, name in [("", "全部文件"), ("opportunity", "只看机会"), ("result", "只看结果")]:

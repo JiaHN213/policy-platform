@@ -1,14 +1,13 @@
 from accounts.services import access_decision
 from django.db import connection
 from drf_spectacular.utils import extend_schema
-from ingestion.models import Source
 from policies.models import Policy
-from policies.opensearch import status as search_index_status
 from rest_framework import permissions
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from subscriptions.models import Notification, Subscription
+from subscriptions.delivery import visible_notifications
+from subscriptions.models import Subscription
 
 from core.business_config import config_version, get_config
 
@@ -39,17 +38,10 @@ class OverviewView(APIView):
         return Response(
             {
                 "policies": policies.count(),
-                "sources": Source.objects.count(),
-                "verified_sources": Source.objects.filter(verification_status="verified").count(),
                 "subscriptions": Subscription.objects.filter(
                     user=request.user, active=True
                 ).count(),
-                "unread": Notification.objects.filter(
-                    user=request.user, read_at__isnull=True, event__policy__in=policies
-                ).count(),
-                "demo_count": policies.filter(is_demo=True).count(),
-                "search_backend": search_index_status()["backend"],
-                "ai_status": "not_publicly_enabled",
+                "unread": visible_notifications(request.user).filter(read_at__isnull=True).count(),
             }
         )
 

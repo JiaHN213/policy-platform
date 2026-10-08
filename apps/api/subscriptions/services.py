@@ -1,5 +1,5 @@
-import hashlib
 import json
+from copy import copy
 from dataclasses import dataclass, field
 from datetime import timedelta
 
@@ -8,10 +8,10 @@ from core.business_config import get_config
 from django.db import transaction
 from django.utils import timezone
 from policies.business_scope import configured_domains, configured_tags
-from policies.models import OpportunityBatch, Policy, PublicationEvent
+from policies.models import Policy, PublicationEvent
 from policies.taxonomy import OpportunityCategory, OpportunityStatus, ValidityStatus
 
-from .models import Notification, Subscription
+from .models import Subscription
 
 
 @dataclass
@@ -129,6 +129,11 @@ def match_subscription(subscription, policy, *, specific_batch_id=None, now=None
         return MatchResult(False)
     if keyword_terms:
         reasons.append(f"关键词：{'、'.join(subscription.keywords.split())}")
+    if subscription.interest_regions:
+        from enterprises.regions import region_preference
+
+        scope = region_preference(policy, subscription.interest_regions, policy.opportunities.filter(verification_status="verified"))
+        reasons.append(scope["label"])
 
     opportunity_filters = any(
         (
@@ -154,6 +159,8 @@ def match_subscription(subscription, policy, *, specific_batch_id=None, now=None
     method_labels = _config_labels("acquisition_methods")
     matched = []
     for opportunity in policy.opportunities.all():
+        if opportunity.verification_status != "verified" or opportunity.evidence_version != opportunity.evidence_policy.version:
+            continue
         if (
             subscription.opportunity_category
             and opportunity.category != subscription.opportunity_category
@@ -170,7 +177,7 @@ def match_subscription(subscription, policy, *, specific_batch_id=None, now=None
             continue
         if not _contains_all(_authority_text(opportunity), _terms(subscription.authority_keywords)):
             continue
-        batches = list(opportunity.batches.all())
+        batches = [b for b in opportunity.batches.all() if b.verification_status == "verified" and b.evidence_version == b.evidence_policy.version]
         if specific_batch_id:
             batches = [batch for batch in batches if str(batch.id) == str(specific_batch_id)]
             if not batches:
@@ -255,10 +262,11 @@ def deliver_event(event_id):
         event.save(update_fields=["delivered_at"])
         return 0
     subscriptions = (
-        Subscription.objects.select_for_update()
+        Subscription.objects.select_for_update(of=("self",))
         .select_related("user")
         .filter(
             active=True,
+            deleted_at__isnull=True,
             user__is_active=True,
             pk__in=event.payload.get("subscription_ids", []),
         )
@@ -273,82 +281,32 @@ def deliver_event(event_id):
             event.policy,
             specific_batch_id=specific_batch_id,
         )
+        if event.payload.get("previous_validity_status") and not result.matched:
+            # Subscribers to effective policies still need their repeal notice.
+            previous = copy(event.policy)
+            previous.validity_status = event.payload.get("previous_validity_status", "unverified")
+            result = match_subscription(sub, previous, specific_batch_id=specific_batch_id)
+        if event.kind.startswith("opportunity.changed.") and not result.matched and event.payload.get("previous_matching", {}).get(str(sub.pk)) == sub.revision:
+            result = MatchResult(True, ["你关注的机会状态或申报时间发生变化"])
         if (
             access_decision(sub.user, "policy_subscription")["allowed"]
             and access_decision(sub.user, "policy_detail")["allowed"]
             and result.matched
         ):
-            reason = f"订阅“{sub.name}”：{'；'.join(result.reasons)}"
+            reason = f"订阅“{sub.name}”：{'；'.join(result.reasons + event.payload.get('change_details', []))}"
             users.setdefault(sub.user_id, []).append(reason)
     count = 0
+    from .delivery import enqueue_or_notify
+
     for user_id, reasons in users.items():
-        _, created = Notification.objects.get_or_create(
-            user_id=user_id,
-            event=event,
-            defaults={
-                "title": event.payload.get("title", event.policy.title),
-                "reasons": sorted(set(reasons)),
-            },
-        )
-        count += int(created)
+        count += enqueue_or_notify(user_id, event, sorted(set(reasons)))
     event.delivered_at = timezone.now()
     event.save(update_fields=["delivered_at"])
     return count
 
 
 def create_deadline_reminders():
-    """Create one idempotent reminder per subscription and opportunity batch."""
-    now = timezone.now()
-    subscriptions = list(
-        Subscription.objects.filter(
-            active=True,
-            deadline_within_days__isnull=False,
-            user__is_active=True,
-        ).select_related("user")
-    )
-    if not subscriptions:
-        return 0
-    max_days = max(sub.deadline_within_days for sub in subscriptions)
-    batches = (
-        OpportunityBatch.objects.filter(
-            deadline_at__gte=now,
-            deadline_at__lte=now + timedelta(days=max_days),
-            opportunity__policy__status=Policy.Status.PUBLISHED,
-            opportunity__policy__source_grade__in=Policy.FORMAL_SOURCE_GRADES,
-        )
-        .select_related("opportunity__policy")
-        .prefetch_related("opportunity__policy__opportunities__batches")
-    )
-    created_count = 0
-    for batch in batches:
-        policy = batch.opportunity.policy
-        for subscription in subscriptions:
-            if policy.is_demo and not subscription.user.is_staff:
-                continue
-            result = match_subscription(
-                subscription,
-                policy,
-                specific_batch_id=batch.id,
-                now=now,
-            )
-            if not result.matched:
-                continue
-            digest = hashlib.sha256(f"{subscription.id}:{batch.id}".encode()).hexdigest()[:24]
-            kind = f"opportunity.deadline.{digest}"
-            event, created = PublicationEvent.objects.get_or_create(
-                policy=policy,
-                policy_version=policy.version,
-                kind=kind,
-                defaults={
-                    "payload": {
-                        "title": f"截止提醒：{batch.opportunity.title}",
-                        "event_type": "opportunity.deadline",
-                        "opportunity_batch_id": str(batch.id),
-                        "deadline_at": batch.deadline_at.isoformat(),
-                        "subscription_ids": [str(subscription.id)],
-                    }
-                },
-            )
-            if created:
-                created_count += deliver_event(event.id)
-    return created_count
+    """Compatibility entry point for unified user/batch/deadline/node reminders."""
+    from .delivery import deadline_reminders
+
+    return deadline_reminders()

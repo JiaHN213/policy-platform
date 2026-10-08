@@ -1,0 +1,178 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ToolResponseEnvelopeV1",
+  "type": "object",
+  "properties": {
+    "status": {
+      "type": "string",
+      "enum": [
+        "ok",
+        "empty",
+        "insufficient",
+        "error"
+      ]
+    },
+    "artifact_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 36
+      },
+      "maxItems": 40
+    },
+    "evidence_refs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "source_type": {
+            "type": "string",
+            "enum": [
+              "policy",
+              "attachment",
+              "company_website",
+              "uploaded_material",
+              "pasted_text"
+            ]
+          },
+          "source_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 36
+          },
+          "source_version": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2147483647
+          },
+          "segment_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "segmenter_version": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          "content_sha256": {
+            "type": "string",
+            "pattern": "^[a-f0-9]{64}$"
+          },
+          "quote": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 3000
+          },
+          "start": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "end": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "retrieved_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "origin": {
+            "type": "string",
+            "enum": [
+              "official",
+              "company_statement",
+              "user_statement"
+            ]
+          }
+        },
+        "required": [
+          "source_type",
+          "source_id",
+          "source_version",
+          "segment_id",
+          "segmenter_version",
+          "content_sha256",
+          "quote",
+          "start",
+          "end",
+          "retrieved_at",
+          "origin"
+        ],
+        "additionalProperties": false
+      },
+      "maxItems": 60
+    },
+    "truncated": {
+      "type": "boolean"
+    },
+    "next_cursor": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 500
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 500
+      },
+      "maxItems": 20
+    },
+    "error_code": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 80
+    },
+    "usage": {
+      "type": "object",
+      "properties": {
+        "tool_calls": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "elapsed_ms": {
+          "type": "number",
+          "minimum": 0
+        },
+        "input_tokens": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        },
+        "output_tokens": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "minimum": 0
+        }
+      },
+      "required": [
+        "tool_calls",
+        "elapsed_ms",
+        "input_tokens",
+        "output_tokens"
+      ],
+      "additionalProperties": false
+    }
+  },
+  "required": [
+    "status",
+    "artifact_ids",
+    "evidence_refs",
+    "truncated",
+    "next_cursor",
+    "warnings",
+    "error_code",
+    "usage"
+  ],
+  "additionalProperties": false
+}

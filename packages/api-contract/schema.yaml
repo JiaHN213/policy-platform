@@ -148,6 +148,53 @@ paths:
                 type: object
                 additionalProperties: {}
           description: ''
+  /api/v1/account:
+    get:
+      operationId: v1_account_retrieve
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserOutput'
+          description: ''
+    patch:
+      operationId: v1_account_partial_update
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPrivateAccountInputRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedPrivateAccountInputRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedPrivateAccountInputRequest'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserOutput'
+          description: ''
+    delete:
+      operationId: v1_account_destroy
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
   /api/v1/admin/ai-models:
     get:
       operationId: v1_admin_ai_models_list
@@ -222,6 +269,21 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AIModelProfile'
+          description: ''
+  /api/v1/admin/ai-usage:
+    get:
+      operationId: v1_admin_ai_usage_retrieve
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
           description: ''
   /api/v1/admin/config/documents:
     get:
@@ -697,6 +759,123 @@ paths:
               schema:
                 $ref: '#/components/schemas/DiscoveredItemSummary'
           description: ''
+  /api/v1/admin/enterprise-research-settings:
+    get:
+      operationId: v1_admin_enterprise_research_settings_retrieve
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResearchSettings'
+          description: ''
+    post:
+      operationId: v1_admin_enterprise_research_settings_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SearchConnectionInputRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SearchConnectionInputRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SearchConnectionInputRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchConnectionOutput'
+          description: ''
+    patch:
+      operationId: v1_admin_enterprise_research_settings_partial_update
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedResearchSettingsRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedResearchSettingsRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedResearchSettingsRequest'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResearchSettings'
+          description: ''
+  /api/v1/admin/enterprise-settings/{id}:
+    get:
+      operationId: v1_admin_enterprise_settings_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+    patch:
+      operationId: v1_admin_enterprise_settings_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedScopedInputRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedScopedInputRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedScopedInputRequest'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
   /api/v1/admin/knowledge/builds:
     get:
       operationId: v1_admin_knowledge_builds_list
@@ -902,6 +1081,20 @@ paths:
                 type: object
                 additionalProperties: {}
           description: ''
+  /api/v1/admin/matching-observations:
+    get:
+      operationId: v1_admin_matching_observations_retrieve
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Observation'
+          description: ''
   /api/v1/admin/opportunities:
     get:
       operationId: v1_admin_opportunities_list
@@ -1101,6 +1294,33 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Batch'
+          description: ''
+  /api/v1/admin/pipeline-status:
+    get:
+      operationId: v1_admin_pipeline_status_retrieve
+      parameters:
+      - in: query
+        name: item_id
+        schema:
+          type: string
+      - in: query
+        name: mode
+        schema:
+          type: string
+          enum:
+          - pending
+          - recent
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
           description: ''
   /api/v1/admin/policies:
     get:
@@ -1997,6 +2217,17 @@ paths:
       operationId: v1_admin_quality_samples_seed_create
       tags:
       - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SeedRequestRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SeedRequestRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SeedRequestRequest'
       security:
       - cookieAuth: []
       responses:
@@ -2004,7 +2235,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Sample'
+                $ref: '#/components/schemas/SeedResponse'
           description: ''
   /api/v1/admin/quality/samples/summary:
     get:
@@ -2019,6 +2250,59 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Sample'
+          description: ''
+  /api/v1/admin/recommendation-settings:
+    get:
+      operationId: v1_admin_recommendation_settings_retrieve
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecommendationConfig'
+          description: ''
+    patch:
+      operationId: v1_admin_recommendation_settings_partial_update
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedRecommendationConfigRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedRecommendationConfigRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedRecommendationConfigRequest'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecommendationConfig'
+          description: ''
+  /api/v1/admin/recommendation-statistics:
+    get:
+      operationId: v1_admin_recommendation_statistics_retrieve
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
           description: ''
   /api/v1/admin/relation-review-candidates:
     get:
@@ -2106,6 +2390,239 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/RelationReviewCandidate'
+          description: ''
+  /api/v1/admin/relation-review-candidates/{id}/repair:
+    post:
+      operationId: v1_admin_relation_review_candidates_repair_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 relation review candidate 的 UUID 字符串。
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RelationRepair'
+          description: ''
+        '202':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RelationRepair'
+          description: ''
+  /api/v1/admin/relation-review-candidates/{id}/stop-repair:
+    post:
+      operationId: v1_admin_relation_review_candidates_stop_repair_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 relation review candidate 的 UUID 字符串。
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RelationRepairMessage'
+          description: ''
+  /api/v1/admin/relation-review-candidates/repair-batch:
+    post:
+      operationId: v1_admin_relation_review_candidates_repair_batch_create
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RelationRepairBatch'
+          description: ''
+  /api/v1/admin/relation-review-candidates/repair-stats:
+    get:
+      operationId: v1_admin_relation_review_candidates_repair_stats_retrieve
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RelationRepairStats'
+          description: ''
+  /api/v1/admin/review-recoveries:
+    get:
+      operationId: v1_admin_review_recoveries_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: 分页结果集中的页码。
+        schema:
+          type: integer
+      - in: query
+        name: policy_id
+        schema:
+          type: string
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedRecoveryList'
+          description: ''
+  /api/v1/admin/review-recoveries/{id}:
+    get:
+      operationId: v1_admin_review_recoveries_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 review recovery 的 UUID 字符串。
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Recovery'
+          description: ''
+  /api/v1/admin/review-recoveries/{id}/resume:
+    post:
+      operationId: v1_admin_review_recoveries_resume_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 review recovery 的 UUID 字符串。
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Recovery'
+          description: ''
+  /api/v1/admin/review-recoveries/{id}/stop:
+    post:
+      operationId: v1_admin_review_recoveries_stop_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 review recovery 的 UUID 字符串。
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Recovery'
+          description: ''
+  /api/v1/admin/review-recoveries/enqueue:
+    post:
+      operationId: v1_admin_review_recoveries_enqueue_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RecoveryRequestRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RecoveryRequestRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RecoveryRequestRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Recovery'
+          description: ''
+  /api/v1/admin/review-recoveries/settings:
+    get:
+      operationId: v1_admin_review_recoveries_settings_retrieve
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecoverySettings'
+          description: ''
+    patch:
+      operationId: v1_admin_review_recoveries_settings_partial_update
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedRecoverySettingsRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedRecoverySettingsRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedRecoverySettingsRequest'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RecoverySettings'
           description: ''
   /api/v1/admin/search-index:
     get:
@@ -2329,6 +2846,215 @@ paths:
               schema:
                 $ref: '#/components/schemas/SourceRun'
           description: ''
+  /api/v1/admin/task-monitor:
+    get:
+      operationId: v1_admin_task_monitor_retrieve
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/admin/task-monitor/dashboard:
+    get:
+      operationId: v1_admin_task_monitor_dashboard_retrieve
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/admin/user-settings/{id}:
+    get:
+      operationId: v1_admin_user_settings_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+    patch:
+      operationId: v1_admin_user_settings_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedScopedInputRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedScopedInputRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedScopedInputRequest'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/admin/users:
+    get:
+      operationId: v1_admin_users_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: 分页结果集中的页码。
+        schema:
+          type: integer
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedUserOutputList'
+          description: ''
+    post:
+      operationId: v1_admin_users_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserInputRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserInputRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserInputRequest'
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserOutput'
+          description: ''
+  /api/v1/admin/users/{id}:
+    get:
+      operationId: v1_admin_users_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: 标识此 用户 的 唯一整数值。
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserOutput'
+          description: ''
+    patch:
+      operationId: v1_admin_users_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: 标识此 用户 的 唯一整数值。
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUserInputRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUserInputRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUserInputRequest'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserOutput'
+          description: ''
+    delete:
+      operationId: v1_admin_users_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: 标识此 用户 的 唯一整数值。
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/admin/worker-status:
+    get:
+      operationId: v1_admin_worker_status_retrieve
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkerStatus'
+          description: ''
   /api/v1/auth/csrf:
     get:
       operationId: v1_auth_csrf_retrieve
@@ -2416,6 +3142,870 @@ paths:
                 type: object
                 additionalProperties: {}
           description: ''
+  /api/v1/enterprise-projects:
+    get:
+      operationId: v1_enterprise_projects_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: 分页结果集中的页码。
+        schema:
+          type: integer
+      - in: query
+        name: user_id
+        schema:
+          type: integer
+        description: 由系统管理员指定资料所属账号；省略则管理本人资料。
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedProjectList'
+          description: ''
+    post:
+      operationId: v1_enterprise_projects_create
+      parameters:
+      - in: query
+        name: user_id
+        schema:
+          type: integer
+        description: 由系统管理员指定资料所属账号；省略则管理本人资料。
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProjectRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProjectRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+          description: ''
+  /api/v1/enterprise-projects/{id}:
+    get:
+      operationId: v1_enterprise_projects_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 enterprise project 的 UUID 字符串。
+        required: true
+      - in: query
+        name: user_id
+        schema:
+          type: integer
+        description: 由系统管理员指定资料所属账号；省略则管理本人资料。
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+          description: ''
+    patch:
+      operationId: v1_enterprise_projects_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 enterprise project 的 UUID 字符串。
+        required: true
+      - in: query
+        name: user_id
+        schema:
+          type: integer
+        description: 由系统管理员指定资料所属账号；省略则管理本人资料。
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedProjectRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedProjectRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedProjectRequest'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+          description: ''
+    delete:
+      operationId: v1_enterprise_projects_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 enterprise project 的 UUID 字符串。
+        required: true
+      - in: query
+        name: user_id
+        schema:
+          type: integer
+        description: 由系统管理员指定资料所属账号；省略则管理本人资料。
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/enterprise-projects/{id}/follow-subscriptions:
+    post:
+      operationId: v1_enterprise_projects_follow_subscriptions_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 enterprise project 的 UUID 字符串。
+        required: true
+      - in: query
+        name: user_id
+        schema:
+          type: integer
+        description: 由系统管理员指定资料所属账号；省略则管理本人资料。
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectFollowInputRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProjectFollowInputRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProjectFollowInputRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Project'
+          description: ''
+  /api/v1/enterprise-research:
+    get:
+      operationId: v1_enterprise_research_list
+      parameters:
+      - in: query
+        name: user_id
+        schema:
+          type: integer
+        description: 由系统管理员指定资料所属账号；省略则管理本人资料。
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+    post:
+      operationId: v1_enterprise_research_create
+      parameters:
+      - in: query
+        name: user_id
+        schema:
+          type: integer
+        description: 由系统管理员指定资料所属账号；省略则管理本人资料。
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ResearchInputRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ResearchInputRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ResearchInputRequest'
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnterpriseResearchRun'
+          description: ''
+  /api/v1/enterprise-research/{id}:
+    get:
+      operationId: v1_enterprise_research_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 research run 的 UUID 字符串。
+        required: true
+      - in: query
+        name: user_id
+        schema:
+          type: integer
+        description: 由系统管理员指定资料所属账号；省略则管理本人资料。
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnterpriseResearchRun'
+          description: ''
+    delete:
+      operationId: v1_enterprise_research_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 research run 的 UUID 字符串。
+        required: true
+      - in: query
+        name: user_id
+        schema:
+          type: integer
+        description: 由系统管理员指定资料所属账号；省略则管理本人资料。
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/enterprise-research/{id}/regenerate:
+    post:
+      operationId: v1_enterprise_research_regenerate_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 research run 的 UUID 字符串。
+        required: true
+      - in: query
+        name: user_id
+        schema:
+          type: integer
+        description: 由系统管理员指定资料所属账号；省略则管理本人资料。
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MaintenanceRerunInputRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/MaintenanceRerunInputRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/MaintenanceRerunInputRequest'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnterpriseResearchRun'
+          description: ''
+  /api/v1/enterprise-research/{id}/resume:
+    post:
+      operationId: v1_enterprise_research_resume_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 research run 的 UUID 字符串。
+        required: true
+      - in: query
+        name: user_id
+        schema:
+          type: integer
+        description: 由系统管理员指定资料所属账号；省略则管理本人资料。
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnterpriseResearchRun'
+          description: ''
+  /api/v1/enterprise-research/{id}/saved-result:
+    get:
+      operationId: v1_enterprise_research_saved_result_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 research run 的 UUID 字符串。
+        required: true
+      - in: query
+        name: user_id
+        schema:
+          type: integer
+        description: 由系统管理员指定资料所属账号；省略则管理本人资料。
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/enterprise-research/{id}/stop:
+    post:
+      operationId: v1_enterprise_research_stop_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 research run 的 UUID 字符串。
+        required: true
+      - in: query
+        name: user_id
+        schema:
+          type: integer
+        description: 由系统管理员指定资料所属账号；省略则管理本人资料。
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnterpriseResearchRun'
+          description: ''
+  /api/v1/enterprise-research/{id}/task:
+    get:
+      operationId: v1_enterprise_research_task_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 research run 的 UUID 字符串。
+        required: true
+      - in: query
+        name: user_id
+        schema:
+          type: integer
+        description: 由系统管理员指定资料所属账号；省略则管理本人资料。
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/enterprise-research/dashboard:
+    get:
+      operationId: v1_enterprise_research_dashboard_retrieve
+      parameters:
+      - in: query
+        name: days
+        schema:
+          type: integer
+          enum:
+          - 1
+          - 30
+          - 7
+          - 90
+      - in: query
+        name: kind
+        schema:
+          type: string
+          enum:
+          - company
+          - explanation
+          - project
+          - workflow
+      - in: query
+        name: user_id
+        schema:
+          type: integer
+        description: 由系统管理员指定资料所属账号；省略则管理本人资料。
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/enterprise-research/saved-results:
+    get:
+      operationId: v1_enterprise_research_saved_results_retrieve
+      parameters:
+      - in: query
+        name: user_id
+        schema:
+          type: integer
+        description: 由系统管理员指定资料所属账号；省略则管理本人资料。
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/enterprise-research/tasks:
+    get:
+      operationId: v1_enterprise_research_tasks_retrieve
+      parameters:
+      - in: query
+        name: days
+        schema:
+          type: integer
+          enum:
+          - 1
+          - 30
+          - 7
+          - 90
+      - in: query
+        name: kind
+        schema:
+          type: string
+          enum:
+          - company
+          - explanation
+          - project
+          - workflow
+      - in: query
+        name: page
+        schema:
+          type: integer
+      - in: query
+        name: status
+        schema:
+          type: string
+          enum:
+          - completed
+          - failed
+          - paused
+          - queued
+          - running
+          - waiting
+      - in: query
+        name: user_id
+        schema:
+          type: integer
+        description: 由系统管理员指定资料所属账号；省略则管理本人资料。
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/enterprises:
+    get:
+      operationId: v1_enterprises_list
+      parameters:
+      - in: query
+        name: user_id
+        schema:
+          type: integer
+        description: 由系统管理员指定资料所属账号；省略则管理本人资料。
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+    post:
+      operationId: v1_enterprises_create
+      parameters:
+      - in: query
+        name: user_id
+        schema:
+          type: integer
+        description: 由系统管理员指定资料所属账号；省略则管理本人资料。
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfileInputRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProfileInputRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProfileInputRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+          description: ''
+  /api/v1/enterprises/{id}:
+    get:
+      operationId: v1_enterprises_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 enterprise profile 的 UUID 字符串。
+        required: true
+      - in: query
+        name: user_id
+        schema:
+          type: integer
+        description: 由系统管理员指定资料所属账号；省略则管理本人资料。
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+          description: ''
+    patch:
+      operationId: v1_enterprises_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 enterprise profile 的 UUID 字符串。
+        required: true
+      - in: query
+        name: user_id
+        schema:
+          type: integer
+        description: 由系统管理员指定资料所属账号；省略则管理本人资料。
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedProfileInputRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedProfileInputRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedProfileInputRequest'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+          description: ''
+    delete:
+      operationId: v1_enterprises_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 enterprise profile 的 UUID 字符串。
+        required: true
+      - in: query
+        name: user_id
+        schema:
+          type: integer
+        description: 由系统管理员指定资料所属账号；省略则管理本人资料。
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/enterprises/{id}/home:
+    get:
+      operationId: v1_enterprises_home_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 enterprise profile 的 UUID 字符串。
+        required: true
+      - in: query
+        name: user_id
+        schema:
+          type: integer
+        description: 由系统管理员指定资料所属账号；省略则管理本人资料。
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/enterprises/{id}/matches:
+    get:
+      operationId: v1_enterprises_matches_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 enterprise profile 的 UUID 字符串。
+        required: true
+      - in: query
+        name: user_id
+        schema:
+          type: integer
+        description: 由系统管理员指定资料所属账号；省略则管理本人资料。
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/enterprises/{id}/matching-workflow:
+    post:
+      operationId: v1_enterprises_matching_workflow_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 enterprise profile 的 UUID 字符串。
+        required: true
+      - in: query
+        name: user_id
+        schema:
+          type: integer
+        description: 由系统管理员指定资料所属账号；省略则管理本人资料。
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkflowInputRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/WorkflowInputRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/WorkflowInputRequest'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/enterprises/{id}/subscription-plan:
+    get:
+      operationId: v1_enterprises_subscription_plan_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 enterprise profile 的 UUID 字符串。
+        required: true
+      - in: query
+        name: user_id
+        schema:
+          type: integer
+        description: 由系统管理员指定资料所属账号；省略则管理本人资料。
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+    post:
+      operationId: v1_enterprises_subscription_plan_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 enterprise profile 的 UUID 字符串。
+        required: true
+      - in: query
+        name: user_id
+        schema:
+          type: integer
+        description: 由系统管理员指定资料所属账号；省略则管理本人资料。
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubscriptionPlanInputRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SubscriptionPlanInputRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SubscriptionPlanInputRequest'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/enterprises/options:
+    get:
+      operationId: v1_enterprises_options_retrieve
+      parameters:
+      - in: query
+        name: user_id
+        schema:
+          type: integer
+        description: 由系统管理员指定资料所属账号；省略则管理本人资料。
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
   /api/v1/health:
     get:
       operationId: v1_health_retrieve
@@ -2473,6 +4063,119 @@ paths:
               schema:
                 $ref: '#/components/schemas/KnowledgePageDetail'
           description: ''
+  /api/v1/matching-studies:
+    get:
+      operationId: v1_matching_studies_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: 分页结果集中的页码。
+        schema:
+          type: integer
+      - in: query
+        name: profile
+        schema:
+          type: string
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedStudyList'
+          description: ''
+  /api/v1/matching-studies/{id}:
+    get:
+      operationId: v1_matching_studies_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 matching study 的 UUID 字符串。
+        required: true
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudyDetail'
+          description: ''
+  /api/v1/matching-studies/{id}/label/{case_id}:
+    post:
+      operationId: v1_matching_studies_label_create
+      parameters:
+      - in: path
+        name: case_id
+        schema:
+          type: string
+          pattern: ^[0-9a-f-]{36}$
+        required: true
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 matching study 的 UUID 字符串。
+        required: true
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LabelInputRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LabelInputRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LabelInputRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Case'
+          description: ''
+  /api/v1/matching-studies/sample:
+    post:
+      operationId: v1_matching_studies_sample_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StudyInputRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/StudyInputRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/StudyInputRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StudyDetail'
+          description: ''
   /api/v1/me:
     get:
       operationId: v1_me_retrieve
@@ -2506,6 +4209,11 @@ paths:
           - all
           - read
           - unread
+      - in: query
+        name: user_id
+        schema:
+          type: integer
+        description: 由系统管理员指定资料所属账号；省略则管理本人资料。
       tags:
       - v1
       security:
@@ -2528,6 +4236,11 @@ paths:
           format: uuid
         description: 标识此 notification 的 UUID 字符串。
         required: true
+      - in: query
+        name: user_id
+        schema:
+          type: integer
+        description: 由系统管理员指定资料所属账号；省略则管理本人资料。
       tags:
       - v1
       security:
@@ -2539,6 +4252,28 @@ paths:
               schema:
                 $ref: '#/components/schemas/Notification'
           description: ''
+    delete:
+      operationId: v1_notifications_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 notification 的 UUID 字符串。
+        required: true
+      - in: query
+        name: user_id
+        schema:
+          type: integer
+        description: 由系统管理员指定资料所属账号；省略则管理本人资料。
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
   /api/v1/notifications/{id}/read:
     post:
       operationId: v1_notifications_read_create
@@ -2550,6 +4285,11 @@ paths:
           format: uuid
         description: 标识此 notification 的 UUID 字符串。
         required: true
+      - in: query
+        name: user_id
+        schema:
+          type: integer
+        description: 由系统管理员指定资料所属账号；省略则管理本人资料。
       tags:
       - v1
       security:
@@ -2561,9 +4301,65 @@ paths:
               schema:
                 $ref: '#/components/schemas/Notification'
           description: ''
+  /api/v1/notifications/preferences:
+    get:
+      operationId: v1_notifications_preferences_retrieve
+      parameters:
+      - in: query
+        name: user_id
+        schema:
+          type: integer
+        description: 由系统管理员指定资料所属账号；省略则管理本人资料。
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationPreference'
+          description: ''
+    patch:
+      operationId: v1_notifications_preferences_partial_update
+      parameters:
+      - in: query
+        name: user_id
+        schema:
+          type: integer
+        description: 由系统管理员指定资料所属账号；省略则管理本人资料。
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedNotificationPreferenceRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedNotificationPreferenceRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedNotificationPreferenceRequest'
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationPreference'
+          description: ''
   /api/v1/notifications/read-all:
     post:
       operationId: v1_notifications_read_all_create
+      parameters:
+      - in: query
+        name: user_id
+        schema:
+          type: integer
+        description: 由系统管理员指定资料所属账号；省略则管理本人资料。
       tags:
       - v1
       security:
@@ -2772,6 +4568,151 @@ paths:
               schema:
                 $ref: '#/components/schemas/Policy'
           description: ''
+  /api/v1/policy-watches:
+    get:
+      operationId: v1_policy_watches_list
+      parameters:
+      - name: page
+        required: false
+        in: query
+        description: 分页结果集中的页码。
+        schema:
+          type: integer
+      - in: query
+        name: user_id
+        schema:
+          type: integer
+        description: 由系统管理员指定资料所属账号；省略则管理本人资料。
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedWatchList'
+          description: ''
+  /api/v1/policy-watches/{id}:
+    get:
+      operationId: v1_policy_watches_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 policy watch 的 UUID 字符串。
+        required: true
+      - in: query
+        name: user_id
+        schema:
+          type: integer
+        description: 由系统管理员指定资料所属账号；省略则管理本人资料。
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Watch'
+          description: ''
+  /api/v1/policy-watches/configure:
+    post:
+      operationId: v1_policy_watches_configure_create
+      parameters:
+      - in: query
+        name: user_id
+        schema:
+          type: integer
+        description: 由系统管理员指定资料所属账号；省略则管理本人资料。
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WatchInputRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/WatchInputRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/WatchInputRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Watch'
+          description: ''
+  /api/v1/policy-watches/feedback/{recommendation_id}:
+    post:
+      operationId: v1_policy_watches_feedback_create
+      parameters:
+      - in: path
+        name: recommendation_id
+        schema:
+          type: string
+          format: uuid
+        required: true
+      - in: query
+        name: user_id
+        schema:
+          type: integer
+        description: 由系统管理员指定资料所属账号；省略则管理本人资料。
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FeedbackInputRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/FeedbackInputRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/FeedbackInputRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/policy-watches/results:
+    get:
+      operationId: v1_policy_watches_results_retrieve
+      parameters:
+      - in: query
+        name: user_id
+        schema:
+          type: integer
+        description: 由系统管理员指定资料所属账号；省略则管理本人资料。
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
   /api/v1/search:
     post:
       operationId: v1_search_create
@@ -2798,6 +4739,48 @@ paths:
                 type: object
                 additionalProperties: {}
           description: ''
+  /api/v1/search/summary:
+    post:
+      operationId: v1_search_summary_create
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SearchSummaryRequestRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/SearchSummaryRequestRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SearchSummaryRequestRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/source-coverage:
+    get:
+      operationId: v1_source_coverage_retrieve
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
   /api/v1/subscriptions:
     get:
       operationId: v1_subscriptions_list
@@ -2808,6 +4791,11 @@ paths:
         description: 分页结果集中的页码。
         schema:
           type: integer
+      - in: query
+        name: user_id
+        schema:
+          type: integer
+        description: 由系统管理员指定资料所属账号；省略则管理本人资料。
       tags:
       - v1
       security:
@@ -2821,6 +4809,12 @@ paths:
           description: ''
     post:
       operationId: v1_subscriptions_create
+      parameters:
+      - in: query
+        name: user_id
+        schema:
+          type: integer
+        description: 由系统管理员指定资料所属账号；省略则管理本人资料。
       tags:
       - v1
       requestBody:
@@ -2855,6 +4849,11 @@ paths:
           format: uuid
         description: 标识此 subscription 的 UUID 字符串。
         required: true
+      - in: query
+        name: user_id
+        schema:
+          type: integer
+        description: 由系统管理员指定资料所属账号；省略则管理本人资料。
       tags:
       - v1
       security:
@@ -2876,6 +4875,11 @@ paths:
           format: uuid
         description: 标识此 subscription 的 UUID 字符串。
         required: true
+      - in: query
+        name: user_id
+        schema:
+          type: integer
+        description: 由系统管理员指定资料所属账号；省略则管理本人资料。
       tags:
       - v1
       requestBody:
@@ -2909,6 +4913,11 @@ paths:
           format: uuid
         description: 标识此 subscription 的 UUID 字符串。
         required: true
+      - in: query
+        name: user_id
+        schema:
+          type: integer
+        description: 由系统管理员指定资料所属账号；省略则管理本人资料。
       tags:
       - v1
       requestBody:
@@ -2941,6 +4950,11 @@ paths:
           format: uuid
         description: 标识此 subscription 的 UUID 字符串。
         required: true
+      - in: query
+        name: user_id
+        schema:
+          type: integer
+        description: 由系统管理员指定资料所属账号；省略则管理本人资料。
       tags:
       - v1
       security:
@@ -2948,9 +4962,82 @@ paths:
       responses:
         '204':
           description: No response body
+  /api/v1/subscriptions/{id}/history:
+    get:
+      operationId: v1_subscriptions_history_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 subscription 的 UUID 字符串。
+        required: true
+      - in: query
+        name: user_id
+        schema:
+          type: integer
+        description: 由系统管理员指定资料所属账号；省略则管理本人资料。
+      tags:
+      - v1
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                additionalProperties: {}
+          description: ''
+  /api/v1/subscriptions/{id}/restore:
+    post:
+      operationId: v1_subscriptions_restore_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+          format: uuid
+        description: 标识此 subscription 的 UUID 字符串。
+        required: true
+      - in: query
+        name: user_id
+        schema:
+          type: integer
+        description: 由系统管理员指定资料所属账号；省略则管理本人资料。
+      tags:
+      - v1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RestoreSubscriptionChangeRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/RestoreSubscriptionChangeRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/RestoreSubscriptionChangeRequest'
+        required: true
+      security:
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Subscription'
+          description: ''
   /api/v1/subscriptions/preview:
     post:
       operationId: v1_subscriptions_preview_create
+      parameters:
+      - in: query
+        name: user_id
+        schema:
+          type: integer
+        description: 由系统管理员指定资料所属账号；省略则管理本人资料。
       tags:
       - v1
       requestBody:
@@ -3018,6 +5105,30 @@ components:
           type: integer
           maximum: 4
           minimum: 1
+        thinking:
+          type: boolean
+        context_tokens:
+          type: integer
+          maximum: 131072
+          minimum: 2048
+          nullable: true
+        max_output_tokens:
+          type: integer
+          maximum: 16384
+          minimum: 128
+          nullable: true
+        input_price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,6}(?:\.\d{0,6})?$
+          nullable: true
+        output_price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,6}(?:\.\d{0,6})?$
+          nullable: true
+        currency:
+          $ref: '#/components/schemas/CurrencyEnum'
         has_api_key:
           type: boolean
           readOnly: true
@@ -3170,6 +5281,58 @@ components:
     BlankEnum:
       enum:
       - ''
+    Case:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        policy:
+          type: string
+          format: uuid
+          readOnly: true
+          nullable: true
+        snapshot:
+          readOnly: true
+        predicted:
+          type: boolean
+          readOnly: true
+        prediction:
+          readOnly: true
+        verdict:
+          type: string
+          readOnly: true
+        evidence_supported:
+          type: boolean
+          readOnly: true
+          nullable: true
+        notes:
+          type: string
+          readOnly: true
+        quote:
+          type: string
+          readOnly: true
+        label_version:
+          type: integer
+          readOnly: true
+        labeled_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+      required:
+      - evidence_supported
+      - id
+      - label_version
+      - labeled_at
+      - notes
+      - policy
+      - predicted
+      - prediction
+      - quote
+      - snapshot
+      - verdict
     CategoryEnum:
       enum:
       - fiscal
@@ -3238,6 +5401,14 @@ components:
       required:
       - created
       - sample
+    CurrencyEnum:
+      enum:
+      - CNY
+      - USD
+      type: string
+      description: |-
+        * `CNY` - 人民币
+        * `USD` - 美元
     DecisionRequest:
       type: object
       properties:
@@ -3448,6 +5619,54 @@ components:
       required:
       - policy
       - version
+    EnterpriseResearchRun:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        kind:
+          type: string
+          readOnly: true
+        profile:
+          type: string
+          format: uuid
+          readOnly: true
+          nullable: true
+        inputs:
+          readOnly: true
+        status:
+          type: string
+          readOnly: true
+        stage:
+          type: string
+          readOnly: true
+        result:
+          readOnly: true
+        error:
+          type: string
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        finished_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+      required:
+      - created_at
+      - error
+      - finished_at
+      - id
+      - inputs
+      - kind
+      - profile
+      - result
+      - stage
+      - status
     EvaluationSampleKindEnum:
       enum:
       - opportunity
@@ -3462,12 +5681,35 @@ components:
       enum:
       - pending
       - labeled
+      - needs_help
       - retired
       type: string
       description: |-
         * `pending` - 待人工标注
         * `labeled` - 已人工标注
+        * `needs_help` - 待协助判断
         * `retired` - 已停用
+    FeedbackEnum:
+      enum:
+      - useful
+      - irrelevant
+      - missing_information
+      type: string
+      description: |-
+        * `useful` - useful
+        * `irrelevant` - irrelevant
+        * `missing_information` - missing_information
+    FeedbackInputRequest:
+      type: object
+      properties:
+        feedback:
+          $ref: '#/components/schemas/FeedbackEnum'
+        feedback_note:
+          type: string
+          default: ''
+          maxLength: 500
+      required:
+      - feedback
     FieldUnlockRequest:
       type: object
       properties:
@@ -3509,6 +5751,16 @@ components:
       - water_environment
       type: string
       description: "* `` - \n* `water_environment` - water_environment"
+    IntervalHoursEnum:
+      enum:
+      - 1
+      - 6
+      - 24
+      type: integer
+      description: |-
+        * `1` - 1
+        * `6` - 6
+        * `24` - 24
     KnowledgeBuild:
       type: object
       properties:
@@ -3677,6 +5929,29 @@ components:
         * `published` - 已发布
         * `stale` - 需要更新
         * `archived` - 已归档
+    LabelInputRequest:
+      type: object
+      properties:
+        verdict:
+          $ref: '#/components/schemas/VerdictEnum'
+        evidence_supported:
+          type: boolean
+          nullable: true
+        notes:
+          type: string
+          minLength: 5
+          maxLength: 2000
+        quote:
+          type: string
+          default: ''
+          maxLength: 5000
+        label_version:
+          type: integer
+          minimum: 0
+      required:
+      - label_version
+      - notes
+      - verdict
     LabelRequestRequest:
       type: object
       properties:
@@ -3695,8 +5970,12 @@ components:
           $ref: '#/components/schemas/OpportunityLevelEnum'
         verdict:
           type: boolean
+        unsure:
+          type: boolean
+          default: false
         evidence_supported:
           type: boolean
+          nullable: true
         evidence_policy_id:
           type: string
           format: uuid
@@ -3705,10 +5984,18 @@ components:
           type: string
           maxLength: 10000
       required:
-      - evidence_supported
       - label_version
       - notes
       - prediction_hash
+    LevelEnum:
+      enum:
+      - high
+      - medium
+      - low
+      - insufficient
+      type: string
+      description: "* `` - \n* `high` - high\n* `medium` - medium\n* `low` - low\n*
+        `insufficient` - insufficient"
     LoginRequest:
       type: object
       properties:
@@ -3724,6 +6011,15 @@ components:
       required:
       - password
       - username
+    MaintenanceRerunInputRequest:
+      type: object
+      properties:
+        maintenance:
+          type: boolean
+          default: false
+        maintenance_reason:
+          type: string
+          maxLength: 300
     MarkAllReadResult:
       type: object
       properties:
@@ -3731,6 +6027,14 @@ components:
           type: integer
       required:
       - updated
+    MatchingViewEnum:
+      enum:
+      - policies
+      - opportunities
+      type: string
+      description: |-
+        * `policies` - policies
+        * `opportunities` - opportunities
     MetadataDecisionRequest:
       type: object
       properties:
@@ -3746,14 +6050,6 @@ components:
       - validity_evidence
       - validity_status
       - version
-    ModeEnum:
-      enum:
-      - keyword
-      - natural
-      type: string
-      description: |-
-        * `keyword` - keyword
-        * `natural` - natural
     Notification:
       type: object
       properties:
@@ -3767,6 +6063,7 @@ components:
         policy_id:
           type: string
           format: uuid
+          nullable: true
           readOnly: true
         reasons: {}
         read_at:
@@ -3777,11 +6074,57 @@ components:
           type: string
           format: date-time
           readOnly: true
+        kind:
+          type: string
+          maxLength: 20
+        items:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+          readOnly: true
       required:
       - created_at
       - id
+      - items
       - policy_id
       - title
+    NotificationPreference:
+      type: object
+      properties:
+        update_mode:
+          $ref: '#/components/schemas/UpdateModeEnum'
+        digest_hour:
+          type: integer
+          maximum: 23
+          minimum: 0
+        deadline_enabled:
+          type: boolean
+        deadline_days:
+          type: array
+          items:
+            type: integer
+            maximum: 365
+            minimum: 1
+          maxItems: 5
+          minItems: 1
+      required:
+      - deadline_days
+      - digest_hour
+    Observation:
+      type: object
+      properties:
+        current:
+          type: object
+          additionalProperties: {}
+        history:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+      required:
+      - current
+      - history
     Opportunity:
       type: object
       properties:
@@ -4267,6 +6610,29 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Policy'
+    PaginatedProjectList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Project'
     PaginatedPublicationConsumptionList:
       type: object
       required:
@@ -4290,6 +6656,29 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/PublicationConsumption'
+    PaginatedRecoveryList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Recovery'
     PaginatedRelationList:
       type: object
       required:
@@ -4428,6 +6817,29 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SourceRun'
+    PaginatedStudyList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Study'
     PaginatedSubscriptionList:
       type: object
       required:
@@ -4497,6 +6909,52 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/SystemConfigRelease'
+    PaginatedUserOutputList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserOutput'
+    PaginatedWatchList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Watch'
     PatchedAIModelProfileRequest:
       type: object
       properties:
@@ -4515,6 +6973,30 @@ components:
           type: integer
           maximum: 4
           minimum: 1
+        thinking:
+          type: boolean
+        context_tokens:
+          type: integer
+          maximum: 131072
+          minimum: 2048
+          nullable: true
+        max_output_tokens:
+          type: integer
+          maximum: 16384
+          minimum: 128
+          nullable: true
+        input_price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,6}(?:\.\d{0,6})?$
+          nullable: true
+        output_price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,6}(?:\.\d{0,6})?$
+          nullable: true
+        currency:
+          $ref: '#/components/schemas/CurrencyEnum'
         api_key:
           type: string
           writeOnly: true
@@ -4550,6 +7032,25 @@ components:
         evidence_quote:
           type: string
           minLength: 1
+    PatchedNotificationPreferenceRequest:
+      type: object
+      properties:
+        update_mode:
+          $ref: '#/components/schemas/UpdateModeEnum'
+        digest_hour:
+          type: integer
+          maximum: 23
+          minimum: 0
+        deadline_enabled:
+          type: boolean
+        deadline_days:
+          type: array
+          items:
+            type: integer
+            maximum: 365
+            minimum: 1
+          maxItems: 5
+          minItems: 1
     PatchedOpportunityRequest:
       type: object
       properties:
@@ -4622,6 +7123,128 @@ components:
         evidence_quote:
           type: string
           minLength: 1
+    PatchedPrivateAccountInputRequest:
+      type: object
+      properties:
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        email:
+          oneOf:
+          - type: string
+            format: email
+          - type: string
+            maxLength: 0
+        password:
+          type: string
+          writeOnly: true
+          minLength: 1
+          maxLength: 256
+        current_password:
+          type: string
+          writeOnly: true
+          minLength: 1
+        permission_version:
+          type: integer
+          minimum: 1
+    PatchedProfileInputRequest:
+      type: object
+      properties:
+        start_matching:
+          type: boolean
+          default: false
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+        data: {}
+        revision:
+          type: integer
+          minimum: 1
+        run_id:
+          type: string
+          format: uuid
+        candidate_index:
+          type: integer
+          maximum: 3
+          minimum: 0
+          default: 0
+        refresh_days:
+          $ref: '#/components/schemas/RefreshDaysEnum'
+        auto_subscribe:
+          type: boolean
+          default: false
+        follow_subscriptions:
+          type: boolean
+    PatchedProjectRequest:
+      type: object
+      properties:
+        profile:
+          type: string
+          format: uuid
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+        description:
+          type: string
+          maxLength: 4000
+        data: {}
+        revision:
+          type: integer
+          minimum: 1
+    PatchedRecommendationConfigRequest:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+        all_organizations:
+          type: boolean
+        organizations: {}
+        batch_size:
+          type: integer
+          maximum: 100
+          minimum: 1
+        daily_batches:
+          type: integer
+          maximum: 2000
+          minimum: 1
+        daily_model_calls:
+          type: integer
+          maximum: 1000
+          minimum: 0
+        model_calls_per_run:
+          type: integer
+          maximum: 5
+          minimum: 0
+        aggregation_minutes:
+          type: integer
+          maximum: 60
+          minimum: 1
+        retention_days:
+          type: integer
+          maximum: 365
+          minimum: 7
+    PatchedRecoverySettingsRequest:
+      type: object
+      properties:
+        recovery_enabled:
+          type: boolean
+        recovery_daily_limit:
+          type: integer
+          maximum: 200
+          minimum: 1
+        recovery_attempt_limit:
+          type: integer
+          maximum: 3
+          minimum: 1
+        recovery_cooldown_minutes:
+          type: integer
+          maximum: 1440
+          minimum: 5
     PatchedRelationRequest:
       type: object
       properties:
@@ -4645,6 +7268,94 @@ components:
         evidence_quote:
           type: string
           minLength: 1
+    PatchedResearchSettingsRequest:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+        provider:
+          $ref: '#/components/schemas/ProviderEnum'
+        searxng_url:
+          type: string
+          minLength: 1
+          maxLength: 500
+        api_key:
+          type: string
+          writeOnly: true
+          maxLength: 1000
+        clear_api_key:
+          type: boolean
+          writeOnly: true
+          default: false
+        max_sources:
+          type: integer
+          maximum: 8
+          minimum: 2
+        daily_limit:
+          type: integer
+          maximum: 100
+          minimum: 1
+        agent_enabled:
+          type: boolean
+        agent_all_organizations:
+          type: boolean
+        agent_organizations:
+          type: array
+          items:
+            type: string
+            format: uuid
+          maxItems: 50
+        agent_max_reads:
+          type: integer
+          maximum: 5
+          minimum: 1
+        agent_max_calls:
+          type: integer
+          maximum: 10
+          minimum: 2
+        agent_max_seconds:
+          type: integer
+          maximum: 480
+          minimum: 60
+        workflow_max_policies:
+          type: integer
+          maximum: 10
+          minimum: 1
+        workflow_max_calls:
+          type: integer
+          maximum: 20
+          minimum: 1
+        workflow_max_seconds:
+          type: integer
+          maximum: 900
+          minimum: 60
+        workflow_gap_fill:
+          type: boolean
+        workflow_concurrency:
+          type: integer
+          maximum: 3
+          minimum: 1
+        workflow_cache_hours:
+          type: integer
+          maximum: 72
+          minimum: 0
+        workflow_retry_limit:
+          type: integer
+          maximum: 3
+          minimum: 0
+        workflow_daily_calls:
+          type: integer
+          maximum: 500
+          minimum: 1
+    PatchedScopedInputRequest:
+      type: object
+      properties:
+        revision:
+          type: integer
+          minimum: 0
+        overrides:
+          type: object
+          additionalProperties: {}
     PatchedSourceRequest:
       type: object
       properties:
@@ -4676,6 +7387,16 @@ components:
     PatchedSubscriptionRequest:
       type: object
       properties:
+        revision:
+          type: integer
+          minimum: 1
+        interest_regions:
+          type: array
+          items:
+            type: string
+            minLength: 1
+            maxLength: 100
+          maxItems: 30
         name:
           type: string
           minLength: 1
@@ -4750,6 +7471,37 @@ components:
           minLength: 1
           maxLength: 100
         content: {}
+    PatchedUserInputRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          minLength: 1
+          maxLength: 150
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        email:
+          oneOf:
+          - type: string
+            format: email
+          - type: string
+            maxLength: 0
+        password:
+          type: string
+          writeOnly: true
+          minLength: 1
+          maxLength: 256
+        role:
+          $ref: '#/components/schemas/UserInputRoleEnum'
+        is_active:
+          type: boolean
+        permission_version:
+          type: integer
+          minimum: 1
     Policy:
       type: object
       properties:
@@ -4961,6 +7713,10 @@ components:
           nullable: true
         is_demo:
           type: boolean
+        evidence_readiness:
+          type: object
+          additionalProperties: {}
+          readOnly: true
         body:
           type: string
         sources:
@@ -4997,6 +7753,7 @@ components:
       - ai_enrichment
       - attachments
       - body
+      - evidence_readiness
       - id
       - issuer
       - opportunities
@@ -5067,7 +7824,7 @@ components:
           type: string
           readOnly: true
         role:
-          $ref: '#/components/schemas/RoleEnum'
+          $ref: '#/components/schemas/PolicySourceRoleEnum'
         role_label:
           type: string
           readOnly: true
@@ -5085,6 +7842,18 @@ components:
       - role_label
       - source_grade_label
       - url
+    PolicySourceRoleEnum:
+      enum:
+      - primary
+      - original
+      - repost
+      - additional
+      type: string
+      description: |-
+        * `primary` - 主来源
+        * `original` - 官方原始
+        * `repost` - 官方转载
+        * `additional` - 其他来源
     PolicyStatusEnum:
       enum:
       - candidate
@@ -5095,6 +7864,210 @@ components:
         * `candidate` - 待审核
         * `published` - 已发布
         * `withdrawn` - 已撤下
+    Profile:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        name:
+          type: string
+          readOnly: true
+        data:
+          readOnly: true
+        evidence:
+          readOnly: true
+        revision:
+          type: integer
+          readOnly: true
+        confirmed_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        can_edit:
+          type: boolean
+          readOnly: true
+        refresh_days:
+          type: integer
+          readOnly: true
+        next_research_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        research_method:
+          type: string
+          readOnly: true
+        subscription_result:
+          allOf:
+          - $ref: '#/components/schemas/ProfileSubscriptionResult'
+          readOnly: true
+          nullable: true
+        follow_subscriptions:
+          type: boolean
+          readOnly: true
+        follow_status:
+          type: string
+          readOnly: true
+        matching_task:
+          readOnly: true
+      required:
+      - can_edit
+      - confirmed_at
+      - data
+      - evidence
+      - follow_status
+      - follow_subscriptions
+      - id
+      - matching_task
+      - name
+      - next_research_at
+      - refresh_days
+      - research_method
+      - revision
+      - subscription_result
+      - updated_at
+    ProfileInputRequest:
+      type: object
+      properties:
+        start_matching:
+          type: boolean
+          default: false
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+        data: {}
+        revision:
+          type: integer
+          minimum: 1
+        run_id:
+          type: string
+          format: uuid
+        candidate_index:
+          type: integer
+          maximum: 3
+          minimum: 0
+          default: 0
+        refresh_days:
+          $ref: '#/components/schemas/RefreshDaysEnum'
+        auto_subscribe:
+          type: boolean
+          default: false
+        follow_subscriptions:
+          type: boolean
+      required:
+      - name
+    ProfileSubscriptionResult:
+      type: object
+      properties:
+        created_count:
+          type: integer
+        existing_count:
+          type: integer
+        status:
+          $ref: '#/components/schemas/ProfileSubscriptionResultStatusEnum'
+        message:
+          type: string
+      required:
+      - created_count
+      - existing_count
+      - message
+      - status
+    ProfileSubscriptionResultStatusEnum:
+      enum:
+      - created
+      - unchanged
+      - unavailable
+      type: string
+      description: |-
+        * `created` - created
+        * `unchanged` - unchanged
+        * `unavailable` - unavailable
+    Project:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        profile:
+          type: string
+          format: uuid
+        name:
+          type: string
+          maxLength: 200
+        description:
+          type: string
+          maxLength: 4000
+        data: {}
+        revision:
+          type: integer
+          minimum: 1
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+        follow_subscriptions:
+          type: boolean
+          readOnly: true
+        follow_status:
+          type: string
+          readOnly: true
+      required:
+      - follow_status
+      - follow_subscriptions
+      - id
+      - name
+      - profile
+      - updated_at
+    ProjectFollowInputRequest:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+        revision:
+          type: integer
+          minimum: 1
+      required:
+      - enabled
+      - revision
+    ProjectRequest:
+      type: object
+      properties:
+        profile:
+          type: string
+          format: uuid
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+        description:
+          type: string
+          maxLength: 4000
+        data: {}
+        revision:
+          type: integer
+          minimum: 1
+      required:
+      - name
+      - profile
+    ProviderEnum:
+      enum:
+      - tavily
+      - brave
+      - searxng
+      type: string
+      description: |-
+        * `tavily` - Tavily
+        * `brave` - Brave Search
+        * `searxng` - SearXNG（本地部署）
     PublicationConsumption:
       type: object
       properties:
@@ -5254,14 +8227,179 @@ components:
       enum:
       - review
       - search
+      - search_summary
       - wiki_synthesis
       - wiki_relations
+      - enterprise
+      - enterprise_match
       type: string
       description: |-
         * `review` - 政策自动审核与摘要
-        * `search` - 自然语言检索与归纳
+        * `search` - 搜索意图解析
+        * `search_summary` - 搜索结果归纳
         * `wiki_synthesis` - Wiki 知识页综合
         * `wiki_relations` - 政策关系发现
+        * `enterprise` - 企业与项目资料提取
+        * `enterprise_match` - 企业政策匹配解读
+    RecommendationConfig:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+        all_organizations:
+          type: boolean
+        organizations: {}
+        organization_options:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+          readOnly: true
+        batch_size:
+          type: integer
+          maximum: 100
+          minimum: 1
+        daily_batches:
+          type: integer
+          maximum: 2000
+          minimum: 1
+        daily_model_calls:
+          type: integer
+          maximum: 1000
+          minimum: 0
+        model_calls_per_run:
+          type: integer
+          maximum: 5
+          minimum: 0
+        aggregation_minutes:
+          type: integer
+          maximum: 60
+          minimum: 1
+        retention_days:
+          type: integer
+          maximum: 365
+          minimum: 7
+      required:
+      - aggregation_minutes
+      - batch_size
+      - daily_batches
+      - daily_model_calls
+      - model_calls_per_run
+      - organization_options
+      - retention_days
+    Recovery:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        policy:
+          type: string
+          format: uuid
+          readOnly: true
+        policy_title:
+          type: string
+          readOnly: true
+        source_job:
+          type: string
+          format: uuid
+          readOnly: true
+        policy_version:
+          type: integer
+          readOnly: true
+        status:
+          type: string
+          readOnly: true
+        category:
+          type: string
+          readOnly: true
+        stage:
+          type: string
+          readOnly: true
+        message:
+          type: string
+          readOnly: true
+        attempts:
+          type: integer
+          readOnly: true
+        retry_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        automatic:
+          type: boolean
+          readOnly: true
+        details:
+          type: object
+          additionalProperties: {}
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - attempts
+      - automatic
+      - category
+      - created_at
+      - details
+      - id
+      - message
+      - policy
+      - policy_title
+      - policy_version
+      - retry_at
+      - source_job
+      - stage
+      - status
+      - updated_at
+    RecoveryRequestRequest:
+      type: object
+      properties:
+        enrichment:
+          type: string
+          format: uuid
+      required:
+      - enrichment
+    RecoverySettings:
+      type: object
+      properties:
+        recovery_enabled:
+          type: boolean
+        recovery_daily_limit:
+          type: integer
+          maximum: 200
+          minimum: 1
+        recovery_attempt_limit:
+          type: integer
+          maximum: 3
+          minimum: 1
+        recovery_cooldown_minutes:
+          type: integer
+          maximum: 1440
+          minimum: 5
+      required:
+      - recovery_attempt_limit
+      - recovery_cooldown_minutes
+      - recovery_daily_limit
+    RefreshDaysEnum:
+      enum:
+      - 0
+      - 7
+      - 30
+      - 90
+      type: integer
+      description: |-
+        * `0` - 0
+        * `7` - 7
+        * `30` - 30
+        * `90` - 90
     RegisterRequest:
       type: object
       properties:
@@ -5383,6 +8521,95 @@ components:
         * `allocates` - 资金下达
         * `approves` - 项目批复
         * `accepts` - 验收结果
+    RelationRepair:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        status:
+          $ref: '#/components/schemas/RelationRepairStatusEnum'
+        stage:
+          type: string
+        outcome:
+          type: string
+        attempts:
+          type: integer
+        message:
+          type: string
+        result:
+          type: object
+          additionalProperties: {}
+        updated_at:
+          type: string
+          format: date-time
+        can_retry:
+          type: boolean
+      required:
+      - attempts
+      - can_retry
+      - id
+      - message
+      - outcome
+      - result
+      - stage
+      - status
+      - updated_at
+    RelationRepairBatch:
+      type: object
+      properties:
+        queued:
+          type: integer
+        cached:
+          type: integer
+        skipped:
+          type: array
+          items:
+            type: string
+      required:
+      - cached
+      - queued
+      - skipped
+    RelationRepairMessage:
+      type: object
+      properties:
+        message:
+          type: string
+      required:
+      - message
+    RelationRepairStats:
+      type: object
+      properties:
+        queued:
+          type: integer
+        running:
+          type: integer
+        valid_relation:
+          type: integer
+        no_relation:
+          type: integer
+        needs_review:
+          type: integer
+        failed:
+          type: integer
+        cancelled:
+          type: integer
+        new_relations:
+          type: integer
+    RelationRepairStatusEnum:
+      enum:
+      - queued
+      - running
+      - succeeded
+      - failed
+      - cancelled
+      type: string
+      description: |-
+        * `queued` - queued
+        * `running` - running
+        * `succeeded` - succeeded
+        * `failed` - failed
+        * `cancelled` - cancelled
     RelationRequest:
       type: object
       properties:
@@ -5495,6 +8722,11 @@ components:
           type: string
           format: date-time
           readOnly: true
+        repair:
+          allOf:
+          - $ref: '#/components/schemas/RelationRepair'
+          nullable: true
+          readOnly: true
       required:
       - confidence
       - created_at
@@ -5509,6 +8741,7 @@ components:
       - proposed_kind
       - rejection_reason
       - relation
+      - repair
       - reviewed_at
       - reviewed_by
       - scan
@@ -5529,18 +8762,168 @@ components:
         * `approved` - 人工确认有关系
         * `rejected` - 人工确认无关系
         * `superseded` - 已由后续结果替代
-    RoleEnum:
+    ResearchInputKindEnum:
       enum:
-      - primary
-      - original
-      - repost
-      - additional
+      - company
+      - project
+      - explanation
       type: string
       description: |-
-        * `primary` - 主来源
-        * `original` - 官方原始
-        * `repost` - 官方转载
-        * `additional` - 其他来源
+        * `company` - company
+        * `project` - project
+        * `explanation` - explanation
+    ResearchInputRequest:
+      type: object
+      properties:
+        kind:
+          allOf:
+          - $ref: '#/components/schemas/ResearchInputKindEnum'
+          default: company
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+        city:
+          type: string
+          maxLength: 100
+        credit_code:
+          oneOf:
+          - type: string
+            pattern: ^[A-Z0-9]{18}$
+          - type: string
+            maxLength: 0
+        website:
+          type: string
+          maxLength: 500
+        description:
+          type: string
+          minLength: 1
+          maxLength: 4000
+        profile_id:
+          type: string
+          format: uuid
+        project_id:
+          type: string
+          format: uuid
+        policy_id:
+          type: string
+          format: uuid
+        matching_view:
+          allOf:
+          - $ref: '#/components/schemas/MatchingViewEnum'
+          default: policies
+        source_mode:
+          allOf:
+          - $ref: '#/components/schemas/SourceModeEnum'
+          default: search
+        introduction:
+          type: string
+          minLength: 20
+          maxLength: 40000
+        file:
+          type: string
+          format: binary
+          writeOnly: true
+        retry_run_id:
+          type: string
+          format: uuid
+          writeOnly: true
+    ResearchSettings:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+        provider:
+          $ref: '#/components/schemas/ProviderEnum'
+        searxng_url:
+          type: string
+          maxLength: 500
+        has_api_key:
+          type: boolean
+          readOnly: true
+        max_sources:
+          type: integer
+          maximum: 8
+          minimum: 2
+        daily_limit:
+          type: integer
+          maximum: 100
+          minimum: 1
+        agent_enabled:
+          type: boolean
+        agent_all_organizations:
+          type: boolean
+        agent_organizations:
+          type: array
+          items:
+            type: string
+            format: uuid
+          maxItems: 50
+        agent_max_reads:
+          type: integer
+          maximum: 5
+          minimum: 1
+        agent_max_calls:
+          type: integer
+          maximum: 10
+          minimum: 2
+        agent_max_seconds:
+          type: integer
+          maximum: 480
+          minimum: 60
+        organization_options:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+          readOnly: true
+        workflow_max_policies:
+          type: integer
+          maximum: 10
+          minimum: 1
+        workflow_max_calls:
+          type: integer
+          maximum: 20
+          minimum: 1
+        workflow_max_seconds:
+          type: integer
+          maximum: 900
+          minimum: 60
+        workflow_gap_fill:
+          type: boolean
+        workflow_concurrency:
+          type: integer
+          maximum: 3
+          minimum: 1
+        workflow_cache_hours:
+          type: integer
+          maximum: 72
+          minimum: 0
+        workflow_retry_limit:
+          type: integer
+          maximum: 3
+          minimum: 0
+        workflow_daily_calls:
+          type: integer
+          maximum: 500
+          minimum: 1
+      required:
+      - daily_limit
+      - has_api_key
+      - max_sources
+      - organization_options
+    RestoreSubscriptionChangeRequest:
+      type: object
+      properties:
+        change_id:
+          type: string
+          format: uuid
+        revision:
+          type: integer
+          minimum: 1
+      required:
+      - change_id
+      - revision
     Run:
       type: object
       properties:
@@ -5767,15 +9150,65 @@ components:
         * `title` - title
         * `document_number` - document_number
         * `issuer` - issuer
+    SearchConnectionInputModeEnum:
+      enum:
+      - connection
+      - search
+      type: string
+      description: |-
+        * `connection` - connection
+        * `search` - search
+    SearchConnectionInputRequest:
+      type: object
+      properties:
+        mode:
+          $ref: '#/components/schemas/SearchConnectionInputModeEnum'
+        query:
+          type: string
+          minLength: 1
+          default: 南宁 水务 企业
+          maxLength: 200
+      required:
+      - mode
+    SearchConnectionOutput:
+      type: object
+      properties:
+        connected:
+          type: boolean
+        message:
+          type: string
+        result_count:
+          type: integer
+        unavailable_engines:
+          type: integer
+        items:
+          type: array
+          items:
+            type: object
+            additionalProperties: {}
+      required:
+      - connected
+      - message
     SearchIndexActionRequest:
       type: object
       properties:
         rebuild:
           type: boolean
           default: false
+    SearchRequestModeEnum:
+      enum:
+      - keyword
+      - natural
+      type: string
+      description: |-
+        * `keyword` - keyword
+        * `natural` - natural
     SearchRequestRequest:
       type: object
       properties:
+        defer_summary:
+          type: boolean
+          default: false
         scope:
           allOf:
           - $ref: '#/components/schemas/ScopeEnum'
@@ -5807,11 +9240,11 @@ components:
           maxLength: 500
         mode:
           allOf:
-          - $ref: '#/components/schemas/ModeEnum'
+          - $ref: '#/components/schemas/SearchRequestModeEnum'
           default: keyword
         view:
           allOf:
-          - $ref: '#/components/schemas/ViewEnum'
+          - $ref: '#/components/schemas/SearchRequestViewEnum'
           default: policy
         sort:
           allOf:
@@ -5869,6 +9302,40 @@ components:
           oneOf:
           - $ref: '#/components/schemas/OpportunityStatusEnum'
           - $ref: '#/components/schemas/BlankEnum'
+    SearchRequestViewEnum:
+      enum:
+      - policy
+      - opportunity
+      type: string
+      description: |-
+        * `policy` - policy
+        * `opportunity` - opportunity
+    SearchSummaryRequestRequest:
+      type: object
+      properties:
+        token:
+          type: string
+          minLength: 1
+          maxLength: 20000
+      required:
+      - token
+    SeedRequestRequest:
+      type: object
+      properties:
+        limit:
+          type: integer
+          maximum: 60
+          minimum: 6
+          default: 12
+        kind:
+          $ref: '#/components/schemas/EvaluationSampleKindEnum'
+    SeedResponse:
+      type: object
+      properties:
+        created:
+          type: integer
+      required:
+      - created
     SortEnum:
       enum:
       - comprehensive
@@ -5963,6 +9430,18 @@ components:
         * `L2` - 官方转载
         * `L3` - 政府官方业务平台
         * `L4` - 非官方线索
+    SourceModeEnum:
+      enum:
+      - search
+      - website
+      - text
+      - file
+      type: string
+      description: |-
+        * `search` - search
+        * `website` - website
+        * `text` - text
+        * `file` - file
     SourceRequest:
       type: object
       properties:
@@ -6029,9 +9508,141 @@ components:
       - created_at
       - id
       - source
+    Study:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        profile:
+          type: string
+          format: uuid
+          readOnly: true
+        project:
+          type: string
+          format: uuid
+          readOnly: true
+          nullable: true
+        view:
+          type: string
+          readOnly: true
+        snapshot:
+          readOnly: true
+        selection:
+          readOnly: true
+        metrics:
+          type: object
+          additionalProperties: {}
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - id
+      - metrics
+      - profile
+      - project
+      - selection
+      - snapshot
+      - view
+    StudyDetail:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        profile:
+          type: string
+          format: uuid
+          readOnly: true
+        project:
+          type: string
+          format: uuid
+          readOnly: true
+          nullable: true
+        view:
+          type: string
+          readOnly: true
+        snapshot:
+          readOnly: true
+        selection:
+          readOnly: true
+        metrics:
+          type: object
+          additionalProperties: {}
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        cases:
+          type: array
+          items:
+            $ref: '#/components/schemas/Case'
+          readOnly: true
+      required:
+      - cases
+      - created_at
+      - id
+      - metrics
+      - profile
+      - project
+      - selection
+      - snapshot
+      - view
+    StudyInputRequest:
+      type: object
+      properties:
+        profile:
+          type: string
+          format: uuid
+        project:
+          type: string
+          format: uuid
+          nullable: true
+        view:
+          allOf:
+          - $ref: '#/components/schemas/MatchingViewEnum'
+          default: opportunities
+        limit:
+          type: integer
+          maximum: 40
+          minimum: 4
+          default: 20
+      required:
+      - profile
     Subscription:
       type: object
       properties:
+        source_profile:
+          type: string
+          format: uuid
+          readOnly: true
+          nullable: true
+        source_project:
+          type: string
+          format: uuid
+          readOnly: true
+          nullable: true
+        managed:
+          type: boolean
+          readOnly: true
+        revision:
+          type: integer
+          minimum: 1
+        interest_regions:
+          type: array
+          items:
+            type: string
+            maxLength: 100
+          maxItems: 30
+        system_paused:
+          type: boolean
+          readOnly: true
         id:
           type: string
           format: uuid
@@ -6105,7 +9716,23 @@ components:
       required:
       - created_at
       - id
+      - managed
       - name
+      - source_profile
+      - source_project
+      - system_paused
+    SubscriptionPlanInputRequest:
+      type: object
+      properties:
+        project_id:
+          type: string
+          format: uuid
+          nullable: true
+        revision:
+          type: integer
+          minimum: 1
+        enabled:
+          type: boolean
     SubscriptionPreviewResult:
       type: object
       properties:
@@ -6122,6 +9749,16 @@ components:
     SubscriptionRequest:
       type: object
       properties:
+        revision:
+          type: integer
+          minimum: 1
+        interest_regions:
+          type: array
+          items:
+            type: string
+            minLength: 1
+            maxLength: 100
+          maxItems: 30
         name:
           type: string
           minLength: 1
@@ -6321,6 +9958,122 @@ components:
       - 人工智能＋
       type: string
       description: "* `` - \n* `水务` - 水务\n* `环保` - 环保\n* `人工智能＋` - 人工智能＋"
+    UpdateModeEnum:
+      enum:
+      - daily
+      - instant
+      type: string
+      description: |-
+        * `daily` - 每日汇总
+        * `instant` - 即时通知
+    UserInputRequest:
+      type: object
+      properties:
+        username:
+          type: string
+          minLength: 1
+          maxLength: 150
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        email:
+          oneOf:
+          - type: string
+            format: email
+          - type: string
+            maxLength: 0
+        password:
+          type: string
+          writeOnly: true
+          minLength: 1
+          maxLength: 256
+        role:
+          $ref: '#/components/schemas/UserInputRoleEnum'
+        is_active:
+          type: boolean
+        permission_version:
+          type: integer
+          minimum: 1
+    UserInputRoleEnum:
+      enum:
+      - customer
+      - staff
+      - admin
+      type: string
+      description: |-
+        * `customer` - customer
+        * `staff` - staff
+        * `admin` - admin
+    UserOutput:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          readOnly: true
+          title: 用户名
+          description: 必填；长度为150个字符或以下；只能包含字母、数字、特殊字符“@”、“.”、“-”和“_”。
+        first_name:
+          type: string
+          readOnly: true
+          title: 名字
+        last_name:
+          type: string
+          readOnly: true
+          title: 姓氏
+        email:
+          type: string
+          format: email
+          readOnly: true
+          title: 电子邮件地址
+        is_active:
+          type: boolean
+          readOnly: true
+          title: 有效
+          description: 指明用户是否被认为是活跃的。以反选代替删除帐号。
+        is_superuser:
+          type: boolean
+          readOnly: true
+          title: 超级用户状态
+          description: 指明该用户缺省拥有所有权限。
+        role:
+          type: string
+          readOnly: true
+        date_joined:
+          type: string
+          format: date-time
+          readOnly: true
+          title: 加入日期
+        last_login:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+          title: 上次登录
+        permission_version:
+          type: integer
+          readOnly: true
+        enterprise_count:
+          type: integer
+          readOnly: true
+      required:
+      - date_joined
+      - email
+      - enterprise_count
+      - first_name
+      - id
+      - is_active
+      - is_superuser
+      - last_login
+      - last_name
+      - permission_version
+      - role
+      - username
     ValidityStatusEnum:
       enum:
       - consultation
@@ -6339,6 +10092,16 @@ components:
         * `repealed` - 已废止
         * `replaced` - 已被替代/已修订
         * `unverified` - 待核实
+    VerdictEnum:
+      enum:
+      - relevant
+      - irrelevant
+      - unsure
+      type: string
+      description: |-
+        * `relevant` - relevant
+        * `irrelevant` - irrelevant
+        * `unsure` - unsure
     VerificationStatusEnum:
       enum:
       - pending
@@ -6349,14 +10112,154 @@ components:
         * `pending` - 待核验
         * `verified` - 已核验
         * `rejected` - 核验不通过
-    ViewEnum:
-      enum:
-      - policy
-      - opportunity
-      type: string
-      description: |-
-        * `policy` - policy
-        * `opportunity` - opportunity
+    Watch:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          readOnly: true
+        profile:
+          type: string
+          format: uuid
+          readOnly: true
+        project:
+          type: string
+          format: uuid
+          readOnly: true
+          nullable: true
+        enabled:
+          type: boolean
+          readOnly: true
+        view:
+          type: string
+          readOnly: true
+        interval_hours:
+          type: integer
+          readOnly: true
+        ai_explanations:
+          type: boolean
+          readOnly: true
+        consent_version:
+          type: integer
+          readOnly: true
+        consented_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        next_run_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        last_run_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        message:
+          type: string
+          readOnly: true
+        latest_run:
+          type: object
+          additionalProperties: {}
+          nullable: true
+          readOnly: true
+      required:
+      - ai_explanations
+      - consent_version
+      - consented_at
+      - enabled
+      - id
+      - interval_hours
+      - last_run_at
+      - latest_run
+      - message
+      - next_run_at
+      - profile
+      - project
+      - view
+    WatchInputRequest:
+      type: object
+      properties:
+        profile:
+          type: string
+          format: uuid
+        project:
+          type: string
+          format: uuid
+          nullable: true
+        enabled:
+          type: boolean
+        view:
+          allOf:
+          - $ref: '#/components/schemas/MatchingViewEnum'
+          default: opportunities
+        interval_hours:
+          allOf:
+          - $ref: '#/components/schemas/IntervalHoursEnum'
+          default: 24
+        ai_explanations:
+          type: boolean
+          default: false
+      required:
+      - enabled
+      - profile
+    WorkerGroup:
+      type: object
+      properties:
+        key:
+          type: string
+        label:
+          type: string
+        consumer_count:
+          type: integer
+        shared:
+          type: boolean
+        state:
+          type: string
+        message:
+          type: string
+      required:
+      - consumer_count
+      - key
+      - label
+      - message
+      - shared
+      - state
+    WorkerStatus:
+      type: object
+      properties:
+        checked_at:
+          type: string
+          format: date-time
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkerGroup'
+        notice:
+          type: string
+      required:
+      - checked_at
+      - items
+      - notice
+    WorkflowInputRequest:
+      type: object
+      properties:
+        project_id:
+          type: string
+          format: uuid
+        view:
+          allOf:
+          - $ref: '#/components/schemas/MatchingViewEnum'
+          default: opportunities
+        filters: {}
+        level:
+          default: ''
+          oneOf:
+          - $ref: '#/components/schemas/LevelEnum'
+          - $ref: '#/components/schemas/BlankEnum'
   securitySchemes:
     cookieAuth:
       type: apiKey

@@ -244,3 +244,64 @@ def test_quality_permissions_manual_api_and_daily_deduplication():
         client.get(f"/api/v1/admin/quality/runs/{run.pk}/results?errors_only=true").status_code
         == 200
     )
+
+
+@pytest.mark.django_db
+def test_unsure_is_revisable_and_never_scored_as_negative():
+    actor = get_user_model().objects.create_superuser("quality-reviewer")
+    item = policy(51, "FORMAL_OPPORTUNITY")
+    sample, _ = create_sample(kind="opportunity", policy=item)
+    client = APIClient()
+    client.force_authenticate(actor)
+    endpoint = f"/api/v1/admin/quality/samples/{sample.pk}/label"
+    response = client.post(endpoint, {
+        "prediction_hash": prediction_hash(prediction(sample)), "label_version": 0,
+        "unsure": True, "notes": "需要进一步查阅原文附件",
+    }, format="json")
+    assert response.status_code == 200
+    assert response.data["status"] == "needs_help"
+    assert response.data["gold"] == {"notes": "需要进一步查阅原文附件", "unsure": True}
+    assert evaluate(actor).metrics["opportunity"]["evaluated"] == 0
+    assert client.get("/api/v1/admin/quality/samples?status=needs_help").data["count"] == 1
+    sample.refresh_from_db()
+    label(sample, actor, opportunity_level="FORMAL_OPPORTUNITY")
+    assert evaluate(actor).metrics["opportunity"]["tp"] == 1
+    assert client.post(endpoint, {
+        "prediction_hash": prediction_hash(prediction(sample)), "label_version": 1,
+        "unsure": True, "notes": "旧页面不允许覆盖新结论",
+    }, format="json").status_code == 409
+    item.refresh_from_db()
+    assert item.opportunity_level == "FORMAL_OPPORTUNITY"
+
+
+@pytest.mark.django_db
+def test_unchecked_system_evidence_is_excluded_from_evidence_score():
+    actor = get_user_model().objects.create_superuser("quality-reviewer")
+    sample, _ = create_sample(kind="opportunity", policy=policy(52))
+    label(sample, actor, opportunity_level="NONE", evidence_supported=None)
+    metrics = evaluate(actor).metrics["opportunity"]
+    assert metrics["evaluated"] == 1 and metrics["accuracy"] == 1
+    assert metrics["human_evidence_checked"] == 0
+    assert metrics["human_evidence_support"] is None
+
+
+@pytest.mark.django_db
+def test_typed_sampling_adds_new_material_on_repeated_requests():
+    actor = get_user_model().objects.create_superuser("quality-reviewer")
+    for index in range(18):
+        policy(100 + index, list(("NONE", "SUPPORT_SIGNAL", "FORMAL_OPPORTUNITY"))[index % 3])
+    client = APIClient()
+    client.force_authenticate(actor)
+    for _ in range(3):
+        response = client.post("/api/v1/admin/quality/samples/seed", {
+            "kind": "opportunity", "limit": 6,
+        }, format="json")
+        assert response.status_code == 200 and response.data["created"] == 6
+    assert EvaluationSample.objects.count() == 18
+    assert not EvaluationSample.objects.exclude(kind="opportunity").exists()
+    assert client.post("/api/v1/admin/quality/samples/seed", {
+        "kind": "unknown", "limit": 6,
+    }, format="json").status_code == 400
+    assert client.post("/api/v1/admin/quality/samples/seed", {
+        "kind": "relation", "limit": 6,
+    }, format="json").data["created"] == 0

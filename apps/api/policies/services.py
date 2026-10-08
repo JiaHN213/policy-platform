@@ -223,6 +223,8 @@ def publish_policy(
 @transaction.atomic
 def correct_policy(policy_id, actor, expected_version, changes):
     """Apply a narrow human correction on top of the current AI result."""
+    from subscriptions.models import Subscription
+
     if not actor.is_active or not actor.has_perm("policies.change_policy"):
         raise PermissionDenied("需要政策审核权限。")
     policy = Policy.objects.select_for_update().get(pk=policy_id)
@@ -230,6 +232,7 @@ def correct_policy(policy_id, actor, expected_version, changes):
         raise Conflict()
 
     old_version = policy.version
+    previous_validity_status = policy.validity_status
     previous_job = (
         PolicyEnrichment.objects.select_for_update()
         .filter(policy=policy, policy_version=old_version, status="succeeded")
@@ -365,6 +368,9 @@ def correct_policy(policy_id, actor, expected_version, changes):
                     "title": policy.title,
                     "changed_fields": sorted(changed),
                     "previous_version": old_version,
+                    "previous_validity_status": previous_validity_status,
+                    "subscription_ids": [str(pk) for pk in Subscription.objects.filter(active=True, deleted_at__isnull=True).values_list("pk", flat=True)],
+                    "change_details": [f"政策效力已调整为：{policy.get_validity_status_display()}"] if "validity_status" in changed else [],
                 }
             },
         )
@@ -444,6 +450,8 @@ def fingerprint(value):
 
 @transaction.atomic
 def update_validity(policy_id, actor, version, validity_status, validity_evidence):
+    from subscriptions.models import Subscription
+
     if not actor.is_active or not actor.has_perm("policies.change_policy"):
         raise PermissionDenied("需要政策审核权限。")
     policy = Policy.objects.select_for_update().get(pk=policy_id)
@@ -462,6 +470,7 @@ def update_validity(policy_id, actor, version, validity_status, validity_evidenc
             raise ValidationError("征求意见稿不能标记为现行有效的正式政策。")
     if policy.validity_status == validity_status and policy.validity_evidence == validity_evidence:
         return policy
+    previous_validity_status = policy.validity_status
     policy.validity_status, policy.validity_evidence = validity_status, validity_evidence
     policy.version += 1
     metadata = extract_metadata(policy.body)
@@ -488,6 +497,16 @@ def update_validity(policy_id, actor, version, validity_status, validity_evidenc
         evidence.pk = None
         evidence.policy_version = policy.version
         evidence.save(force_insert=True)
+    # The body did not change; preserve current opportunity evidence references.
+    Opportunity.objects.filter(evidence_policy=policy, evidence_version=version).update(evidence_version=policy.version)
+    OpportunityBatch.objects.filter(evidence_policy=policy, evidence_version=version).update(evidence_version=policy.version)
+    if policy.status == Policy.Status.PUBLISHED:
+        PublicationEvent.objects.get_or_create(policy=policy, policy_version=policy.version, kind="policy.validity_changed.v1", defaults={"payload": {
+            "title": f"政策效力变更为{policy.get_validity_status_display()}：{policy.title}"[:500],
+            "previous_validity_status": previous_validity_status,
+            "changed_fields": ["validity_status", "validity_evidence"],
+            "subscription_ids": [str(pk) for pk in Subscription.objects.filter(active=True, deleted_at__isnull=True).values_list("pk", flat=True)],
+        }})
     AuditRecord.objects.create(
         actor=actor,
         action="policy.validity",

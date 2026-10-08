@@ -27,6 +27,18 @@ from .taxonomy import ValidityStatus
 
 
 class PolicySerializer(serializers.ModelSerializer):
+    def to_representation(self, obj):
+        data = super().to_representation(obj)
+        request = self.context.get("request")
+        internal = bool(request and request.user.is_staff and getattr(request, "path", "").startswith("/api/v1/admin/"))
+        if not internal:
+            for key in ("extraction_version", "scope_evidence", "ai_enrichment", "pipeline", "support_signals"):
+                data.pop(key, None)
+            for source in data.get("sources", []):
+                source.pop("match_method", None)
+                source.pop("match_confidence", None)
+        return data
+
     class Meta:
         model = Policy
         fields = [
@@ -69,12 +81,25 @@ class AttachmentSerializer(serializers.ModelSerializer):
         fields = ["id", "url", "content_type", "size_bytes", "parse_status"]
 
 
+class DistinctSourceListSerializer(serializers.ListSerializer):
+    def to_representation(self, data):
+        from .provenance import source_location
+
+        rows = super().to_representation(data)
+        unique = {}
+        for row in sorted(rows, key=lambda item: not item["is_primary"]):
+            key = source_location(row["resolved_url"] or row["url"])
+            unique.setdefault(key, row)
+        return list(unique.values())
+
+
 class PolicySourceSerializer(serializers.ModelSerializer):
     role_label = serializers.CharField(source="get_role_display", read_only=True)
     source_grade_label = serializers.CharField(source="get_source_grade_display", read_only=True)
 
     class Meta:
         model = PolicySource
+        list_serializer_class = DistinctSourceListSerializer
         fields = [
             "id",
             "url",
@@ -92,6 +117,7 @@ class PolicySourceSerializer(serializers.ModelSerializer):
 
 
 class PolicyDetailSerializer(PolicySerializer):
+    evidence_readiness = serializers.SerializerMethodField()
     attachments = serializers.SerializerMethodField()
     sources = PolicySourceSerializer(many=True, read_only=True)
     relations = serializers.SerializerMethodField()
@@ -100,16 +126,22 @@ class PolicyDetailSerializer(PolicySerializer):
     pipeline = serializers.SerializerMethodField()
 
     @extend_schema_field(dict)
+    def get_evidence_readiness(self, obj):
+        from .readiness import evidence_readiness
+
+        return evidence_readiness(obj)
+
+    @extend_schema_field(dict)
     def get_pipeline(self, obj):
         request = self.context.get("request")
-        if not request or not request.user.is_staff:
+        if not request or not request.user.is_staff or not getattr(request, "path", "").startswith("/api/v1/admin/"):
             return None
         return policy_pipeline_state(obj)
 
     @extend_schema_field(dict)
     def get_ai_enrichment(self, obj):
         request = self.context.get("request")
-        if not request or not request.user.is_staff:
+        if not request or not request.user.is_staff or not getattr(request, "path", "").startswith("/api/v1/admin/"):
             return None
         job = obj.enrichments.filter(policy_version=obj.version).order_by("-updated_at").first()
         if not job:
@@ -150,6 +182,7 @@ class PolicyDetailSerializer(PolicySerializer):
 
     class Meta(PolicySerializer.Meta):
         fields = PolicySerializer.Meta.fields + [
+            "evidence_readiness",
             "body",
             "sources",
             "attachments",

@@ -18,16 +18,13 @@ export type Me = {
   id: number;
   username: string;
   is_staff: boolean;
+  can_manage_system: boolean;
   capabilities: Record<string, { allowed: boolean }>;
 };
 export type Overview = {
   policies: number;
-  sources: number;
-  verified_sources: number;
   subscriptions: number;
   unread: number;
-  demo_count: number;
-  search_backend: string;
 };
 export class ApiError extends Error {
   constructor(
@@ -51,7 +48,11 @@ export async function api<T>(
     if (!csrf.ok)
       throw new ApiError(csrf.status, "无法验证会话，请刷新后重试。");
     headers.set("X-CSRFToken", (await csrf.json()).csrf_token);
-    headers.set("Content-Type", "application/json");
+    if (options.body instanceof FormData) {
+      headers.delete("Content-Type"); // Let the browser add the multipart boundary.
+    } else {
+      headers.set("Content-Type", "application/json");
+    }
   }
   const response = await fetch(`/api/v1/${path}`, {
     ...options,

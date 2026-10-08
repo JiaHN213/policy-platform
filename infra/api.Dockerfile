@@ -9,4 +9,4 @@ COPY configs configs
 RUN useradd --create-home app && mkdir -p /app/staticfiles /app/.local/originals && chown -R app:app /app /opt/venv
 USER app
 ENV PYTHONPATH=/app/apps/api
-CMD ["gunicorn", "config.wsgi:application", "--chdir", "/app/apps/api", "--bind", "0.0.0.0:8000", "--workers", "2", "--access-logfile", "-"]
+CMD ["gunicorn", "config.wsgi:application", "--chdir", "/app/apps/api", "--bind", "0.0.0.0:8000", "--workers", "2", "--timeout", "330", "--access-logfile", "-"]

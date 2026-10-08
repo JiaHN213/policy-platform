@@ -1,5 +1,7 @@
 "use client";
 
+import ReadableText from "@/components/policy/ReadableText";
+
 import { useEffect, useState, type ReactNode } from "react";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -14,7 +16,7 @@ import {
   Skeleton,
   Tag,
 } from "antd";
-import { api, type Policy } from "@/lib/api";
+import { api, ApiError, type Policy } from "@/lib/api";
 import type { components } from "@/lib/schema";
 import SearchHighlight, { type SearchContext } from "./SearchHighlight";
 
@@ -35,6 +37,7 @@ type Result = {
   search_backend: string;
   previews?: SearchContext["previews"];
   elapsed_ms?: number;
+  summary_token?: string;
 };
 
 const filterFields: Record<string, [string, string]> = {
@@ -86,12 +89,24 @@ export default function UnifiedSearch({
   const query = useQuery({
     queryKey: ["unified-search", request, run],
     queryFn: ({ signal }) =>
-      api<Result>("search", { method: "POST", body: JSON.stringify(request), signal }),
+      api<Result>("search", { method: "POST", body: JSON.stringify({ ...request, defer_summary: request.mode === "natural" }), signal }),
     retry: false,
     refetchOnWindowFocus: false,
     staleTime: 30_000,
     enabled: request.mode !== "natural" || !!String(request.q || "").trim(),
   });
+  const summary = useQuery({
+    queryKey: ["search-summary", query.data?.summary_token],
+    queryFn: ({ signal }) => api<Pick<Result, "answer" | "claims">>("search/summary", { method: "POST", body: JSON.stringify({ token: query.data!.summary_token }), signal }),
+    enabled: !!query.data?.summary_token && !query.isFetching,
+    retry: false,
+    refetchOnWindowFocus: false,
+    staleTime: 0,
+    gcTime: 0,
+  });
+  const refreshSummarySources = summary.error instanceof ApiError && [400, 403, 409].includes(summary.error.status);
+  const answer = query.data?.summary_token ? summary.data?.answer || (summary.error ? refreshSummarySources ? summary.error.message : "要点暂未生成，可继续阅读下方政策。" : query.data.answer) : query.data?.answer;
+  const claims = query.data?.summary_token ? summary.data?.claims : query.data?.claims;
   const label = (kind: string, value?: string) =>
     taxonomy.data?.[kind]?.find((option) => option.value === value)?.label ||
     value;
@@ -282,14 +297,15 @@ export default function UnifiedSearch({
           {request.mode === "natural" && <Button onClick={() => submit({ ...request, mode: "keyword" })}>改用关键词搜索</Button>}
         </div>} />
       ) : query.isFetching ? (
-        <div role="status" aria-live="polite"><p className="muted">{request.mode === "natural" ? "正在理解需求、检索政策并核对原文依据，请稍候…" : "正在查找匹配的政策…"}</p><Skeleton active /></div>
+        <div role="status" aria-live="polite"><p className="muted">{request.mode === "natural" ? "正在理解需求并查找相关政策…" : "正在查找匹配的政策…"}</p><Skeleton active /></div>
       ) : (
         query.data && (
           <>
-            {query.data.answer && (
+            {answer && (
               <Alert
                 type="info"
-                title={query.data.answer}
+                className="search-answer-panel"
+                title={<ReadableText text={answer} />}
                 description={
                   <>
                     {query.data.keywords.length > 0 && (
@@ -298,9 +314,10 @@ export default function UnifiedSearch({
                     <div className="search-inferred-filters">{Object.keys(filterFields).filter((key) => query.data?.applied_filters[key] && !request[key]).map((key) =>
                       <Tag key={key}>AI识别 · {filterFields[key][0]}：{label(filterFields[key][1], String(query.data!.applied_filters[key]))}</Tag>
                     )}</div>
-                    {query.data.claims?.map((claim, index) => (
-                      <p key={index}>
-                        {claim.text}{" "}
+                    {summary.error && <Button size="small" onClick={() => void (refreshSummarySources ? query.refetch() : summary.refetch())}>{refreshSummarySources ? "刷新搜索结果" : "重新整理要点"}</Button>}
+                    {claims?.map((claim, index) => (
+                      <div className="reading-evidence" key={index}>
+                        <ReadableText text={claim.text} />
                         <Button
                           size="small"
                           type="link"
@@ -308,7 +325,7 @@ export default function UnifiedSearch({
                         >
                           核对引用
                         </Button>
-                      </p>
+                      </div>
                     ))}
                   </>
                 }
@@ -318,7 +335,7 @@ export default function UnifiedSearch({
               <h3>
                 {query.data.view === "opportunity" ? "政策机会" : "政策文件"}
               </h3>
-              <span role="status">共 {query.data.count} 条结果{query.data.elapsed_ms !== undefined ? ` · ${(query.data.elapsed_ms / 1000).toFixed(2)} 秒` : ""}</span>
+              <span role="status">共 {query.data.count} 条结果{query.data.elapsed_ms !== undefined ? ` · 检索 ${(query.data.elapsed_ms / 1000).toFixed(2)} 秒` : ""}</span>
             </div>
             {!query.data.items.length ? (
               <Empty description={<><p>没有找到匹配的正式记录</p><p className="muted">可缩短关键词、改用政策名称或文号，或减少筛选条件。</p></>}>

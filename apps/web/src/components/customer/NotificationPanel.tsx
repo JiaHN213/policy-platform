@@ -1,7 +1,9 @@
 "use client";
 
+import { accountApi } from "@/lib/account-scope";
+
 import {
-api,
+
 type Notification,
 type Page
 } from "@/lib/api";
@@ -24,13 +26,14 @@ import { useState } from "react";
 
 import { ErrorBox } from "@/components/policy/common";
 
-export default function NotificationPanel({ onSelect }: { onSelect: (id: string) => void }) {
+export default function NotificationPanel({ userId, onSelect }: { userId?: number; onSelect: (id: string) => void }) {
+  const api = accountApi(userId);
   const client = useQueryClient();
   const { message } = App.useApp();
   const [page, setPage] = useState(1);
   const [status, setStatus] = useState("all");
   const query = useQuery({
-    queryKey: ["notifications", page, status],
+    queryKey: ["notifications", userId, page, status],
     queryFn: () =>
       api<Page<Notification>>(`notifications?page=${page}&status=${status}`),
     refetchInterval: 30_000,
@@ -42,16 +45,19 @@ export default function NotificationPanel({ onSelect }: { onSelect: (id: string)
       if (status === "unread" && query.data?.items.length === 1 && page > 1)
         setPage(page - 1);
       client.invalidateQueries({ queryKey: ["notifications"] });
+      client.invalidateQueries({ queryKey: ["home-notifications"] });
       client.invalidateQueries({ queryKey: ["overview"] });
     },
     onError: (e) => message.error(e.message),
   });
+  const remove = useMutation({ mutationFn: (id: string) => api(`notifications/${id}`, { method: "DELETE" }), onSuccess: () => { if (query.data?.items.length === 1 && page > 1) setPage(page - 1); void client.invalidateQueries({ queryKey: ["notifications"] }); void client.invalidateQueries({ queryKey: ["overview"] }); message.success("消息已删除"); }, onError: error => message.error(error.message) });
   const readAll = useMutation({
     mutationFn: () =>
       api<{ updated: number }>("notifications/read-all", { method: "POST" }),
     onSuccess: (result) => {
       setPage(1);
       client.invalidateQueries({ queryKey: ["notifications"] });
+      client.invalidateQueries({ queryKey: ["home-notifications"] });
       client.invalidateQueries({ queryKey: ["overview"] });
       message.success(
         result.updated
@@ -111,18 +117,20 @@ export default function NotificationPanel({ onSelect }: { onSelect: (id: string)
                 className="policy-title"
                 onClick={() => {
                   read.mutate(n.id);
-                  onSelect(n.policy_id);
+                  if (n.policy_id) onSelect(n.policy_id);
                 }}
               >
                 {n.title}
               </button>
               <p className="muted">
-                匹配订阅：{(n.reasons as string[]).join("、")}
+                {(n.reasons as string[]).join("、")}
               </p>
+              {n.items?.map((item, index) => <p key={index}><Button type="link" onClick={() => { read.mutate(n.id); onSelect(String(item.policy_id)); }}>{String(item.title)}</Button></p>)}
               <span className="small muted">
                 {new Date(n.created_at).toLocaleString("zh-CN")}
               </span>
             </div>
+            <Popconfirm title="删除这条消息？" onConfirm={() => remove.mutateAsync(n.id)}><Button danger>删除</Button></Popconfirm>
             {!n.read_at && (
               <Button onClick={() => read.mutate(n.id)}>标为已读</Button>
             )}

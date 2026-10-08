@@ -15,13 +15,14 @@ from policies.models import Policy, PublicationEvent
 from policies.models import PublicationConsumption as Consumption
 from policies.services import publish_policy, withdraw_policy
 from rest_framework.test import APIClient
-from subscriptions.models import Notification, Subscription
+from subscriptions.models import Notification, NotificationPreference, Subscription
 
 
 @pytest.fixture
 def published(db):
     admin = get_user_model().objects.create_superuser("event-admin")
     reader = get_user_model().objects.create_user("event-reader")
+    NotificationPreference.objects.create(user=reader, update_mode="instant")
     Subscription.objects.create(user=reader, name="水务", idempotency_key="water")
     policy = Policy.objects.create(
         title="水务设施建设办法",
@@ -209,7 +210,7 @@ def test_withdrawal_generates_cleanup_and_search_uses_current_policy(published, 
     assert len(written) == 1 and written[0].status == "withdrawn"
 
 
-@pytest.mark.django_db
+@pytest.mark.django_db(transaction=True)
 def test_migration_preserves_delivered_notifications(published):
     _, _, _, event = published
     process_consumption(event.consumptions.get(consumer="subscription").pk)

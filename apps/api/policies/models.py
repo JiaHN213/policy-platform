@@ -327,6 +327,8 @@ class PolicyRelation(VerifiedRecord):
 
 
 class PolicyEnrichment(Record):
+    finished_at = models.DateTimeField(null=True, blank=True)
+    recovery_token = models.UUIDField(null=True, blank=True, db_index=True)
     policy = models.ForeignKey(Policy, on_delete=models.CASCADE, related_name="enrichments")
     policy_version = models.PositiveIntegerField()
     status = models.CharField(max_length=20, default="queued", db_index=True)
@@ -384,9 +386,32 @@ class PolicyFieldProvenance(Record):
 class AIReviewControl(Record):
     singleton_key = models.CharField(max_length=20, unique=True, default="default", editable=False)
     enabled = models.BooleanField(default=False)
+    recovery_enabled = models.BooleanField(default=False)
+    recovery_daily_limit = models.PositiveIntegerField(default=20)
+    recovery_attempt_limit = models.PositiveIntegerField(default=2)
+    recovery_cooldown_minutes = models.PositiveIntegerField(default=30)
     updated_by = models.ForeignKey(
         settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL
     )
+
+
+class ReviewRecovery(Record):
+    source_job = models.OneToOneField(PolicyEnrichment, on_delete=models.CASCADE, related_name="recovery")
+    policy = models.ForeignKey(Policy, on_delete=models.CASCADE, related_name="review_recoveries")
+    policy_version = models.PositiveIntegerField()
+    status = models.CharField(max_length=20, default="queued", db_index=True)
+    category = models.CharField(max_length=30, blank=True)
+    stage = models.CharField(max_length=100, default="等待异常处理")
+    message = models.TextField(blank=True)
+    attempts = models.PositiveIntegerField(default=0)
+    lease_until = models.DateTimeField(null=True, blank=True)
+    retry_at = models.DateTimeField(null=True, blank=True)
+    automatic = models.BooleanField(default=False)
+    result = models.JSONField(default=dict)
+    requested_by = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.SET_NULL)
+
+    class Meta:
+        ordering = ["-created_at", "-id"]
 
 
 class SearchIndexState(Record):

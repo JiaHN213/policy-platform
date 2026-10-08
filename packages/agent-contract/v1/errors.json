@@ -1,0 +1,59 @@
+{
+  "version": "1.0",
+  "items": [
+    {
+      "code": "FORBIDDEN",
+      "message": "当前账号无权读取这份资料。",
+      "action": "检查企业成员权限",
+      "retryable": false
+    },
+    {
+      "code": "STALE_INPUT",
+      "message": "资料或政策已更新，本次结果需要重新生成。",
+      "action": "刷新后重新发起",
+      "retryable": false
+    },
+    {
+      "code": "NO_EVIDENCE",
+      "message": "没有找到支持该结论的原文。",
+      "action": "查看原文或补充资料",
+      "retryable": false
+    },
+    {
+      "code": "MODEL_UNAVAILABLE",
+      "message": "模型服务暂时不可用。",
+      "action": "稍后重试或联系管理员",
+      "retryable": true
+    },
+    {
+      "code": "BUDGET_EXHAUSTED",
+      "message": "本次处理已达到上限，已保存完成部分。",
+      "action": "查看结果后选择是否继续",
+      "retryable": false
+    },
+    {
+      "code": "SOURCE_UNAVAILABLE",
+      "message": "资料页面暂时无法读取。",
+      "action": "上传介绍或粘贴正文",
+      "retryable": true
+    },
+    {
+      "code": "FORMAT_UNSUPPORTED",
+      "message": "当前无法解析这种材料。",
+      "action": "提供可复制文字的文件",
+      "retryable": false
+    },
+    {
+      "code": "IDENTITY_AMBIGUOUS",
+      "message": "发现多家同名企业，尚未确定对应企业。",
+      "action": "选择正确企业",
+      "retryable": false
+    },
+    {
+      "code": "CANCELLED",
+      "message": "任务已停止，原有资料未被覆盖。",
+      "action": "需要时重新发起",
+      "retryable": false
+    }
+  ]
+}

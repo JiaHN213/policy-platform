@@ -29,6 +29,7 @@ import { useState } from "react";
 
 
 import { ErrorBox } from "@/components/policy/common";
+import SourceCoverage from "@/components/customer/SourceCoverage";
 
 export type IntakeSummary = {
   total: number;
@@ -42,7 +43,7 @@ export type IntakeSummary = {
   needs_attention_links: number;
 };
 
-export default function SourcePanel() {
+export default function SourcePanel({ focusedItemId }: { focusedItemId?: string } = {}) {
   const client = useQueryClient();
   const { message } = App.useApp();
   const [itemPage, setItemPage] = useState(1);
@@ -50,22 +51,27 @@ export default function SourcePanel() {
   const summary = useQuery({
     queryKey: ["discovered-summary"],
     queryFn: () => api<IntakeSummary>("admin/discovered-items/summary"),
+    enabled: !focusedItemId,
     refetchInterval: 5000,
   });
   const items = useQuery({
-    queryKey: ["discovered-items", itemPage, itemStatus],
-    queryFn: () =>
-      api<Page<DiscoveredItem>>(
+    queryKey: ["discovered-items", itemPage, itemStatus, focusedItemId],
+    queryFn: async () => focusedItemId
+      ? { count: 1, items: [await api<DiscoveredItem>(`admin/discovered-items/${focusedItemId}`)] }
+      : api<Page<DiscoveredItem>>(
         `admin/discovered-items?page=${itemPage}&status=${itemStatus}`,
       ),
     refetchInterval: 10_000,
   });
+  const focusedSourceId = focusedItemId ? items.data?.items[0]?.source : undefined;
+  const focusedSource = useQuery({ queryKey: ["source-detail", focusedSourceId], queryFn: () => api<Source>(`admin/sources/${focusedSourceId}`), enabled: !!focusedSourceId, refetchInterval: focusedSourceId ? 10000 : false });
   const retry = useMutation({
     mutationFn: (id: string) =>
       api(`admin/discovered-items/${id}/retry`, { method: "POST" }),
     onSuccess: () => {
       client.invalidateQueries({ queryKey: ["discovered-items"] });
       client.invalidateQueries({ queryKey: ["discovered-summary"] });
+      void client.invalidateQueries({ queryKey: ["pipeline-status"] });
       message.success("已重新排队，后台将自动处理。");
     },
     onError: (e) => message.error(e.message),
@@ -82,11 +88,13 @@ export default function SourcePanel() {
   const sources = useQuery({
     queryKey: ["sources"],
     queryFn: () => api<Page<Source>>("admin/sources"),
+    enabled: !focusedItemId,
     refetchInterval: 10_000,
   });
   const runs = useQuery({
     queryKey: ["source-runs"],
     queryFn: () => api<Page<SourceRun>>("admin/source-check-runs"),
+    enabled: !focusedItemId,
     refetchInterval: 10_000,
   });
   const check = useMutation({
@@ -101,6 +109,8 @@ export default function SourcePanel() {
   });
   return (
     <>
+      {!focusedItemId && <>
+      <SourceCoverage />
       <div className="automation-heading">
         <div>
           <h3>采集进度</h3>
@@ -317,6 +327,9 @@ export default function SourcePanel() {
           },
         ]}
       />
+      </>}
+      {focusedItemId && focusedSource.data?.crawl_state === "cooldown" && <Alert showIcon type="warning" title={explainSystemText(focusedSource.data.cooldown_reason) || "来源处于访问保护冷却期"} description={`重试不会跳过冷却保护。${focusedSource.data.cooldown_until ? `预计 ${new Date(focusedSource.data.cooldown_until).toLocaleString("zh-CN")} 后恢复。` : "请等待来源恢复后处理。"}`} />}
+      {focusedItemId && focusedSource.data && !focusedSource.data.enabled && <Alert type="info" title="此来源的自动检查已暂停" description="如需继续定时检查，请在来源采集设置中启用。" />}
       {items.error ? (
         <ErrorBox error={items.error} />
       ) : items.isLoading ? (
@@ -353,7 +366,7 @@ export default function SourcePanel() {
             </a>
             {item.status === "imported" && (
               <p className="muted">
-                已进入政策库；新入库政策需在“待审核”中核对发布。
+                已进入政策库，可在“审核与修正”中查看审核、发布状态及处理建议。
               </p>
             )}
             {!!(item.scope_assessment as { reason?: string })?.reason && (
@@ -369,7 +382,7 @@ export default function SourcePanel() {
               <Alert
                 type="warning"
                 showIcon
-                title="附件资料尚未完整，不能正式发布"
+                title="部分附件尚未完整解析，请核对资料"
                 description={
                   <ul>
                     {(
@@ -398,11 +411,12 @@ export default function SourcePanel() {
                 待核实原因：{explainSystemMessage(item.error_code)}
               </p>
             )}
+            {focusedItemId && ["discovered", "processing"].includes(item.status) && <p className="muted">{item.status === "processing" ? "当前文件正在解析，请等待完成，无需重复提交。" : "已加入解析队列，后台将按来源限速和调度顺序处理。"}</p>}
             {item.status === "failed" && (
               <div className="spread">
                 <p className="muted">
                   已尝试 {item.attempts} 次 ·{" "}
-                  {explainSystemMessage(item.error_code, item.error_detail)}
+                  {explainSystemText(explainSystemMessage(item.error_code, item.error_detail))}
                   {item.attempts < 3 && item.retry_at
                     ? ` · ${new Date(item.retry_at).toLocaleString("zh-CN")} 后自动重试`
                     : " · 需人工检查后重试"}
@@ -418,14 +432,14 @@ export default function SourcePanel() {
           </article>
         ))
       )}
-      <Pagination
+      {!focusedItemId && <Pagination
         className="pagination"
         current={itemPage}
         total={items.data?.count || 0}
         pageSize={20}
         showSizeChanger={false}
         onChange={setItemPage}
-      />
+      />}
     </>
   );
 }

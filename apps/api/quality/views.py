@@ -86,7 +86,8 @@ class LabelRequest(serializers.Serializer):
     notes = serializers.CharField(min_length=5, max_length=3000)
     opportunity_level = serializers.ChoiceField(choices=OpportunityLevel.choices, required=False)
     verdict = serializers.BooleanField(required=False)
-    evidence_supported = serializers.BooleanField()
+    unsure = serializers.BooleanField(default=False)
+    evidence_supported = serializers.BooleanField(required=False, allow_null=True, default=None)
     evidence_policy_id = serializers.UUIDField(required=False, allow_null=True)
     evidence_quote = serializers.CharField(required=False, allow_blank=True, max_length=10000)
 
@@ -104,6 +105,15 @@ class CreateSampleResponse(serializers.Serializer):
     sample = SampleSerializer()
 
 
+class SeedRequest(serializers.Serializer):
+    limit = serializers.IntegerField(min_value=6, max_value=60, default=12)
+    kind = serializers.ChoiceField(choices=EvaluationSample.Kind.choices, required=False)
+
+
+class SeedResponse(serializers.Serializer):
+    created = serializers.IntegerField()
+
+
 class SampleViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = [CatalogAdminPermission]
     queryset = EvaluationSample.objects.select_related(
@@ -117,7 +127,7 @@ class SampleViewSet(viewsets.ReadOnlyModelViewSet):
     def get_queryset(self):
         qs = super().get_queryset()
         for name, choices in (
-            ("status", ["pending", "labeled", "retired"]),
+            ("status", EvaluationSample.Status.values),
             ("kind", EvaluationSample.Kind.values),
         ):
             value = self.request.query_params.get(name)
@@ -139,12 +149,12 @@ class SampleViewSet(viewsets.ReadOnlyModelViewSet):
             }
         )
 
+    @extend_schema(request=SeedRequest, responses=SeedResponse)
     @action(detail=False, methods=["post"])
     def seed(self, request):
-        limit = serializers.IntegerField(min_value=6, max_value=60).run_validation(
-            request.data.get("limit", 30)
-        )
-        return Response({"created": seed_samples(request.user, limit)})
+        form = SeedRequest(data=request.data)
+        form.is_valid(raise_exception=True)
+        return Response({"created": seed_samples(request.user, **form.validated_data)})
 
     @extend_schema(request=CreateSampleRequest, responses=CreateSampleResponse)
     @action(detail=False, methods=["post"], url_path="add")

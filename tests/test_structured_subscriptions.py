@@ -40,6 +40,7 @@ def opportunity_policy():
         status="open",
         acquisition_method="APPLICATION",
         eligible_subjects=["水务企业"],
+        verification_status="verified",
         competent_authorities=["南宁市住房和城乡建设局"],
         evidence_policy=policy,
         evidence_version=policy.version,
@@ -48,6 +49,7 @@ def opportunity_policy():
     OpportunityBatch.objects.create(
         opportunity=opportunity,
         name="2026年度申报批次",
+        verification_status="verified",
         status="open",
         deadline_at=timezone.now() + timedelta(days=5),
         evidence_policy=policy,
@@ -94,5 +96,5 @@ def test_deadline_reminder_is_sent_once(opportunity_policy):
     assert create_deadline_reminders() == 1
     assert create_deadline_reminders() == 0
     notification = Notification.objects.get()
-    assert notification.title.startswith("截止提醒：")
+    assert notification.title.startswith("10天内截止：")
     assert "将在 10 天内截止" in notification.reasons[0]

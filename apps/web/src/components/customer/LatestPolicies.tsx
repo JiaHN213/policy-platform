@@ -52,7 +52,8 @@ export default function LatestPolicies({ onSelect }: { onSelect: (id: string) =>
   };
   return (
     <>
-      <div className="search-filter-panel">
+      <details className="search-filter-panel">
+        <summary>筛选条件{Object.values(filters).filter(Boolean).length ? `（已选 ${Object.values(filters).filter(Boolean).length} 项）` : ""}</summary>
         <div className="automation-heading">
           <div>
             <h3>筛选条件</h3>
@@ -129,7 +130,7 @@ export default function LatestPolicies({ onSelect }: { onSelect: (id: string) =>
             onChange={(value) => updateFilter("source_grade", value)}
           />
         </div>
-      </div>
+      </details>
       <div className="results-heading">
         <h3>最新发布</h3>
         <span>{query.data?.count || 0} 条可查政策</span>

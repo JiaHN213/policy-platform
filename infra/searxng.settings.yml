@@ -1,0 +1,61 @@
+use_default_settings:
+  engines:
+    keep_only:
+      - baidu
+      - bing
+      - 360search
+      - sogou
+      - sm
+      - chinaso
+
+general:
+  instance_name: "Policy Observer Search"
+  debug: false
+  contact_url: false
+  donation_url: false
+  privacypolicy_url: false
+
+search:
+  safe_search: 0
+  autocomplete: ""
+  default_lang: "zh-CN"
+  formats:
+    - html
+    - json
+
+server:
+  # setup_searxng.py generates SEARXNG_SECRET in the private environment file.
+  secret_key: "change-me-before-deployment"
+  limiter: false
+  public_instance: false
+  image_proxy: false
+  bind_address: "0.0.0.0"
+  port: 8080
+
+outgoing:
+  request_timeout: 10.0
+  max_request_timeout: 15.0
+  useragent_suffix: ""
+  pool_connections: 100
+  pool_maxsize: 20
+  enable_http2: true
+
+engines:
+  - name: baidu
+    disabled: false
+    timeout: 10.0
+  - name: bing
+    disabled: false
+    timeout: 10.0
+  - name: 360search
+    disabled: false
+    timeout: 10.0
+  - name: sogou
+    disabled: false
+    timeout: 10.0
+  - name: sm
+    disabled: false
+    timeout: 10.0
+  - name: chinaso
+    disabled: false
+    timeout: 10.0

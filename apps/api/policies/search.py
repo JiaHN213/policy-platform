@@ -9,7 +9,9 @@ from urllib.parse import urlparse
 import httpx
 from accounts.services import access_decision
 from analysis.gateway import generate
-from core.ai_runtime import get_ai_profile
+from core.ai_capacity import shared_capacity
+from core.ai_runtime import apply_generation_settings, get_ai_profile
+from core.ai_usage import request_json
 from django.db.models import Case, F, IntegerField, Min, Q, TextField, Value, When
 from django.db.models.functions import Cast
 from django.utils import timezone
@@ -21,6 +23,7 @@ from rest_framework.response import Response
 from rest_framework.throttling import UserRateThrottle
 from rest_framework.views import APIView
 
+from . import search_support
 from .business_scope import configured_domains, configured_tags
 from .catalog import OpportunitySerializer, formal_policies, visible_batches, visible_opportunities
 from .models import Policy
@@ -36,6 +39,7 @@ logger = logging.getLogger(__name__)
 
 
 class SearchRequest(serializers.Serializer):
+    defer_summary = serializers.BooleanField(default=False)
     scope = serializers.ChoiceField(choices=["all", "title", "document_number", "issuer"], default="all")
     published_from = serializers.CharField(max_length=10, allow_blank=True, default="")
     published_to = serializers.CharField(max_length=10, allow_blank=True, default="")
@@ -228,6 +232,7 @@ def normalize_intent_geography(user, question, intent):
     return cleaned
 
 
+@shared_capacity(purpose="search")
 def parse_intent(question):
     # Intent only. No SQL, URLs, tools or policy facts are accepted from the model.
     prompt = (
@@ -284,11 +289,10 @@ def parse_intent(question):
             "max_tokens": 600,
         }
         headers = {"Authorization": f"Bearer {profile.api_key}"}
-    timeout = httpx.Timeout(connect=10, read=180, write=30, pool=180)
+    apply_generation_settings(profile, payload)
+    timeout = httpx.Timeout(connect=5, read=60, write=10, pool=5)
     with httpx.Client(timeout=timeout, follow_redirects=False) as client:
-        response = client.post(endpoint, headers=headers, json=payload)
-        response.raise_for_status()
-        body = response.json()
+        body = request_json(client, profile, endpoint, headers=headers, payload=payload)
         answer = (
             body["message"]["content"]
             if local_model
@@ -419,7 +423,7 @@ def database_search(user, params, keywords=None, *, require_all_terms=True):
                 "keywords": terms,
                 "previews": search_previews(objects, terms),
                 "search_backend": "opensearch",
-                "evidence": {str(p.pk): p.body[:4000] for p in policies},
+                "evidence": {str(p.pk): search_support.excerpts(p.body, terms + [params.get("topic", "")]) for p in policies},
                 "citations": [
                     {
                         "policy_id": str(p.pk),
@@ -492,7 +496,7 @@ def database_search(user, params, keywords=None, *, require_all_terms=True):
     items = serializer(objects, many=True, context=context).data
     # Facts supplied to AI come only from this page's real, visible policies.
     policies = [obj.policy if opportunity_view else obj for obj in objects[:5]]
-    evidence = {str(p.pk): p.body[:4000] for p in policies}
+    evidence = {str(p.pk): search_support.excerpts(p.body, terms + [params.get("topic", "")]) for p in policies}
     return {
         "items": items,
         "count": count,
@@ -522,7 +526,7 @@ def natural_search(user, params):
         raise AIUnavailable()
 
     def interpret(state):
-        intent = normalize_intent_geography(user, params["q"], parse_intent(params["q"]))
+        intent = normalize_intent_geography(user, params["q"], search_support.intent_for(user, params["q"], parse_intent))
         merged = dict(params)
         for key, value in intent.items():
             if key != "keywords" and not merged.get(key):
@@ -551,37 +555,11 @@ def natural_search(user, params):
             result["answer"] = "数据库中未找到匹配的正式记录，无法归纳政策事实。"
             result["claims"] = []
             return state
-        try:
-            generated = generate(params["q"], result["evidence"])
-        except Exception:
-            logger.exception("Natural-language search summary failed after database retrieval")
-            result["claims"] = []
-            result["answer"] = (
-                "已按自然语言意图检索真实数据库；AI归纳暂未生成，请直接查看以下政策原文。"
-            )
-            return state
-        # Never expose unconstrained generated facts: use only exact validated source excerpts.
-        claims = []
-        for claim in generated.get("claims", []):
-            quote = claim["quote"]
-            if not quote or quote not in result["evidence"].get(claim["evidence_id"], ""):
-                continue
-            claims.append({"text": quote, "policy_id": claim["evidence_id"]})
-        # Recheck permissions and visibility after the model call, before returning facts.
-        if not all(access_decision(user, c)["allowed"] for c in ["policy_search", "policy_detail"]):
-            raise PermissionDenied()
-        current = formal_policies(user)
-        if any(
-            not current.filter(pk=c["policy_id"], version=c["version"]).exists()
-            for c in result["citations"]
-        ):
-            raise ValueError("SOURCE_CHANGED")
-        result["claims"] = claims
-        result["answer"] = (
-            "以下为 AI 从本页前5份数据库文件中选取的原文要点，请核对引用；未补充库外事实。"
-            if claims
-            else "检索到文件，但没有可验证的归纳内容，请阅读原文。"
-        )
+        if params.get("defer_summary"):
+            result.update(claims=[], answer="政策已找到，可先阅读；要点整理后会自动补充。",
+                          summary_token=search_support.issue_ticket(user, params["q"], result))
+        else:
+            result.update(search_support.summarize(user, params["q"], result, generate))
         return state
 
     graph = StateGraph(dict)
@@ -627,3 +605,20 @@ class SearchView(APIView):
         result.pop("evidence", None)
         result["elapsed_ms"] = round((perf_counter() - started) * 1000)
         return Response(result)
+
+
+class SearchSummaryRequest(serializers.Serializer):
+    token = serializers.CharField(max_length=20000)
+
+
+class SearchSummaryView(APIView):
+    throttle_classes = [SearchThrottle]
+
+    @extend_schema(request=SearchSummaryRequest, responses=dict)
+    def post(self, request):
+        data = SearchSummaryRequest(data=request.data)
+        data.is_valid(raise_exception=True)
+        ticket = search_support.read_ticket(request.user, data.validated_data["token"])
+        policies = search_support.check_sources(request.user, ticket["citations"])
+        evidence = {key: search_support.excerpts(policy.body, ticket["terms"]) for key, policy in policies.items()}
+        return Response(search_support.summarize(request.user, ticket["q"], {"citations": ticket["citations"], "evidence": evidence}, generate))

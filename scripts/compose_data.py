@@ -5,6 +5,7 @@ database. Restores are built in a staging database before the name swap.
 """
 
 import argparse
+import hashlib
 import json
 import shutil
 import subprocess
@@ -16,7 +17,7 @@ BACKUP_ROOT = ROOT / ".local" / "backups" / "docker"
 ORIGINALS = ROOT / ".local" / "originals"
 ENV_FILE = ROOT / ".env.compose"
 COMPOSE = ["docker", "compose", "--env-file", str(ENV_FILE), "-f", str(ROOT / "compose.yaml")]
-APP_SERVICES = ("api", "worker", "beat")
+APP_SERVICES = ("api", "worker", "ingestion", "notifications", "beat")
 RESTORE_SERVICES = (*APP_SERVICES, "backup")
 
 
@@ -33,6 +34,20 @@ def run(*arguments, stdout=None, stdin=None, capture=False):
 
 def timestamp():
     return datetime.now().strftime("%Y%m%d-%H%M%S-%f")
+
+
+def file_hash(path):
+    with path.open("rb") as stream:
+        return hashlib.file_digest(stream, "sha256").hexdigest()
+
+
+def verify_hashes(folder, manifest):
+    for relative, expected in manifest.get("sha256", {}).items():
+        target = (folder / relative).resolve()
+        if not target.is_relative_to(folder.resolve()) or not target.is_file():
+            raise ValueError("Backup checksum path is invalid or missing")
+        if file_hash(target) != expected:
+            raise ValueError(f"Backup checksum mismatch: {relative}")
 
 
 def running_services(services):
@@ -73,7 +88,8 @@ def backup(include_originals=False):
             else:
                 (temporary / "originals").mkdir()
         (temporary / "manifest.json").write_text(
-            json.dumps({"format": 1, "includes_originals": include_originals}, indent=2),
+            json.dumps({"format": 2, "includes_originals": include_originals,
+                "sha256": {str(path.relative_to(temporary)).replace('\\', '/'): file_hash(path) for path in temporary.rglob('*') if path.is_file()}}, indent=2),
             encoding="utf-8",
         )
         temporary.rename(destination)
@@ -100,8 +116,12 @@ def backup_contents(source):
         if not dump.is_file() or not manifest_file.is_file():
             raise ValueError("Backup folder must contain database.dump and manifest.json")
         manifest = json.loads(manifest_file.read_text(encoding="utf-8"))
-        if manifest.get("format") != 1:
+        if manifest.get("format") not in {1, 2}:
             raise ValueError("Unsupported backup format")
+        if manifest.get("format") == 2:
+            if "database.dump" not in manifest.get("sha256", {}):
+                raise ValueError("Backup database checksum is missing")
+            verify_hashes(source, manifest)
         has_originals = bool(manifest.get("includes_originals"))
         if has_originals and not (source / "originals").is_dir():
             raise ValueError("This backup is missing its originals folder")
@@ -119,6 +139,7 @@ def verify(source):
         result = run("exec", "-T", "postgres", "psql", "-U", "policy_app", "-d", staging,
                      "-tAc", "SELECT count(*) FROM policies_policy", capture=True)
         print(f"Backup restore verified in a temporary database: {result.stdout.strip()} policies")
+        print("Active database was not replaced. Temporary database will be removed.")
     finally:
         run("exec", "-T", "postgres", "dropdb", "-U", "policy_app", "--if-exists", staging)
 

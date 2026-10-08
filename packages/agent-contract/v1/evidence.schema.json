@@ -1,0 +1,80 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "EvidenceReferenceV1",
+  "type": "object",
+  "properties": {
+    "source_type": {
+      "type": "string",
+      "enum": [
+        "policy",
+        "attachment",
+        "company_website",
+        "uploaded_material",
+        "pasted_text"
+      ]
+    },
+    "source_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 36
+    },
+    "source_version": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 2147483647
+    },
+    "segment_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    },
+    "segmenter_version": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80
+    },
+    "content_sha256": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "quote": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 3000
+    },
+    "start": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "end": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "retrieved_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "origin": {
+      "type": "string",
+      "enum": [
+        "official",
+        "company_statement",
+        "user_statement"
+      ]
+    }
+  },
+  "required": [
+    "source_type",
+    "source_id",
+    "source_version",
+    "segment_id",
+    "segmenter_version",
+    "content_sha256",
+    "quote",
+    "start",
+    "end",
+    "retrieved_at",
+    "origin"
+  ],
+  "additionalProperties": false
+}

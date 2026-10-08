@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     "analysis",
     "knowledge",
     "quality",
+    "enterprises",
 ]
 AUTH_USER_MODEL = "accounts.User"
 MIDDLEWARE = [
@@ -85,6 +86,7 @@ REST_FRAMEWORK = {
 }
 SPECTACULAR_SETTINGS = {
     "ENUM_NAME_OVERRIDES": {
+        "MatchingViewEnum": ["policies", "opportunities"],
         "PolicyStatusEnum": "policies.models.Policy.Status",
         "RelationKindEnum": "policies.taxonomy.RelationKind",
         "EvaluationSampleKindEnum": "quality.models.EvaluationSample.Kind",
@@ -105,11 +107,24 @@ SPECTACULAR_SETTINGS = {
     "COMPONENT_SPLIT_REQUEST": True,
 }
 CELERY_BROKER_URL = env("REDIS_URL", default="redis://127.0.0.1:6379/0")
+CACHES = {
+    "default": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"},
+    "search": {"BACKEND": "django.core.cache.backends.redis.RedisCache", "LOCATION": CELERY_BROKER_URL,
+               "KEY_PREFIX": "policy-search-v1", "OPTIONS": {"socket_connect_timeout": 1, "socket_timeout": 1}},
+}
 CELERY_TASK_SERIALIZER = "json"
 CELERY_ACCEPT_CONTENT = ["json"]
 CELERY_TASK_IGNORE_RESULT = True
 CELERY_TASK_ACKS_LATE = True
 CELERY_WORKER_PREFETCH_MULTIPLIER = 1
+CELERY_NOTIFICATION_QUEUE = env("CELERY_NOTIFICATION_QUEUE", default="celery")
+CELERY_INGESTION_QUEUE = env("CELERY_INGESTION_QUEUE", default="celery")
+CELERY_TASK_ROUTES = {
+    "ingestion.tasks.*": {"queue": CELERY_INGESTION_QUEUE},
+    "subscriptions.tasks.*": {"queue": CELERY_NOTIFICATION_QUEUE},
+    "policies.event_tasks.dispatch_publication_consumers": {"queue": CELERY_NOTIFICATION_QUEUE},
+    "policies.event_tasks.consume_notification": {"queue": CELERY_NOTIFICATION_QUEUE},
+}
 CELERY_TASK_TIME_LIMIT = 300
 CELERY_TASK_SOFT_TIME_LIMIT = 270
 LOCAL_WORKER = env.bool("LOCAL_WORKER", default=False) and DEBUG
@@ -117,10 +132,17 @@ KNOWLEDGE_SYNC_INTERVAL_MINUTES = max(
     5, env.int("KNOWLEDGE_SYNC_INTERVAL_MINUTES", default=30)
 )
 CELERY_BEAT_SCHEDULE = {
+    "observe-matching-quality": {"task": "quality.tasks.observe_matching", "schedule": 3600.0},
+    "recover-policy-review": {"task": "policies.tasks.dispatch_review_recovery", "schedule": 60.0},
+    "continuous-policy-matching": {"task": "enterprises.watch_tasks.dispatch_watches", "schedule": 60.0},
+    "retain-matching-history": {"task": "enterprises.watch_tasks.maintain_watch_history", "schedule": 86400.0},
+    "repair-wiki-evidence": {"task": "knowledge.tasks.dispatch_relation_repairs", "schedule": 60.0},
+    "maintain-profile-subscriptions": {"task": "subscriptions.tasks.maintain_subscriptions", "schedule": 60.0},
+    "dispatch-enterprise-research": {"task": "enterprises.tasks.dispatch_research", "schedule": 30.0},
     "evaluate-policy-quality": {"task": "quality.tasks.evaluate_daily", "schedule": 3600.0},
     "enrich-policy-metadata": {"task": "policies.tasks.dispatch_enrichment", "schedule": 60.0},
-    "import-discovered-policies": {"task": "ingestion.tasks.dispatch_imports", "schedule": 30.0},
-    "dispatch-due-sources": {"task": "ingestion.tasks.dispatch_due_sources", "schedule": 60.0},
+    "import-discovered-policies": {"task": "ingestion.tasks.dispatch_imports", "schedule": 30.0, "options": {"expires": 30}},
+    "dispatch-due-sources": {"task": "ingestion.tasks.dispatch_due_sources", "schedule": 60.0, "options": {"expires": 60}},
     "process-publication-consumers": {
         "task": "policies.event_tasks.dispatch_publication_consumers", "schedule": 15.0,
     },
@@ -155,6 +177,7 @@ ORIGINAL_STORAGE_ROOT = BASE_DIR / ".local" / "originals"
 AI_BASE_URL = env("AI_BASE_URL", default="")
 AI_API_KEY = env("AI_API_KEY", default="")
 AI_MODEL = env("AI_MODEL", default="")
+SEARXNG_URL = env("SEARXNG_URL", default="http://searxng:8080").rstrip("/")
 AI_REVIEW_CONCURRENCY = max(1, min(4, env.int("AI_REVIEW_CONCURRENCY", default=3)))
 KNOWLEDGE_LLM_ENABLED = env.bool("KNOWLEDGE_LLM_ENABLED", default=True)
 KNOWLEDGE_RELATION_AUDIT_ENABLED = env.bool(

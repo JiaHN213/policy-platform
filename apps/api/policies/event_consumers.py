@@ -107,7 +107,7 @@ def _handle(job):
         count = deliver_event(event.pk)
         return (
             {
-                "message": f"订阅匹配完成，本次新增 {count} 条站内通知。",
+                  "message": f"订阅匹配完成，本次安排 {count} 条提醒；普通更新按用户设置进入每日汇总。",
                 "notifications_created": count,
             },
             event.policy_version,

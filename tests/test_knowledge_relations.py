@@ -69,7 +69,7 @@ def relation_catalog(db, settings):
 
 
 @pytest.mark.django_db
-def test_wiki_llm_builds_relation_once_and_derives_validity(relation_catalog, monkeypatch):
+def test_wiki_revision_does_not_invalidate_entire_policy(relation_catalog, monkeypatch):
     old, new = relation_catalog
     calls = []
 
@@ -84,8 +84,8 @@ def test_wiki_llm_builds_relation_once_and_derives_validity(relation_catalog, mo
     assert first["accepted"] == 1
     assert relation.discovery["method"] == "wiki_llm"
     assert relation.verification_status == "verified"
-    assert old.validity_status == "replaced"
-    assert old.scope_evidence["wiki_validity"]["relation_id"] == str(relation.pk)
+    assert old.validity_status == "effective"
+    assert "wiki_validity" not in old.scope_evidence
 
     second = wiki_relations.audit_relations()
     assert len(calls) == 1
@@ -105,6 +105,8 @@ def test_wiki_rescan_removes_stale_auto_relation_and_restores_validity(
     monkeypatch.setattr(wiki_relations, "model_json", relation_model)
     wiki_relations.audit_relations()
     assert PolicyRelation.objects.exists()
+    # A validity-only version must not trigger another identical model scan.
+    assert wiki_relations.audit_relations()["scanned"] == 0
 
     new.version = 2
     new.content_hash = "new-rule-v2"

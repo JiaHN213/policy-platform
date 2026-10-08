@@ -35,7 +35,10 @@ def json_value(value):
 
 def latest_field_provenance(policy):
     latest = {}
-    for item in policy.field_provenance.order_by("field_name", "-created_at", "-id"):
+    records = getattr(policy, "_prefetched_objects_cache", {}).get("field_provenance")
+    if records is None:
+        records = policy.field_provenance.order_by("field_name", "-created_at", "-id")
+    for item in records:
         latest.setdefault(item.field_name, item)
     return latest
 

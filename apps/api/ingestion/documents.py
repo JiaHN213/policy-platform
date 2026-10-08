@@ -1,4 +1,5 @@
 import json
+import re
 import subprocess
 import sys
 import zipfile
@@ -7,7 +8,7 @@ from pathlib import Path
 from urllib.parse import urldefrag, urljoin, urlparse
 from xml.etree import ElementTree
 
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup, Comment
 from bs4.dammit import EncodingDetector
 
 from .gov_library import SourceUnavailable, validate_url
@@ -63,27 +64,76 @@ def readable_html_text(node):
     ):
         unwanted.decompose()
 
-    chunks = []
-
     def render(item):
+        if isinstance(item, Comment):
+            return ""
         name = getattr(item, "name", None)
         if name is None:
-            chunks.append(str(item))
-            return
+            # HTML source indentation is not a visual line break. Actual blocks
+            # and <br> supply breaks below, including adjacent inline spans.
+            return re.sub(r"[\t\r\n ]+", " ", str(item))
         if name == "br":
-            chunks.append("\n")
-            return
-        if name in BLOCK_TAGS or name in {"table", "tr"}:
-            chunks.append("\n")
-        for child in item.children:
-            render(child)
-        if name in {"td", "th"}:
-            chunks.append(" | ")
-        if name in BLOCK_TAGS or name in {"table", "tr"}:
-            chunks.append("\n")
+            return "\n"
+        if name == "table":
+            rows = []
+            spans = {}
+            for row in item.find_all("tr"):
+                if row.find_parent("table") is not item:
+                    continue
+                cells = []
+                column = 0
+                occupied = set(spans)
+                spans = {key: count - 1 for key, count in spans.items() if count > 1}
+                for cell in row.find_all(["td", "th"], recursive=False):
+                    while column in occupied:
+                        cells.append("")
+                        column += 1
+                    value = " ".join("".join(render(child) for child in cell.children).split())
+                    cells.append(value)
+                    def span_size(attr):
+                        try:
+                            return max(1, min(100, int(cell.get(attr, 1))))
+                        except (TypeError, ValueError):
+                            return 1
+                    width, height = span_size("colspan"), span_size("rowspan")
+                    cells.extend([""] * (width - 1))
+                    if height > 1:
+                        for index in range(column, column + width):
+                            spans[index] = height - 1
+                    column += width
+                while column <= max(occupied, default=-1):
+                    cells.append("")
+                    column += 1
+                if cells:
+                    rows.append(" | ".join(cells))
+            return "\n\n" + "\n".join(rows) + "\n\n"
+        content = "".join(render(child) for child in item.children)
+        if name == "li" and item.parent.name in {"ol", "ul"}:
+            # Browser-generated list markers are absent from text nodes.
+            marker = "• "
+            if item.parent.name == "ol" and item.parent.get("type", "1") == "1":
+                siblings = item.parent.find_all("li", recursive=False)
+                step = -1 if item.parent.has_attr("reversed") else 1
+                try:
+                    number = int(item.parent.get("start", len(siblings) if step < 0 else 1))
+                    for sibling in siblings:
+                        number = int(sibling.get("value", number))
+                        if sibling is item:
+                            break
+                        number += step
+                    marker = f"{number}. "
+                except (TypeError, ValueError):
+                    marker = "• "
+            elif item.parent.name == "ol":
+                # Non-decimal schemes cannot be reconstructed as decimal facts.
+                marker = ""
+            if not re.match(r"^(?:[•●\-]|\d+[.、．]|[一二三四五六七八九十]+、|[（(])", content.strip()):
+                content = marker + content.strip()
+        if name in BLOCK_TAGS:
+            return "\n" + content + "\n"
+        return content
 
-    render(node)
-    return normalize_extracted_text("".join(chunks))
+    return normalize_extracted_text(render(node))
 
 
 def extract_docx_text(data):

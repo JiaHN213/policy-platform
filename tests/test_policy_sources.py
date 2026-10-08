@@ -21,6 +21,34 @@ def make_policy(**overrides):
 
 
 @pytest.mark.django_db
+def test_redirect_to_existing_source_is_not_a_repost():
+    policy = make_policy()
+    final = "http://www.nanning.gov.cn/original.html"
+    original = attach_policy_source(policy, {"url": policy.source_url}, policy.content_hash,
+                                    resolved_url=final, created_policy=True)
+    repeated = attach_policy_source(policy, {"url": final}, policy.content_hash, resolved_url=final)
+    assert repeated.pk == original.pk
+    assert policy.sources.count() == 1
+    assert repeated.is_primary and repeated.role == "primary"
+
+
+@pytest.mark.django_db
+def test_historical_duplicate_sources_display_once_but_keep_distinct_queries():
+    from policies.views import PolicySourceSerializer
+
+    policy = make_policy()
+    final = "http://www.nanning.gov.cn/original.html"
+    primary = PolicySource.objects.create(policy=policy, url=policy.source_url,
+                                         resolved_url=final, is_primary=True, role="primary")
+    PolicySource.objects.create(policy=policy, url=final, resolved_url=final, role="repost")
+    PolicySource.objects.create(policy=policy, url=final + "?id=2", role="repost")
+    rows = PolicySourceSerializer(policy.sources.all(), many=True).data
+    assert len(rows) == 2 and rows[0]["id"] == str(primary.pk)
+    assert rows[0]["role"] == "primary"
+    assert policy.sources.count() == 3  # historical evidence is not deleted
+
+
+@pytest.mark.django_db
 def test_same_content_becomes_another_source_of_one_policy():
     policy = make_policy()
     attach_policy_source(

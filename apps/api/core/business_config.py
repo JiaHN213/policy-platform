@@ -76,6 +76,8 @@ def get_config(key: str, *, database=True) -> dict:
     if database:
         configured = _published_document(key)
         if configured is not None:
+            if key == "wiki_relations":
+                return {"automatic_repair": False, **configured}
             return configured
     documents = baseline_documents()
     if key not in documents:
@@ -131,6 +133,9 @@ def validate_documents(documents: dict[str, dict]) -> list[str]:
         "direction_tags": "技术与政策方向",
     }
     errors = []
+    repair_enabled = documents.get("wiki_relations", {}).get("automatic_repair", False)
+    if not isinstance(repair_enabled, bool):
+        errors.append("关系自动补查开关必须为启用或停用。")
     required = set(manifest().get("files", {}))
     missing = sorted(required - set(documents))
     if missing:

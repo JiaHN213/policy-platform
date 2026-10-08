@@ -7,7 +7,7 @@ from django.contrib.auth import get_user_model
 from policies.models import Policy, PublicationEvent
 from policies.services import fingerprint, publish_policy, withdraw_policy
 from rest_framework.test import APIClient
-from subscriptions.models import Notification, Subscription
+from subscriptions.models import Notification, NotificationPreference, PendingDelivery, Subscription
 from subscriptions.services import deliver_event
 
 
@@ -37,8 +37,27 @@ def policy(db):
 
 
 @pytest.mark.django_db
+@pytest.mark.parametrize("mode", ["daily", "instant"])
+def test_delivery_mode_preserves_default_daily_and_deduplicates(users, policy, mode):
+    admin, reader = users
+    client = APIClient()
+    client.force_authenticate(reader)
+    assert client.get("/api/v1/notifications/preferences").data["update_mode"] == "daily"
+    if mode == "instant":
+        assert client.patch("/api/v1/notifications/preferences", {"update_mode": mode}, format="json").status_code == 200
+    Subscription.objects.create(user=reader, name="水务", topic="水务", idempotency_key="mode")
+    publish_policy(policy.pk, admin, 1)
+    event = PublicationEvent.objects.get()
+    assert deliver_event(event.pk) == 1
+    assert deliver_event(event.pk) == 0
+    assert Notification.objects.filter(user=reader).count() == (1 if mode == "instant" else 0)
+    assert PendingDelivery.objects.filter(user=reader).count() == (1 if mode == "daily" else 0)
+
+
+@pytest.mark.django_db
 def test_publication_and_outbox_are_idempotent(users, policy):
     admin, reader = users
+    NotificationPreference.objects.create(user=reader, update_mode="instant")
     for name in ["水务关注", "供水关注"]:
         Subscription.objects.create(user=reader, name=name, topic="水务", idempotency_key=name)
     publish_policy(policy.id, admin, 1)
@@ -195,6 +214,7 @@ def test_read_all_does_not_touch_withdrawn_or_restricted_notifications(users, po
 @pytest.mark.django_db
 def test_subscription_edit_and_delete_keep_existing_notifications(users, policy):
     admin, reader = users
+    NotificationPreference.objects.create(user=reader, update_mode="instant")
     sub = Subscription.objects.create(user=reader, name="原关注", idempotency_key="edit")
     publish_policy(policy.id, admin, 1)
     deliver_event(PublicationEvent.objects.get().id)

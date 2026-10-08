@@ -1,7 +1,9 @@
 "use client";
 
+import { accountApi } from "@/lib/account-scope";
+
 import {
-api,
+
 type Page,
 type Subscription
 } from "@/lib/api";
@@ -14,6 +16,7 @@ import {
 Alert,
 App,
 Button,
+Collapse,
 Empty,
 Form,
 Input,
@@ -32,8 +35,10 @@ import { useState } from "react";
 
 
 import { documentTypeLabel,documentTypes,ErrorBox } from "@/components/policy/common";
+import SubscriptionHistory from "./SubscriptionHistory";
 
-export default function SubscriptionPanel() {
+export default function SubscriptionPanel({ userId }: { userId?: number } = {}) {
+  const api = accountApi(userId);
   const client = useQueryClient();
   const { message } = App.useApp();
   const [open, setOpen] = useState(false);
@@ -41,6 +46,7 @@ export default function SubscriptionPanel() {
   const [form] = Form.useForm();
   const [requestKey, setRequestKey] = useState("");
   const [page, setPage] = useState(1);
+  const [historyId, setHistoryId] = useState<string | null>(null);
   const [previewResult, setPreviewResult] = useState<{
     count: number;
     items: Array<{
@@ -60,7 +66,7 @@ export default function SubscriptionPanel() {
       ),
   });
   const query = useQuery({
-    queryKey: ["subscriptions", page],
+    queryKey: ["subscriptions", userId, page],
     queryFn: () => api<Page<Subscription>>(`subscriptions?page=${page}`),
   });
   const changed = () => {
@@ -71,7 +77,7 @@ export default function SubscriptionPanel() {
     mutationFn: (values: Record<string, unknown>) =>
       api(editing ? `subscriptions/${editing.id}` : "subscriptions", {
         method: editing ? "PATCH" : "POST",
-        body: JSON.stringify(values),
+        body: JSON.stringify({ ...values, ...(editing ? { revision: editing.revision } : {}) }),
         headers: { "Idempotency-Key": requestKey },
       }),
     onSuccess: () => {
@@ -119,6 +125,7 @@ export default function SubscriptionPanel() {
   });
   return (
     <>
+      {historyId && <SubscriptionHistory userId={userId} id={historyId} close={() => setHistoryId(null)} />}
       <div className="panel-heading">
         <div>
           <h3>你关注的政策范围</h3>
@@ -164,6 +171,8 @@ export default function SubscriptionPanel() {
                     />
                   </div>
                   <h3>{sub.name}</h3>
+                  <Tag>{sub.managed ? (sub.source_project ? "系统跟随项目" : "系统跟随画像") : sub.source_profile ? "已由你接管" : "手工／一次性订阅"}</Tag>
+                  {!!sub.interest_regions?.length && <p className="small muted">关注地区：{(sub.interest_regions as string[]).join("、")}；适用范围不明确时保留线索。</p>}
                   <p>{sub.keywords || "不限关键词"}</p>
                   <div>
                     <Tag>
@@ -211,6 +220,7 @@ export default function SubscriptionPanel() {
                     >
                       修改条件
                     </Button>
+                    <Button onClick={() => setHistoryId(sub.id)}>变更记录</Button>
                     <Popconfirm
                       title={`删除订阅“${sub.name}”？`}
                       description="删除后停止接收匹配通知，已有消息保留。"
@@ -257,6 +267,7 @@ export default function SubscriptionPanel() {
       >
         <Form
           form={form}
+          onValuesChange={() => setPreviewResult(null)}
           layout="vertical"
           onFinish={(v) =>
             create.mutate({
@@ -297,6 +308,7 @@ export default function SubscriptionPanel() {
           >
             <Input placeholder="例如：供水 数字化" />
           </Form.Item>
+          <Collapse ghost items={[{ key: "advanced", label: "高级自定义条件（可选）", forceRender: true, children: <>
           <Form.Item
             name="document_type"
             label="文件类型"
@@ -427,6 +439,7 @@ export default function SubscriptionPanel() {
               </Form.Item>
             </>
           )}
+          </> }]} />
           <Button
             block
             loading={preview.isPending}

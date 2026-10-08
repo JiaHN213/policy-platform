@@ -11,6 +11,11 @@ def consume_publication(job_id):
 
 
 @shared_task
+def consume_notification(job_id):
+    process_consumption(job_id)
+
+
+@shared_task
 def dispatch_publication_consumers(consumer=None):
     consumers = [consumer] if consumer else PublicationConsumption.Consumer.values
     for name in consumers:
@@ -18,4 +23,5 @@ def dispatch_publication_consumers(consumer=None):
             if settings.LOCAL_WORKER:
                 process_consumption(job_id)
             else:
-                consume_publication.delay(str(job_id))
+                task = consume_notification if name == "subscription" else consume_publication
+                task.delay(str(job_id))

@@ -1,5 +1,7 @@
 "use client";
 
+import PolicyBody from "@/components/policy/PolicyBody";
+
 import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
@@ -400,9 +402,7 @@ export default function PolicyCorrectionButton({
                       >
                         打开官方原文 ↗
                       </Button>
-                      <div className="correction-document">
-                        {policy.data.body}
-                      </div>
+                      <PolicyBody text={policy.data.body} />
                     </div>
                   ),
                 },

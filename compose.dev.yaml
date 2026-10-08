@@ -14,7 +14,15 @@ services:
     volumes:
       - ./apps/api:/app/apps/api
       - ./configs:/app/configs:ro
+  ingestion:
+    volumes:
+      - ./apps/api:/app/apps/api
+      - ./configs:/app/configs:ro
   beat:
+    volumes:
+      - ./apps/api:/app/apps/api
+      - ./configs:/app/configs:ro
+  notifications:
     volumes:
       - ./apps/api:/app/apps/api
       - ./configs:/app/configs:ro

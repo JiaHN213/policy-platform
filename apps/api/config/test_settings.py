@@ -13,5 +13,6 @@ PASSWORD_HASHERS = ["django.contrib.auth.hashers.MD5PasswordHasher"]
 CELERY_TASK_ALWAYS_EAGER = True
 CELERY_TASK_EAGER_PROPAGATES = True
 ALLOWED_HOSTS = ["testserver", "localhost", "127.0.0.1"]
+CACHES = {key: {"BACKEND": "django.core.cache.backends.locmem.LocMemCache", "LOCATION": key} for key in ("default", "search")}
 OBSIDIAN_EXPORT_ENABLED = False
 KNOWLEDGE_LLM_ENABLED = False

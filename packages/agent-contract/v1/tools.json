@@ -1,0 +1,500 @@
+{
+  "version": "agent-contract-v1",
+  "runtime_enabled": false,
+  "tools": [
+    {
+      "name": "read_confirmed_profile",
+      "roles": [
+        "profile",
+        "retrieval",
+        "matching"
+      ],
+      "permission": "active_org_member",
+      "source_modes": [],
+      "side_effect": "none",
+      "status": "contract_only",
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "profile_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 36
+          },
+          "profile_revision": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2147483647
+          },
+          "project_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 36
+          }
+        },
+        "required": [
+          "profile_id",
+          "profile_revision"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "list_material_sections",
+      "roles": [
+        "profile"
+      ],
+      "permission": "run_owner_and_material_grant",
+      "source_modes": [],
+      "side_effect": "none",
+      "status": "contract_only",
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "material_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 36
+          },
+          "material_revision": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2147483647
+          }
+        },
+        "required": [
+          "material_id",
+          "material_revision"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "read_material_section",
+      "roles": [
+        "profile"
+      ],
+      "permission": "run_owner_and_material_grant",
+      "source_modes": [],
+      "side_effect": "none",
+      "status": "contract_only",
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "material_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 36
+          },
+          "material_revision": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2147483647
+          },
+          "section_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "max_chars": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 12000
+          }
+        },
+        "required": [
+          "material_id",
+          "material_revision",
+          "section_id",
+          "max_chars"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "read_company_website",
+      "roles": [
+        "profile"
+      ],
+      "permission": "run_owner_and_source_grant",
+      "source_modes": [
+        "website"
+      ],
+      "side_effect": "external_read",
+      "status": "contract_only",
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 2000,
+            "format": "uri"
+          }
+        },
+        "required": [
+          "url"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_company_public_info",
+      "roles": [
+        "profile"
+      ],
+      "permission": "run_owner_and_source_grant",
+      "source_modes": [
+        "search"
+      ],
+      "side_effect": "external_read",
+      "status": "contract_only",
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "city": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 80
+          },
+          "credit_code": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 18
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "search_formal_policies",
+      "roles": [
+        "retrieval"
+      ],
+      "permission": "active_user_formal_visibility",
+      "source_modes": [],
+      "side_effect": "none",
+      "status": "contract_only",
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "query": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          },
+          "view": {
+            "type": "string",
+            "enum": [
+              "policies",
+              "opportunities"
+            ]
+          },
+          "filters": {
+            "type": "object",
+            "properties": {
+              "region": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 100
+              },
+              "business_domain": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 80
+              },
+              "direction_tag": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 80
+              },
+              "category": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 80
+              }
+            },
+            "required": [],
+            "additionalProperties": false
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 40
+          },
+          "cursor": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 500
+          }
+        },
+        "required": [
+          "query",
+          "view",
+          "filters",
+          "limit"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "read_policy_evidence",
+      "roles": [
+        "retrieval",
+        "matching",
+        "wiki",
+        "repair"
+      ],
+      "permission": "formal_or_scoped_internal_policy",
+      "source_modes": [],
+      "side_effect": "none",
+      "status": "contract_only",
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "policy_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 36
+          },
+          "policy_version": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2147483647
+          },
+          "section_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "max_chars": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 12000
+          }
+        },
+        "required": [
+          "policy_id",
+          "policy_version",
+          "section_id",
+          "max_chars"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "read_opportunity_batch",
+      "roles": [
+        "retrieval",
+        "matching"
+      ],
+      "permission": "active_user_formal_visibility",
+      "source_modes": [],
+      "side_effect": "none",
+      "status": "contract_only",
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "opportunity_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 36
+          },
+          "policy_version": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2147483647
+          },
+          "opportunity_updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "opportunity_id",
+          "policy_version",
+          "opportunity_updated_at"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "compare_requirements",
+      "roles": [
+        "matching"
+      ],
+      "permission": "active_org_member",
+      "source_modes": [],
+      "side_effect": "none",
+      "status": "contract_only",
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "profile_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 36
+          },
+          "profile_revision": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2147483647
+          },
+          "requirements_artifact_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 36
+          }
+        },
+        "required": [
+          "profile_id",
+          "profile_revision",
+          "requirements_artifact_id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "inspect_relation_candidate",
+      "roles": [
+        "wiki"
+      ],
+      "permission": "staff_and_relation_permission",
+      "source_modes": [],
+      "side_effect": "none",
+      "status": "contract_only",
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "candidate_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 36
+          },
+          "candidate_updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "candidate_id",
+          "candidate_updated_at"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "validate_relation_proposal",
+      "roles": [
+        "wiki"
+      ],
+      "permission": "staff_and_relation_permission",
+      "source_modes": [],
+      "side_effect": "none",
+      "status": "contract_only",
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "proposal_artifact_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 36
+          }
+        },
+        "required": [
+          "proposal_artifact_id"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "request_supported_reparse",
+      "roles": [
+        "repair"
+      ],
+      "permission": "staff_and_reparse_permission",
+      "source_modes": [],
+      "side_effect": "idempotent_job",
+      "status": "contract_only",
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "policy_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 36
+          },
+          "policy_version": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2147483647
+          },
+          "attachment_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 36
+          }
+        },
+        "required": [
+          "policy_id",
+          "policy_version"
+        ],
+        "additionalProperties": false
+      }
+    },
+    {
+      "name": "save_result_draft",
+      "roles": [
+        "profile",
+        "matching",
+        "wiki",
+        "repair"
+      ],
+      "permission": "run_owner_or_internal_scope",
+      "source_modes": [],
+      "side_effect": "draft_only",
+      "status": "contract_only",
+      "input_schema": {
+        "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "type": "object",
+        "properties": {
+          "artifact_id": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 36
+          },
+          "artifact_revision": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 2147483647
+          }
+        },
+        "required": [
+          "artifact_id",
+          "artifact_revision"
+        ],
+        "additionalProperties": false
+      }
+    }
+  ]
+}

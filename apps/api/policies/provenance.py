@@ -1,7 +1,9 @@
 import re
 from decimal import Decimal
+from urllib.parse import urlsplit, urlunsplit
 
-from django.db.models import QuerySet
+from django.db import transaction
+from django.db.models import Q, QuerySet
 
 from .models import Policy, PolicySource
 
@@ -51,6 +53,13 @@ def find_canonical_policy(record, content_hash):
     return None, "new_policy", Decimal("1.000"), {}
 
 
+def source_location(url):
+    """Keep query identity; only normalize host case and fragment anchors."""
+    parsed = urlsplit(url)
+    return urlunsplit((parsed.scheme.lower(), parsed.netloc.lower(), parsed.path, parsed.query, ""))
+
+
+@transaction.atomic
 def attach_policy_source(
     policy,
     record,
@@ -62,6 +71,15 @@ def attach_policy_source(
     confidence=Decimal("1.000"),
     evidence=None,
 ):
+    Policy.objects.select_for_update().get(pk=policy.pk)
+    locations = [url for url in (record["url"], resolved_url) if url]
+    existing = PolicySource.objects.filter(
+        Q(url__in=locations) | Q(resolved_url__in=locations)
+    ).order_by("-is_primary", "created_at", "id").first()
+    if existing:
+        if existing.policy_id != policy.pk:
+            raise ValueError("SOURCE_URL_ALREADY_BOUND_TO_ANOTHER_POLICY")
+        return existing
     role = PolicySource.Role.PRIMARY if created_policy else PolicySource.Role.REPOST
     grade = policy.source_grade if created_policy else Policy.SourceGrade.L2
     source, created = PolicySource.objects.get_or_create(

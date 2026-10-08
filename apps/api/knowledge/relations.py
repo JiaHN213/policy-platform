@@ -13,8 +13,10 @@ from django.conf import settings
 from django.db import transaction
 from django.utils import timezone
 from policies.enrichment import model_json
+from policies.field_provenance import locked_policy_fields
 from policies.models import Policy, PolicyRelation
 from policies.taxonomy import RelationKind
+from policies.validity import save_derived_validity
 from pydantic import BaseModel, ConfigDict, Field
 
 from .models import KnowledgeRelationScan, RelationReviewCandidate
@@ -439,23 +441,31 @@ def _semantic_validation(from_policy, to_policy, evidence_policy, quote, kind):
 
 
 def relation_runtime_signature():
+    rules = {key: value for key, value in get_config("wiki_relations").items()
+             if key != "automatic_repair"}
     return checksum(
         {
             "prompt": PROMPT_VERSION,
             "validator": VALIDATOR_VERSION,
-            "rules": checksum(get_config("wiki_relations")),
+            "rules": checksum(rules),
             "model": get_ai_profile("wiki_relations").model,
         }
     )
 
 
 def _input_hash(group, runtime=None):
+    def content_version(policy):
+        stamp = (policy.scope_evidence or {}).get("validity_content_version", {})
+        if stamp.get("derived_version") == policy.version and stamp.get("content_hash") == policy.content_hash:
+            return stamp["version"]
+        return policy.version
+
     value = {
         "prompt": PROMPT_VERSION,
         "runtime": runtime or relation_runtime_signature(),
-        "anchor": [str(group.anchor.pk), group.anchor.version, group.anchor.content_hash],
+        "anchor": [str(group.anchor.pk), content_version(group.anchor), group.anchor.content_hash],
         "candidates": [
-            [str(policy.pk), policy.version, policy.content_hash] for policy in group.candidates
+            [str(policy.pk), content_version(policy), policy.content_hash] for policy in group.candidates
         ],
     }
     return hashlib.sha256(
@@ -463,7 +473,7 @@ def _input_hash(group, runtime=None):
     ).hexdigest()
 
 
-def _persist(group, digest, output):
+def _persist(group, digest, output, *, additive=False, record_review=True, supersede_review=True):
     ids = {group.anchor.pk, *(policy.pk for policy in group.candidates)}
     with transaction.atomic():
         locked = {
@@ -484,7 +494,15 @@ def _persist(group, digest, output):
         proposed_keys = set()
         anchor_id = str(group.anchor.pk)
         candidate_ids = {str(policy.pk) for policy in group.candidates}
+        human_pairs = {
+            frozenset((str(c.from_policy_id), str(c.to_policy_id)))
+            for c in RelationReviewCandidate.objects.filter(
+                from_policy_id__in=ids, to_policy_id__in=ids, reviewed_by__isnull=False)
+        }
         for proposal in output.relations:
+            if frozenset((proposal.from_policy_id, proposal.to_policy_id)) in human_pairs:
+                preserved += 1
+                continue
             from_policy = locked.get(proposal.from_policy_id)
             to_policy = locked.get(proposal.to_policy_id)
             evidence = locked.get(proposal.evidence_policy_id)
@@ -545,19 +563,22 @@ def _persist(group, digest, output):
                     **defaults,
                 )
             accepted.append(str(relation.pk))
-            RelationReviewCandidate.objects.filter(
+            candidates_to_close = RelationReviewCandidate.objects.filter(
                 from_policy=from_policy,
                 to_policy=to_policy,
                 proposed_kind=proposal.relation,
                 status=RelationReviewCandidate.Status.PENDING,
-            ).update(
+            )
+            if not supersede_review:
+                candidates_to_close = candidates_to_close.none()
+            candidates_to_close.update(
                 status=RelationReviewCandidate.Status.SUPERSEDED,
                 relation=relation,
                 reviewed_at=timezone.now(),
             )
 
         stale = []
-        for relation in PolicyRelation.objects.filter(from_policy_id__in=ids, to_policy_id__in=ids):
+        for relation in ([] if additive else PolicyRelation.objects.filter(from_policy_id__in=ids, to_policy_id__in=ids)):
             discovery = relation.discovery or {}
             key = (str(relation.from_policy_id), str(relation.to_policy_id), relation.kind)
             if (
@@ -565,6 +586,7 @@ def _persist(group, digest, output):
                 and discovery.get("scan_anchor_id") == anchor_id
                 and key not in proposed_keys
                 and not relation.verified_by_id
+                and frozenset((str(relation.from_policy_id), str(relation.to_policy_id))) not in human_pairs
             ):
                 stale.append(relation.pk)
         if stale:
@@ -592,7 +614,7 @@ def _persist(group, digest, output):
                 "error_code": "",
             },
         )
-        for proposal, rejection_reason, evidence in rejected_for_review:
+        for proposal, rejection_reason, evidence in (rejected_for_review if record_review else []):
             proposal_hash = hashlib.sha256(
                 json.dumps(
                     {
@@ -699,17 +721,29 @@ def revalidate_existing_wiki_relations():
     return {"removed": removed, "kept": kept}
 
 
+@transaction.atomic
 def apply_derived_validity():
     policies = {
         str(policy.pk): policy
-        for policy in Policy.objects.filter(status="published", is_demo=False)
+        for policy in Policy.objects.select_for_update().filter(status="published", is_demo=False).order_by("pk").prefetch_related("field_provenance")
     }
     effects = {}
     relations = PolicyRelation.objects.filter(
-        verification_status="verified", kind__in=["repeals", "replaces", "revises", "finalizes"]
-    ).select_related("evidence_policy")
+        verification_status="verified", kind__in=["repeals", "replaces", "finalizes"]
+    ).select_related("evidence_policy").order_by("kind", "pk")
     for relation in relations:
         if relation.evidence_version != relation.evidence_policy.version:
+            continue
+        if any(str(pk) not in policies for pk in (relation.evidence_policy_id, relation.from_policy_id, relation.to_policy_id)):
+            continue
+        if relation.evidence_policy.source_grade not in Policy.FORMAL_SOURCE_GRADES:
+            continue
+        if relation.evidence_policy.validity_status == "not_effective" or relation.evidence_policy.publication_date > timezone.localdate():
+            continue
+        if relation.evidence_quote not in relation.evidence_policy.body:
+            continue
+        # A change to one article/annex never proves the entire document ceased.
+        if relation.kind in {"repeals", "replaces"} and re.search(r"第[一二三四五六七八九十百零〇\d]+[条款项]|部分条款|附件", relation.evidence_quote):
             continue
         target_id = (
             str(relation.from_policy_id)
@@ -724,11 +758,11 @@ def apply_derived_validity():
     changed = 0
     for policy_id, policy in policies.items():
         evidence = dict(policy.scope_evidence or {})
-        marker = evidence.get("wiki_validity")
+        marker = dict(evidence["wiki_validity"]) if evidence.get("wiki_validity") else None
         correction_fields = set(
             evidence.get("ai_review", {}).get("human_correction", {}).get("fields", [])
         )
-        if "validity_status" in correction_fields:
+        if {"validity_status", "validity_evidence"} & (correction_fields | locked_policy_fields(policy)):
             continue
         effect = effects.get(policy_id)
         if effect:
@@ -748,24 +782,14 @@ def apply_derived_validity():
             if (
                 policy.validity_status != effect["status"]
                 or policy.validity_evidence != relation.evidence_quote
-                or evidence.get("wiki_validity") != marker
+                or (evidence.get("wiki_validity") or {}).get("relation_id") != str(relation.pk)
             ):
                 evidence["wiki_validity"] = marker
-                Policy.objects.filter(pk=policy.pk).update(
-                    validity_status=effect["status"],
-                    validity_evidence=relation.evidence_quote,
-                    scope_evidence=evidence,
-                    updated_at=timezone.now(),
-                )
+                save_derived_validity(policy, effect["status"], relation.evidence_quote, evidence)
                 changed += 1
         elif marker:
             evidence.pop("wiki_validity", None)
-            Policy.objects.filter(pk=policy.pk).update(
-                validity_status=marker.get("previous_status", "unverified"),
-                validity_evidence=marker.get("previous_evidence", ""),
-                scope_evidence=evidence,
-                updated_at=timezone.now(),
-            )
+            save_derived_validity(policy, marker.get("previous_status", "unverified"), marker.get("previous_evidence", ""), evidence)
             changed += 1
     return changed
 
@@ -830,6 +854,16 @@ def audit_relations(max_model_scans=None):
         scanned += 1
         accepted += len(result["accepted_relation_ids"])
         invalid += len(result["invalid_proposals"])
+        if result["invalid_proposals"] and get_config("wiki_relations").get("automatic_repair", False):
+            from .repair import enqueue
+
+            for candidate in RelationReviewCandidate.objects.filter(
+                scan__input_hash=digest, status="pending", reviewed_by__isnull=True):
+                try:
+                    enqueue(candidate)
+                except ValueError:
+                    # Existing human conclusions and unavailable inputs stay in review.
+                    continue
     validity_updates = apply_derived_validity()
     return {
         "enabled": True,

@@ -6,7 +6,8 @@ api
 import {
 FileSearchOutlined
 } from "@ant-design/icons";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import {
 Button,
 Form,
@@ -18,6 +19,8 @@ import { useState } from "react";
 import { ErrorBox } from "@/components/policy/common";
 
 export default function Login({ onSuccess }: { onSuccess: () => void }) {
+  const router = useRouter();
+  const client = useQueryClient();
   const [register, setRegister] = useState(false);
   const mutation = useMutation({
     mutationFn: (values: {
@@ -29,7 +32,10 @@ export default function Login({ onSuccess }: { onSuccess: () => void }) {
         method: "POST",
         body: JSON.stringify(values),
       }),
-    onSuccess,
+    onSuccess: () => {
+      if (register) { client.clear(); router.replace("/welcome"); }
+      else onSuccess();
+    },
   });
   return (
     <main className="login-screen">

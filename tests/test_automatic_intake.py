@@ -10,7 +10,7 @@ from ingestion.tasks import check_source, dispatch_imports, import_discovered
 from policies.models import Policy, PublicationEvent
 from policies.services import publish_policy
 from rest_framework.test import APIClient
-from subscriptions.models import Notification, Subscription
+from subscriptions.models import Notification, NotificationPreference, Subscription
 from subscriptions.services import deliver_event
 
 
@@ -58,6 +58,7 @@ def test_discovery_to_review_to_notification(intake):
     admin = get_user_model().objects.create_superuser("reviewer")
     customer = get_user_model().objects.create_user("customer")
     Subscription.objects.create(user=customer, name="关注水务", topic="水务", idempotency_key="1")
+    NotificationPreference.objects.create(user=customer, update_mode="instant")
     publish_policy(
         item.policy_id,
         admin,

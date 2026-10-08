@@ -105,12 +105,12 @@ def create_sample(
 
 
 @transaction.atomic
-def seed_samples(actor, limit=30):
+def seed_samples(actor, limit=30, kind=None):
     """Stratified drafts only; AI outputs never become gold labels."""
     rng = random.Random(20260927)
     added = 0
     buckets = []
-    for level in OpportunityLevel.values:
+    for level in OpportunityLevel.values if kind in (None, "opportunity") else []:
         candidates = list(
             Policy.objects.filter(
                 is_demo=False,
@@ -123,20 +123,27 @@ def seed_samples(actor, limit=30):
         )
         rng.shuffle(candidates)
         buckets.append(iter(candidates))
-    for _ in range(limit):
+    opportunity_limit = limit if kind == "opportunity" else limit // 2
+    for _ in range(1000):
+        found = False
         for bucket in buckets:
             policy = next(bucket, None)
-            if policy and added < limit // 2:
+            found = found or policy is not None
+            if policy and added < opportunity_limit:
                 _, created = create_sample(kind="opportunity", policy=policy, origin="stratified")
                 added += int(created)
+        if not found or added >= opportunity_limit:
+            break
+    relation_limit = limit if kind == "relation" else max(0, limit - 3)
     for relation in (
         PolicyRelation.objects.filter(
             discovery__method="wiki_llm", from_policy__is_demo=False, to_policy__is_demo=False
         )
         .select_related("from_policy", "to_policy")
-        .order_by("id")[: max(2, limit // 6)]
+        .order_by("id")
+        if kind in (None, "relation") else []
     ):
-        if added >= limit - 3:
+        if added >= (limit // 2 if kind == "relation" else limit // 2 + max(2, limit // 6)):
             break
         _, created = create_sample(
             kind="relation",
@@ -153,9 +160,10 @@ def seed_samples(actor, limit=30):
             to_policy__is_demo=False,
         )
         .select_related("from_policy", "to_policy")
-        .order_by("id")[:limit]
+        .order_by("id")
+        if kind in (None, "relation") else []
     ):
-        if added >= limit - 3:
+        if added >= relation_limit:
             break
         _, created = create_sample(
             kind="relation",
@@ -171,6 +179,7 @@ def seed_samples(actor, limit=30):
         )
         .select_related("current_revision")
         .order_by("page_type", "id")
+        if kind in (None, "knowledge") else []
     ):
         if added >= limit:
             break
@@ -180,7 +189,7 @@ def seed_samples(actor, limit=30):
         actor=actor,
         action="quality.samples.created",
         object_id=uuid.uuid4(),
-        details={"created": added},
+        details={"created": added, "kind": kind or "all"},
     )
     return added
 
@@ -217,12 +226,21 @@ def label_sample(sample_id, actor, data):
         raise Conflict("系统输出已经变化，请刷新后核对引用证据再保存标注。")
     gold = {
         "notes": data["notes"],
-        "evidence_supported": data["evidence_supported"],
+        "evidence_supported": data.get("evidence_supported"),
         "evidence_policy_id": str(data.get("evidence_policy_id") or ""),
         "evidence_quote": data.get("evidence_quote", ""),
-        "evidence_prediction_hash": current_prediction_hash,
+        # Leave unchecked evidence unbound, including for older scheduled scorers
+        # finishing long-running jobs during a rolling deployment.
+        "evidence_prediction_hash": (
+            current_prediction_hash if isinstance(data.get("evidence_supported"), bool) else ""
+        ),
     }
-    if sample.kind == "opportunity":
+    unsure = data.get("unsure", False)
+    if unsure:
+        # An honest abstention must never become a negative training/quality label.
+        gold = {"notes": data["notes"], "unsure": True}
+        positive = False
+    elif sample.kind == "opportunity":
         if data.get("opportunity_level") not in OpportunityLevel.values:
             raise ValidationError("请选择政策机会判断结果。")
         gold["opportunity_level"] = data["opportunity_level"]
@@ -232,7 +250,7 @@ def label_sample(sample_id, actor, data):
             raise ValidationError("请明确选择有无该关系，或知识页是否得到原文支持。")
         gold["verdict"] = data["verdict"]
         positive = data["verdict"]
-    quote = gold["evidence_quote"].strip()
+    quote = gold.get("evidence_quote", "").strip()
     if positive or quote:
         source = next(
             (d for d in sample.snapshot["documents"] if d["id"] == gold["evidence_policy_id"]), None
@@ -241,7 +259,7 @@ def label_sample(sample_id, actor, data):
             raise ValidationError("正向结论必须选择证据文件，并逐字引用至少5个字符的原文。")
     previous = sample.gold
     sample.gold = gold
-    sample.status = "labeled"
+    sample.status = "needs_help" if unsure else "labeled"
     sample.label_version += 1
     sample.labeled_by = actor
     sample.labeled_at = timezone.now()
@@ -412,7 +430,7 @@ def evaluate(actor=None, *, scheduled=False):
                 ] += 1
                 counts["quotes"] += predicted["quotes"]
                 counts["grounded_quotes"] += predicted["grounded_quotes"]
-                if predicted["quotes"] and sample.gold.get(
+                if isinstance(sample.gold.get("evidence_supported"), bool) and predicted["quotes"] and sample.gold.get(
                     "evidence_prediction_hash"
                 ) == prediction_hash(predicted):
                     counts["human_evidence_checked"] += 1

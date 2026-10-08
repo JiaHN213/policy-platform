@@ -24,7 +24,7 @@ const statuses = [
 ];
 const timeText = (value: string | null) => value ? new Date(value).toLocaleString("zh-CN") : "—";
 
-export default function PublicationProcessing({ onSelect }: { onSelect: (id: string) => void }) {
+export default function PublicationProcessing({ onSelect, focusedPolicyId }: { onSelect: (id: string) => void; focusedPolicyId?: string }) {
   const { message } = App.useApp();
   const client = useQueryClient();
   const [page, setPage] = useState(1);
@@ -34,6 +34,7 @@ export default function PublicationProcessing({ onSelect }: { onSelect: (id: str
   const summary = useQuery({ queryKey: ["publication-consumers-summary"],
     queryFn: () => api<Summary>("admin/publication-consumers/summary"), refetchInterval: 15000 });
   const params = new URLSearchParams({ page: String(page), status, consumer, q: keyword });
+  if (focusedPolicyId) params.set("policy_id", focusedPolicyId);
   const jobs = useQuery({ queryKey: ["publication-consumers", params.toString()],
     queryFn: () => api<Page<Consumption>>(`admin/publication-consumers?${params}`), refetchInterval: 15000 });
   const retry = useMutation({
@@ -42,10 +43,12 @@ export default function PublicationProcessing({ onSelect }: { onSelect: (id: str
       message.success("已重新排队，只重试这一环节，已有通知不会重复发送。");
       client.invalidateQueries({ queryKey: ["publication-consumers"] });
       client.invalidateQueries({ queryKey: ["publication-consumers-summary"] });
+      void client.invalidateQueries({ queryKey: ["pipeline-status"] });
     }, onError: (error: Error) => message.error(error.message),
   });
   return <Space orientation="vertical" style={{ width: "100%" }} size="large">
     <Alert type="info" showIcon title="政策发布后，各环节独立处理" description="搜索、站内通知、Wiki 和统计分别记录结果，失败自动重试，连续失败后可在这里手动重试。Wiki 按设定频率合并构建，完成后才显示成功。订阅仅影响通知，不限制客户搜索政策。" />
+    {!focusedPolicyId && <>
     <div className="stats-grid">
       {Object.entries(summary.data?.consumers || {}).map(([key, value]) => <Card key={key} size="small">
         <strong>{value.label}</strong>
@@ -55,8 +58,9 @@ export default function PublicationProcessing({ onSelect }: { onSelect: (id: str
       </Card>)}
     </div>
     <p className="muted">按处理环节计数，同一事件通常包含四个环节；共 {summary.data?.events ?? "—"} 个事件。截止提醒只处理通知和统计。</p>
+    </>}
     <Space wrap>
-      <Input.Search placeholder="按政策名称查询" allowClear onSearch={(value) => { setKeyword(value); setPage(1); }} style={{ width: 260 }} />
+      {!focusedPolicyId && <Input.Search placeholder="按政策名称查询" allowClear onSearch={(value) => { setKeyword(value); setPage(1); }} style={{ width: 260 }} />}
       <Select aria-label="处理环节" style={{ width: 170 }} value={consumer} onChange={(value) => { setConsumer(value); setPage(1); }} options={[{ value: "", label: "全部处理环节" }, ...Object.entries(summary.data?.consumers || {}).map(([value, item]) => ({ value, label: item.label }))]} />
       <Select aria-label="处理状态" style={{ width: 190 }} value={status} onChange={(value) => { setStatus(value); setPage(1); }} options={statuses} />
       <Button onClick={() => { jobs.refetch(); summary.refetch(); }}>刷新</Button>

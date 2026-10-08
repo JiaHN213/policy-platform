@@ -12,6 +12,7 @@ class EvaluationSample(Record):
     class Status(models.TextChoices):
         PENDING = "pending", "待人工标注"
         LABELED = "labeled", "已人工标注"
+        NEEDS_HELP = "needs_help", "待协助判断"
         RETIRED = "retired", "已停用"
 
     key = models.CharField(max_length=64, unique=True)
@@ -65,3 +66,45 @@ class EvaluationResult(Record):
         constraints = [
             models.UniqueConstraint(fields=["run", "sample"], name="unique_quality_run_sample")
         ]
+
+
+class MatchingStudy(Record):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    profile = models.ForeignKey("enterprises.EnterpriseProfile", on_delete=models.CASCADE)
+    project = models.ForeignKey(
+        "enterprises.EnterpriseProject", null=True, blank=True, on_delete=models.CASCADE
+    )
+    view = models.CharField(max_length=20)
+    snapshot = models.JSONField(default=dict)
+    selection = models.JSONField(default=dict)
+
+    class Meta:
+        ordering = ["-created_at", "id"]
+
+
+class MatchingCase(Record):
+    study = models.ForeignKey(MatchingStudy, on_delete=models.CASCADE, related_name="cases")
+    policy = models.ForeignKey("policies.Policy", null=True, on_delete=models.SET_NULL)
+    snapshot = models.JSONField(default=dict)
+    predicted = models.BooleanField()
+    prediction = models.JSONField(default=dict)
+    verdict = models.CharField(max_length=20, default="pending")
+    evidence_supported = models.BooleanField(null=True)
+    notes = models.CharField(max_length=2000, blank=True)
+    quote = models.TextField(blank=True)
+    label_version = models.PositiveIntegerField(default=0)
+    labeled_at = models.DateTimeField(null=True)
+
+    class Meta:
+        ordering = ["created_at", "id"]
+        constraints = [
+            models.UniqueConstraint(fields=["study", "policy"], name="unique_matching_study_policy")
+        ]
+
+
+class MatchingObservation(Record):
+    hour = models.DateTimeField(unique=True)
+    metrics = models.JSONField(default=dict)
+
+    class Meta:
+        ordering = ["-hour"]

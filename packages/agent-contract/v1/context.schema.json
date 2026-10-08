@@ -1,0 +1,86 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ServerInjectedContextV1",
+  "type": "object",
+  "properties": {
+    "run_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 36
+    },
+    "actor_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 36
+    },
+    "organization_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 36
+    },
+    "role": {
+      "type": "string",
+      "enum": [
+        "profile",
+        "retrieval",
+        "matching",
+        "wiki",
+        "repair"
+      ]
+    },
+    "permission_version": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 2147483647
+    },
+    "lease_token": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 36
+    },
+    "source_mode": {
+      "type": "string",
+      "enum": [
+        "website",
+        "file",
+        "text",
+        "search",
+        "internal"
+      ]
+    },
+    "allowed_material_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 36
+      },
+      "maxItems": 100
+    },
+    "config_version": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80
+    },
+    "logical_call_id": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 200
+    }
+  },
+  "required": [
+    "run_id",
+    "actor_id",
+    "organization_id",
+    "role",
+    "permission_version",
+    "lease_token",
+    "source_mode",
+    "allowed_material_ids",
+    "config_version",
+    "logical_call_id"
+  ],
+  "additionalProperties": false
+}

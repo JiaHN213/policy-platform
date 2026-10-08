@@ -1,10 +1,10 @@
+from accounts.permissions import IsSystemManager
 from django.db.models import Count
 from django.utils import timezone
 from rest_framework import serializers, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from .catalog import CatalogAdminPermission
 from .event_consumers import retry_consumption
 from .models import PublicationConsumption
 
@@ -59,7 +59,7 @@ class PublicationConsumptionSerializer(serializers.ModelSerializer):
 
 
 class PublicationConsumptionViewSet(viewsets.ReadOnlyModelViewSet):
-    permission_classes = [CatalogAdminPermission]
+    permission_classes = [IsSystemManager]
     serializer_class = PublicationConsumptionSerializer
     queryset = PublicationConsumption.objects.select_related("event__policy").order_by(
         "-created_at", "consumer", "id"

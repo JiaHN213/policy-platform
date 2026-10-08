@@ -7,6 +7,39 @@ from .enrichment import configured, eligible, process_one
 from .models import AIReviewControl, PolicyEnrichment
 
 
+@shared_task(soft_time_limit=1500, time_limit=1560)
+def recover_review(record_id):
+    from .recovery import process
+    process(record_id)
+
+
+@shared_task
+def dispatch_review_recovery():
+    from .models import ReviewRecovery
+    from .recovery import automatic_candidates, enqueue
+
+    control, _ = AIReviewControl.objects.get_or_create(singleton_key="default")
+    if control.enabled and control.recovery_enabled:
+        for job in automatic_candidates().select_related("policy")[:10]:
+            try:
+                enqueue(job, automatic=True)
+            except ValueError:
+                continue
+    now = timezone.now()
+    if ReviewRecovery.objects.filter(status="running", lease_until__gt=now).exists():
+        return
+    candidates = ReviewRecovery.objects.filter(
+        Q(status="queued") | Q(status="running", lease_until__lte=now) |
+        Q(status="failed", automatic=True, attempts__lt=control.recovery_attempt_limit)
+    ).filter(Q(retry_at__isnull=True) | Q(retry_at__lte=now)).order_by("created_at")
+    if not control.enabled or not control.recovery_enabled:
+        candidates = candidates.filter(automatic=False)
+    record = candidates.first()
+    if record:
+        ReviewRecovery.objects.filter(pk=record.pk, status="failed").update(status="queued")
+        recover_review.delay(str(record.pk))
+
+
 def ensure_enrichment_jobs():
     """Create current-version jobs without starting model work."""
     from django.db.models import Exists, OuterRef
@@ -34,6 +67,7 @@ def runnable_enrichment_jobs():
     now = timezone.now()
     return (
         PolicyEnrichment.objects.exclude(status="succeeded")
+        .filter(recovery_token__isnull=True)
         .filter(attempts__lt=3)
         .filter(Q(retry_at__isnull=True) | Q(retry_at__lte=now))
         .filter(Q(lease_until__isnull=True) | Q(lease_until__lte=now))

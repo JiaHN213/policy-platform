@@ -649,8 +649,11 @@ def test_admin_configures_separate_ai_models_without_exposing_keys(db, settings)
     assert {item["purpose"] for item in response.data["items"]} == {
         "review",
         "search",
+        "search_summary",
         "wiki_synthesis",
         "wiki_relations",
+        "enterprise",
+        "enterprise_match",
     }
     assert "environment-secret" not in str(response.data)
 

@@ -1,4 +1,5 @@
 {
+  "automatic_repair": false,
   "version": "wiki-relations-evidence-v3",
   "directions": {
     "superior": "A是B的上位依据",

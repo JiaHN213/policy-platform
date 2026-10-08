@@ -1,5 +1,6 @@
 """Export a Chinese Obsidian vault and safely import explicit policy edits."""
 
+import errno
 import hashlib
 import json
 import re
@@ -36,7 +37,21 @@ def _sha256(content):
 def _safe_name(value, limit=90):
     value = INVALID_FILENAME.sub(" ", value).strip(" .")
     value = re.sub(r"\s+", " ", value)
-    return (value[:limit].rstrip(" .") or "未命名")
+    # Linux NAME_MAX counts UTF-8 bytes, not Chinese characters. Leave room
+    # for the stable ID, extension and atomic-write temporary suffix.
+    value = value[:limit].encode("utf-8")[:180].decode("utf-8", errors="ignore")
+    return (value.rstrip(" .") or "未命名")
+
+
+def _existing_file(path):
+    try:
+        return path.is_file()
+    except OSError as exc:
+        # Older Windows exports may reference names Linux cannot even stat.
+        # Treat only that case as absent; permission/disk failures must surface.
+        if exc.errno == errno.ENAMETOOLONG:
+            return False
+        raise
 
 
 def _policy_for_page(page):
@@ -166,7 +181,7 @@ def export_vault(destination=None):
         if (
             page.page_type == "policy"
             and old_target
-            and old_target.is_file()
+            and _existing_file(old_target)
             and old_entry.get("sha256")
             and _sha256(old_target.read_text(encoding="utf-8")) != old_entry["sha256"]
         ):
@@ -207,7 +222,7 @@ def export_vault(destination=None):
         edited = bool(
             policy
             and old_target
-            and old_target.is_file()
+            and _existing_file(old_target)
             and old_entry.get("sha256")
             and _sha256(old_target.read_text(encoding="utf-8")) != old_entry["sha256"]
         )
@@ -276,7 +291,7 @@ def export_vault(destination=None):
     current = set(generated)
     for relative in old_manifest.get("files", []):
         candidate = (root / relative).resolve()
-        if relative not in current and candidate.is_relative_to(root) and candidate.is_file():
+        if relative not in current and candidate.is_relative_to(root) and _existing_file(candidate):
             candidate.unlink()
     for old_folder in ("policies", "chains", "topics", "regions"):
         folder = root / old_folder

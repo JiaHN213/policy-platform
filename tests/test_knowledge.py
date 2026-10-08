@@ -1,4 +1,7 @@
+import errno
+import json
 from datetime import date
+from pathlib import Path
 
 import pytest
 from django.contrib.auth import get_user_model
@@ -19,6 +22,37 @@ from knowledge.tasks import enqueue_sync, process_build
 from policies.models import Policy, PolicyRelation
 from policies.services import fingerprint
 from rest_framework.test import APIClient
+
+
+@pytest.mark.django_db
+def test_obsidian_long_chinese_title_and_legacy_manifest(knowledge_catalog, tmp_path, monkeypatch):
+    from knowledge.obsidian import MANIFEST, _safe_name
+
+    _, _, policy, *_ = knowledge_catalog
+    policy.title = "多部门联合关于水环境建设与绿色发展的实施办法" * 8
+    policy.save()
+    sync_all()
+    root = tmp_path / "vault"
+    export_vault(root)
+    manifest = json.loads((root / MANIFEST).read_text(encoding="utf-8"))
+    entry = next(row for row in manifest["entries"] if row["policy_id"] == str(policy.pk))
+    assert len((Path(entry["path"]).name + ".tmp").encode("utf-8")) <= 255
+    assert len(_safe_name("中文" * 100).encode("utf-8")) <= 180
+    old_path = "01-政策文件/" + "长" * 90 + ".md"
+    entry["path"] = old_path
+    manifest["files"].append(old_path)
+    (root / MANIFEST).write_text(json.dumps(manifest), encoding="utf-8")
+    original = Path.is_file
+
+    def stat_file(path):
+        if path.name == Path(old_path).name:
+            raise OSError(errno.ENAMETOOLONG, "name too long")
+        return original(path)
+
+    monkeypatch.setattr(Path, "is_file", stat_file)
+    assert export_vault(root)["pages"] > 0
+    fixed = json.loads((root / MANIFEST).read_text(encoding="utf-8"))
+    assert old_path not in fixed["files"]
 
 
 @pytest.fixture

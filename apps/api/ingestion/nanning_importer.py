@@ -248,6 +248,7 @@ def import_record(record, source, claim=None):
         )
         item.policy = policy
         item.status = "imported"
+        item.parsed_at = timezone.now()
         item.lease_until = None
         item.retry_at = None
         item.error_code = "ATTACHMENTS_REQUIRE_REVIEW" if failed else ""

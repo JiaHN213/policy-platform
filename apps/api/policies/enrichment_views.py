@@ -147,6 +147,11 @@ class EnrichmentViewSet(viewsets.ReadOnlyModelViewSet):
                 raise ValidationError("仅可重试失败或已超时的任务。")
             if not eligible().filter(pk=job.policy_id, version=job.policy_version).exists():
                 raise ValidationError("来源版本已变化或不再允许处理，请选择当前正式来源版本。")
+            if job.recovery_token:
+                from .models import ReviewRecovery
+                if ReviewRecovery.objects.filter(pk=job.recovery_token, status__in=["queued", "running"]).exists():
+                    raise ValidationError("该文件正在异常处理，请先停止异常处理后再重新审核。")
+                job.recovery_token = None
             job.status, job.attempts, job.retry_at, job.lease_until, job.error_code = (
                 "queued",
                 0,

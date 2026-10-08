@@ -172,6 +172,27 @@ class RelationReviewCandidate(Record):
         indexes = [models.Index(fields=["status", "-created_at"])]
 
 
+class RelationRepair(Record):
+    """One bounded, version-bound evidence repair; no unrestricted agent tools."""
+
+    candidate = models.ForeignKey(RelationReviewCandidate, on_delete=models.CASCADE,
+                                  related_name="repairs")
+    input_hash = models.CharField(max_length=64, unique=True)
+    status = models.CharField(max_length=20, default="queued", db_index=True)
+    stage = models.CharField(max_length=100, default="等待补查")
+    outcome = models.CharField(max_length=30, blank=True, db_index=True)
+    attempts = models.PositiveIntegerField(default=0)
+    lease_until = models.DateTimeField(null=True, blank=True)
+    retry_at = models.DateTimeField(null=True, blank=True)
+    result = models.JSONField(default=dict)
+    message = models.TextField(blank=True)
+    requested_by = models.ForeignKey("accounts.User", null=True, blank=True,
+                                     on_delete=models.SET_NULL)
+
+    class Meta:
+        ordering = ["-created_at", "-id"]
+
+
 class KnowledgeLintIssue(Record):
     page = models.ForeignKey(KnowledgePage, on_delete=models.CASCADE, related_name="lint_issues")
     revision = models.ForeignKey(

@@ -44,7 +44,47 @@ class KnowledgeAdminPermission(permissions.BasePermission):
         )
 
 
+class RelationRepairSerializer(serializers.Serializer):
+    id = serializers.UUIDField()
+    status = serializers.ChoiceField(choices=["queued", "running", "succeeded", "failed", "cancelled"])
+    stage = serializers.CharField()
+    outcome = serializers.CharField(allow_blank=True)
+    attempts = serializers.IntegerField()
+    message = serializers.CharField(allow_blank=True)
+    result = serializers.DictField()
+    updated_at = serializers.DateTimeField()
+    can_retry = serializers.BooleanField()
+
+
+class RelationRepairBatchSerializer(serializers.Serializer):
+    queued = serializers.IntegerField()
+    cached = serializers.IntegerField()
+    skipped = serializers.ListField(child=serializers.CharField())
+
+
+class RelationRepairStatsSerializer(serializers.Serializer):
+    queued = serializers.IntegerField(required=False)
+    running = serializers.IntegerField(required=False)
+    valid_relation = serializers.IntegerField(required=False)
+    no_relation = serializers.IntegerField(required=False)
+    needs_review = serializers.IntegerField(required=False)
+    failed = serializers.IntegerField(required=False)
+    cancelled = serializers.IntegerField(required=False)
+    new_relations = serializers.IntegerField(required=False)
+
+
+class RelationRepairMessageSerializer(serializers.Serializer):
+    message = serializers.CharField()
+
+
 class RelationReviewCandidateSerializer(serializers.ModelSerializer):
+    repair = serializers.SerializerMethodField()
+
+    @extend_schema_field(RelationRepairSerializer(allow_null=True))
+    def get_repair(self, obj):
+        jobs = list(obj.repairs.all())
+        return repair_data(jobs[0]) if jobs else None
+
     from_title = serializers.CharField(source="from_policy.title", read_only=True)
     to_title = serializers.CharField(source="to_policy.title", read_only=True)
     from_source_url = serializers.CharField(source="from_policy.source_url", read_only=True)
@@ -77,6 +117,7 @@ class RelationReviewCandidateSerializer(serializers.ModelSerializer):
             "reviewed_at",
             "relation",
             "created_at",
+            "repair",
         ]
         read_only_fields = fields
 
@@ -89,12 +130,76 @@ class RelationReviewApprovalSerializer(serializers.Serializer):
     evidence_quote = serializers.CharField(min_length=5, max_length=5000)
 
 
+def repair_data(job):
+    return {"id": str(job.pk), "status": job.status, "stage": job.stage,
+            "outcome": job.outcome, "attempts": job.attempts, "message": job.message,
+            "result": {k: v for k, v in job.result.items() if k != "model_output"},
+            "updated_at": job.updated_at, "can_retry": job.attempts < 3}
+
+
 class RelationReviewCandidateViewSet(viewsets.ReadOnlyModelViewSet):
     permission_classes = [KnowledgeAdminPermission]
     serializer_class = RelationReviewCandidateSerializer
     queryset = RelationReviewCandidate.objects.select_related(
         "scan", "from_policy", "to_policy", "evidence_policy", "reviewed_by", "relation"
-    )
+    ).prefetch_related("repairs")
+
+    @extend_schema(request=None, responses={200: RelationRepairSerializer, 202: RelationRepairSerializer})
+    @action(detail=True, methods=["post"])
+    def repair(self, request, pk=None):
+        from .repair import enqueue
+
+        try:
+            job, _ = enqueue(self.get_object(), request.user)
+        except ValueError as exc:
+            raise serializers.ValidationError(str(exc)) from exc
+        return Response(repair_data(job), status=202 if job.status == "queued" else 200)
+
+    @extend_schema(request=None, responses=RelationRepairMessageSerializer)
+    @action(detail=True, methods=["post"], url_path="stop-repair")
+    def stop_repair(self, request, pk=None):
+        from .repair import stop
+
+        candidate = self.get_object()
+        for job in candidate.repairs.filter(status__in=["queued", "running"]):
+            stop(job)
+        return Response({"message": "已停止该候选的补查任务。"})
+
+    @extend_schema(request=None, responses=RelationRepairBatchSerializer)
+    @action(detail=False, methods=["post"], url_path="repair-batch")
+    def repair_batch(self, request):
+        from .repair import enqueue
+
+        # User explicitly selects a scope; one click schedules at most 20 candidates.
+        candidates = self.get_queryset().filter(status="pending", reviewed_by__isnull=True).exclude(
+            repairs__status__in=["queued", "running", "succeeded"]).exclude(
+                repairs__attempts__gte=3).order_by("created_at")[:20]
+        queued, cached, skipped = 0, 0, []
+        for candidate in candidates:
+            try:
+                job, _ = enqueue(candidate, request.user)
+                queued += int(job.status in {"queued", "running"})
+                cached += int(job.status == "succeeded")
+            except ValueError as exc:
+                skipped.append(str(exc))
+        return Response({"queued": queued, "cached": cached, "skipped": skipped})
+
+    @extend_schema(responses=RelationRepairStatsSerializer)
+    @action(detail=False, methods=["get"], url_path="repair-stats")
+    def repair_stats(self, request):
+        from collections import Counter
+
+        # One latest attempt per candidate; failures are not counted as no-relation.
+        counts = Counter()
+        for candidate in self.get_queryset():
+            jobs = list(candidate.repairs.all())
+            if not jobs:
+                continue
+            job = jobs[0]
+            counts[job.status if job.status != "succeeded" else job.outcome] += 1
+            if job.status == "succeeded":
+                counts["new_relations"] += job.result.get("new_relations", 0)
+        return Response(dict(counts))
 
     def get_queryset(self):
         status_value = self.request.query_params.get("status", "pending")
@@ -111,9 +216,7 @@ class RelationReviewCandidateViewSet(viewsets.ReadOnlyModelViewSet):
     @transaction.atomic
     @action(detail=True, methods=["post"])
     def approve(self, request, pk=None):
-        candidate = get_object_or_404(
-            RelationReviewCandidate.objects.select_for_update(), pk=pk
-        )
+        candidate = get_object_or_404(RelationReviewCandidate, pk=pk)
         payload = RelationReviewApprovalSerializer(data=request.data)
         payload.is_valid(raise_exception=True)
         values = payload.validated_data
@@ -126,6 +229,7 @@ class RelationReviewCandidateViewSet(viewsets.ReadOnlyModelViewSet):
             .filter(pk__in=pair)
             .order_by("id")
         }
+        candidate = RelationReviewCandidate.objects.select_for_update().get(pk=pk)
         if len(policies) != 2 or any(
             policy.status != "published" or policy.source_grade not in Policy.FORMAL_SOURCE_GRADES
             for policy in policies.values()
@@ -174,12 +278,16 @@ class RelationReviewCandidateViewSet(viewsets.ReadOnlyModelViewSet):
         )
         from .relations import apply_derived_validity
 
-        apply_derived_validity()
+        # Release the pair locks before the library-wide, ordered validity update.
+        transaction.on_commit(apply_derived_validity, robust=True)
         return Response(RelationReviewCandidateSerializer(candidate).data)
 
     @transaction.atomic
     @action(detail=True, methods=["post"])
     def reject(self, request, pk=None):
+        pair = get_object_or_404(RelationReviewCandidate, pk=pk)
+        list(Policy.objects.select_for_update().filter(
+            pk__in=[pair.from_policy_id, pair.to_policy_id]).order_by("id"))
         candidate = get_object_or_404(
             RelationReviewCandidate.objects.select_for_update(), pk=pk
         )

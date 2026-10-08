@@ -1,4 +1,5 @@
 "use client";
+import { RecoverySettings } from "@/components/ReviewRecovery";
 
 import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -22,7 +23,9 @@ import {
   Tag,
 } from "antd";
 import { api, type Page } from "@/lib/api";
-import AIReviewControl from "@/components/AIReviewControl";
+import Link from "next/link";
+import EnterpriseResearchSettings from "@/components/EnterpriseResearchSettings";
+import RecommendationSettings from "@/components/RecommendationSettings";
 
 type Release = {
   id: string;
@@ -58,8 +61,12 @@ type ManagedSource = {
 };
 
 type AIModelProfile = {
+  input_price: string | null; output_price: string | null; currency: "CNY" | "USD";
   id: string;
-  purpose: "review" | "search" | "wiki_synthesis" | "wiki_relations";
+  purpose: "review" | "search" | "search_summary" | "wiki_synthesis" | "wiki_relations" | "enterprise" | "enterprise_match";
+  thinking: boolean;
+  context_tokens: number | null;
+  max_output_tokens: number | null;
   purpose_label: string;
   enabled: boolean;
   base_url: string;
@@ -89,6 +96,7 @@ const moduleLabels: Record<string, { title: string; description: string }> = {
 };
 
 const fieldLabels: Record<string, string> = {
+  automatic_repair: "新关系校验失败后自动补查证据",
   industry: "核心行业", label: "显示名称", enabled: "是否启用", terms: "识别关键词",
   business_domains: "核心业务领域", direction_tags: "技术与政策方向", primary_collection_terms: "优先采集关键词",
   title_signals: "标题识别词", interpretation: "官方解读", draft: "征求意见稿", result: "政策执行结果",
@@ -240,7 +248,8 @@ function BusinessSettings() {
   const release = releases.data?.items.find((item) => item.id === selectedRelease);
   const document = documents.data?.items.find((item) => item.id === chosenDocument) || documents.data?.items[0];
   const selectedDocument = document?.id;
-  const content = (selectedDocument && drafts[selectedDocument]) || document?.content as Record<string, JsonValue> || {};
+  const savedContent = (selectedDocument && drafts[selectedDocument]) || document?.content as Record<string, JsonValue> || {};
+  const content = document?.key === "wiki_relations" ? { automatic_repair: false, ...savedContent } : savedContent;
   const hasUnsaved = documents.data?.items.some((item) => !!drafts[item.id]) || false;
   const refresh = async () => { await client.invalidateQueries({ queryKey: ["config-releases"] }); await client.invalidateQueries({ queryKey: ["config-documents"] }); };
   const createDraft = useMutation({
@@ -292,9 +301,12 @@ function BusinessSettings() {
 
 const aiPurposeDescriptions: Record<AIModelProfile["purpose"], string> = {
   review: "提取摘要、关键词、分类、效力、业务标签和政策机会，并决定是否自动发布。",
-  search: "把自然语言问题转换为数据库检索条件，并根据检索证据生成归纳。",
+  search: "将问题转换为地区、关键词和筛选条件。优先选择响应快、结构化输出稳定的模型。",
+  search_summary: "政策列表先显示，再根据相关原文片段整理要点。优先考虑引用准确和响应速度。",
   wiki_synthesis: "把已经发布的政策整理为内部 Wiki 知识页。",
   wiki_relations: "跨政策查找实施、配套、修订、替代和废止等关系。",
+  enterprise: "从官网、介绍材料等提取企业资料与项目标签，轻量模型可先承担此任务。",
+  enterprise_match: "对照企业、项目和政策原文解释适用条件。优先考虑条件理解和证据准确性。",
 };
 
 function AIModelCard({ profile, onSaved }: { profile: AIModelProfile; onSaved: () => void }) {
@@ -305,20 +317,27 @@ function AIModelCard({ profile, onSaved }: { profile: AIModelProfile; onSaved: (
     onSuccess: () => { form.setFieldValue("api_key", ""); onSaved(); message.success(`${profile.purpose_label}设置已保存。`); },
     onError: (error) => message.error(error.message),
   });
-  useEffect(() => { form.setFieldsValue({ enabled: profile.enabled, base_url: profile.base_url, model: profile.model, concurrency: profile.concurrency, api_key: "" }); }, [form, profile]);
+  useEffect(() => { form.setFieldsValue({ enabled: profile.enabled, base_url: profile.base_url, model: profile.model, concurrency: profile.concurrency, thinking: profile.thinking, context_tokens: profile.context_tokens, max_output_tokens: profile.max_output_tokens, input_price: profile.input_price, output_price: profile.output_price, currency: profile.currency, api_key: "" }); }, [form, profile]);
   const applyPreset = (preset: string) => {
-    if (preset === "ollama") form.setFieldValue("base_url", "http://127.0.0.1:11434");
+    if (preset === "ollama") form.setFieldValue("base_url", "http://host.docker.internal:11434/v1");
     if (preset === "deepseek") form.setFieldValue("base_url", "https://api.deepseek.com");
     if (preset === "openai") form.setFieldValue("base_url", "https://api.openai.com/v1");
   };
-  return <Card title={<Space wrap><span>{profile.purpose_label}</span><Tag color={profile.configured ? "green" : "orange"}>{profile.configured ? "可用" : "待完善"}</Tag></Space>}>
+  return <Card title={<Space wrap><span>{profile.purpose_label}</span><Tag color={profile.configured ? "blue" : "orange"}>{!profile.enabled ? "已停用" : profile.configured ? "已配置" : "待完善"}</Tag></Space>}>
     <p className="muted">{aiPurposeDescriptions[profile.purpose]}</p>
     <Form form={form} layout="vertical" onFinish={(values) => save.mutate(values)}>
       <Form.Item name="enabled" label="是否使用此 AI 功能" valuePropName="checked"><Switch checkedChildren="启用" unCheckedChildren="停用" /></Form.Item>
       <Form.Item label="常用服务"><Select placeholder="选择后自动填写服务地址" allowClear onChange={applyPreset} options={[{ value: "ollama", label: "本机 Ollama" }, { value: "deepseek", label: "DeepSeek API" }, { value: "openai", label: "OpenAI API" }, { value: "custom", label: "其他兼容服务" }]} /></Form.Item>
-      <Form.Item name="base_url" label="模型服务地址" rules={[{ required: true, type: "url", message: "请输入完整的模型服务地址" }]}><Input placeholder="例如：http://127.0.0.1:11434" /></Form.Item>
+      <Form.Item name="base_url" label="模型服务地址" extra="Docker 访问电脑上的 Ollama 使用 host.docker.internal；已配置表示信息齐全，不代表已验证连接。" rules={[{ required: true, type: "url", message: "请输入完整的模型服务地址" }]}><Input placeholder="例如：http://host.docker.internal:11434/v1" /></Form.Item>
       <Form.Item name="model" label="使用的模型" rules={[{ required: true, message: "请选择或输入模型名称" }]}><AutoComplete placeholder="选择或输入模型名称" options={["qwen3.5:4b", "qwen3.5:9b", "deepseek-chat", "deepseek-reasoner", "gpt-5.1"].map((value) => ({ value }))} /></Form.Item>
-      {profile.purpose === "review" && <Form.Item name="concurrency" label="同时审核文件数" extra="本机资源有限时建议选择 1；当前设备配置允许时可选择 2 至 4。" rules={[{ required: true }]}><InputNumber min={1} max={4} precision={0} /></Form.Item>}
+      <Form.Item name="concurrency" label="此任务同时调用数" extra="通常从 1 开始。同一服务还受平台共享并发上限约束，多模型共用显卡时不宜盲目增加。" rules={[{ required: true }]}><InputNumber min={1} max={4} precision={0} /></Form.Item>
+      <Collapse className="space-bottom" items={[{ key: "generation", label: "处理参数（可选）", children: <>
+        <Form.Item name="thinking" label="深度思考（本地 Ollama）" valuePropName="checked" extra="简单提取和搜索建议关闭；开启后通常需要更长时间，且模型本身须支持。远程 API 使用供应商自身设置。"><Switch /></Form.Item>
+        <Form.Item name="context_tokens" label="上下文容量（本地 Ollama）" extra="留空沿用模型服务设置。包含原文、指令与输出，容量过小可能无法容纳资料；不是越大越快。"><InputNumber min={2048} max={131072} step={1024} precision={0} placeholder="沿用服务设置" style={{ width: 240 }} /></Form.Item>
+        <Form.Item name="max_output_tokens" label="输出长度上限" extra="留空沿用任务默认值；填写后作为额外上限。过低可能导致结构化结果不完整。"><InputNumber min={128} max={16384} step={128} precision={0} placeholder="沿用任务默认值" style={{ width: 240 }} /></Form.Item>
+      </> }]} />
+      <Space wrap><Form.Item name="input_price" label="输入单价／百万 Token"><InputNumber min={0} precision={6} placeholder="可留空" /></Form.Item><Form.Item name="output_price" label="输出单价／百万 Token"><InputNumber min={0} precision={6} placeholder="可留空" /></Form.Item><Form.Item name="currency" label="计价币种"><Select style={{ width: 110 }} options={[{ value: "CNY", label: "人民币" }, { value: "USD", label: "美元" }]} /></Form.Item></Space>
+      <p className="small muted">单价仅用于新调用费用估算，不是供应商账单。切换模型时请同步核对价格；留空表示不估算，本地模型可填零。</p>
       <Form.Item name="api_key" label="API 密钥" extra={profile.has_api_key ? "已保存密钥；留空表示继续使用原密钥。" : "本机 Ollama 可以留空；远程模型服务通常需要填写。"}><Input.Password autoComplete="new-password" placeholder={profile.has_api_key ? "已保存，输入新值可替换" : "请输入 API 密钥"} /></Form.Item>
       <Button type="primary" htmlType="submit" loading={save.isPending}>保存此用途设置</Button>
     </Form>
@@ -332,7 +351,8 @@ function AISettings() {
   return <div>
     <p className="muted small">各任务可独立选择模型。保存后对新任务生效，密钥不回显。</p>
     {profiles.isLoading ? <p>正在读取 AI 设置…</p> : profiles.error ? <Alert type="error" title={profiles.error.message} /> : <Space orientation="vertical" style={{ width: "100%" }}>{profiles.data?.items.map((profile) => <AIModelCard key={profile.id} profile={profile} onSaved={refresh} />)}</Space>}
-    <Card style={{ marginTop: 16 }}><AIReviewControl title="AI 自动审核与发布" /></Card>
+    <p><Link href="/admin/review">前往处理工作台管理审核开关与待办</Link></p>
+    <Card style={{ marginTop: 16 }}><RecoverySettings /></Card>
   </div>;
 }
 
@@ -342,6 +362,8 @@ export default function SystemConfigCenter() {
       { key: "sources", label: "文件库与检查计划", children: <SourceLibrarySettings /> },
       { key: "business", label: "分类与识别规则", children: <BusinessSettings /> },
       { key: "automation", label: "AI 模型与审核", children: <AISettings /> },
+      { key: "enterprise", label: "企业资料搜索", children: <EnterpriseResearchSettings /> },
+      { key: "recommendations", label: "持续推荐", children: <RecommendationSettings /> },
     ]} />
   </div>;
 }

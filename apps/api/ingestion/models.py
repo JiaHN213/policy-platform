@@ -58,6 +58,7 @@ class SourceCheckRun(Record):
 
 
 class DiscoveredItem(Record):
+    parsed_at = models.DateTimeField(null=True, blank=True)
     source = models.ForeignKey(Source, on_delete=models.CASCADE)
     url = models.URLField(max_length=2000)
     title = models.CharField(max_length=500)

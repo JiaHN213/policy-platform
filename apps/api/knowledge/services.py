@@ -402,11 +402,21 @@ def lint_all():
     return {"pages": pages.count(), "issues": issue_count}
 
 
-def sync_all():
-    relation_audit = audit_relations()
+def sync_affected(policy_ids):
+    return sync_all(affected_policy_ids=policy_ids)
+
+
+def sync_all(affected_policy_ids=None):
+    targeted = affected_policy_ids is not None
+    affected = set(affected_policy_ids or [])
+    relation_audit = {} if targeted else audit_relations()
     # A change arriving during synthesis must remain visible to the next build.
     input_hash = knowledge_fingerprint()
     specs = page_specs()
+    old_page_ids = list(KnowledgePageSource.objects.filter(policy_id__in=affected)
+                        .values_list("page_id", flat=True)) if targeted else []
+    if targeted:
+        specs = [spec for spec in specs if any(p.pk in affected for p in spec.policies)]
     active_keys, changed = set(), 0
     counts = defaultdict(int)
     llm_used = llm_synthesis_enabled()
@@ -444,15 +454,27 @@ def sync_all():
             )
             counts[spec.page_type] += 1
             continue
-        _, created_revision = publish_spec(spec, digest, content)
+        with transaction.atomic():
+            if targeted:
+                live = list(Policy.objects.select_for_update().filter(
+                    pk__in=[p.pk for p in spec.policies]).order_by("id"))
+                if ({p.pk: p.version for p in live} != {p.pk: p.version for p in spec.policies}
+                        or knowledge_fingerprint() != input_hash):
+                    failed_pages.append({"key": spec.key, "reason": "来源或关系已变化，保留旧修订并等待下次更新。"})
+                    continue
+            _, created_revision = publish_spec(spec, digest, content)
         changed += int(created_revision)
         llm_revisions += int(created_revision and use_llm)
         template_revisions += int(created_revision and not use_llm)
         counts[spec.page_type] += 1
-    KnowledgePage.objects.exclude(key__in=active_keys).update(status="archived")
-    lint = lint_all()
+    obsolete = KnowledgePage.objects.exclude(key__in=active_keys)
+    if targeted:
+        obsolete = obsolete.filter(pk__in=old_page_ids)
+    obsolete.update(status="archived")
+    lint = ({"issues": sum(lint_page(p) for p in KnowledgePage.objects.filter(key__in=active_keys))}
+            if targeted else lint_all())
     obsidian = {"enabled": False}
-    if getattr(settings, "OBSIDIAN_EXPORT_ENABLED", True):
+    if not targeted and getattr(settings, "OBSIDIAN_EXPORT_ENABLED", True):
         from .obsidian import export_vault
 
         obsidian = {"enabled": True, **export_vault()}

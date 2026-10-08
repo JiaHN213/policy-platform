@@ -1,0 +1,66 @@
+{
+  "schema_version": "1.0",
+  "release_version": "agent-p0-1.0",
+  "enabled": false,
+  "pilot_organization_ids": [],
+  "shared_model_concurrency": 1,
+  "await_input_days": 7,
+  "workflows": {
+    "enterprise": {
+      "enabled": false,
+      "model_purpose": "enterprise",
+      "fallback": "legacy_company_graph",
+      "budget": {
+        "model_requests": 6,
+        "tool_calls": 12,
+        "supplement_rounds": 2,
+        "active_seconds": 600,
+        "max_input_tokens": 20000,
+        "max_output_tokens": 3500,
+        "graph_steps": 30
+      }
+    },
+    "matching": {
+      "enabled": false,
+      "model_purpose": "enterprise",
+      "fallback": "legacy_tag_matching",
+      "budget": {
+        "model_requests": 8,
+        "tool_calls": 20,
+        "supplement_rounds": 2,
+        "active_seconds": 900,
+        "max_input_tokens": 20000,
+        "max_output_tokens": 3500,
+        "graph_steps": 30
+      }
+    },
+    "wiki": {
+      "enabled": false,
+      "model_purpose": "wiki_relations",
+      "fallback": "legacy_relation_pipeline",
+      "budget": {
+        "model_requests": 4,
+        "tool_calls": 8,
+        "supplement_rounds": 1,
+        "active_seconds": 300,
+        "max_input_tokens": 20000,
+        "max_output_tokens": 3500,
+        "graph_steps": 30
+      }
+    },
+    "repair": {
+      "enabled": false,
+      "model_purpose": "review",
+      "fallback": "legacy_review_pipeline",
+      "budget": {
+        "model_requests": 3,
+        "tool_calls": 6,
+        "supplement_rounds": 1,
+        "active_seconds": 300,
+        "max_input_tokens": 20000,
+        "max_output_tokens": 3500,
+        "graph_steps": 30
+      }
+    }
+  }
+}

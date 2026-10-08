@@ -2,6 +2,7 @@
 import type { IntakeSummary } from "./SourcePanel";
 
 import AIReviewControl from "@/components/AIReviewControl";
+import { RecoveryAction, RecoveryHistory } from "@/components/ReviewRecovery";
 import PolicyCorrectionButton from "@/components/PolicyCorrectionButton";
 import {
 api,
@@ -29,7 +30,7 @@ import { useState } from "react";
 import { AttachmentLinks,documentTypeLabel,ErrorBox,ProvenanceTags } from "@/components/policy/common";
 
 import { AIReviewSummary,policyWorkflow,type AIReviewData,type PolicyPipelineStage,type PolicyReviewSummary } from "@/components/management/ReviewSupport";
-export default function ReviewPanel({ onSelect }: { onSelect: (id: string) => void }) {
+export default function ReviewPanel({ onSelect, focusedPolicyId }: { onSelect: (id: string) => void; focusedPolicyId?: string }) {
   const client = useQueryClient();
   const { message, modal } = App.useApp();
   const [page, setPage] = useState(1);
@@ -39,11 +40,13 @@ export default function ReviewPanel({ onSelect }: { onSelect: (id: string) => vo
   const reviewSummary = useQuery({
     queryKey: ["review-summary"],
     queryFn: () => api<PolicyReviewSummary>("admin/policies/summary"),
+    enabled: !focusedPolicyId,
     refetchInterval: 5000,
   });
   const intakeSummary = useQuery({
     queryKey: ["discovered-summary"],
     queryFn: () => api<IntakeSummary>("admin/discovered-items/summary"),
+    enabled: !focusedPolicyId,
     refetchInterval: 5000,
   });
   const lead = useMutation({
@@ -55,14 +58,16 @@ export default function ReviewPanel({ onSelect }: { onSelect: (id: string) => vo
     onSuccess: () => {
       client.invalidateQueries({ queryKey: ["review"] });
       client.invalidateQueries({ queryKey: ["review-summary"] });
+      void client.invalidateQueries({ queryKey: ["pipeline-status"] });
       message.success("已保留为 L4 线索，不会进入正式结果或推送。");
     },
     onError: (e) => message.error(e.message),
   });
   const query = useQuery({
-    queryKey: ["review", page, queryText, workflowStatus],
-    queryFn: () =>
-      api<Page<PolicyDetail>>(
+    queryKey: ["review", page, queryText, workflowStatus, focusedPolicyId],
+    queryFn: async () => focusedPolicyId
+      ? { count: 1, items: [await api<PolicyDetail>(`admin/policies/${focusedPolicyId}?status=all`)] }
+      : api<Page<PolicyDetail>>(
         `admin/policies?page=${page}&stage=${workflowStatus}&q=${encodeURIComponent(queryText)}`,
       ),
     refetchInterval: 5000,
@@ -73,6 +78,7 @@ export default function ReviewPanel({ onSelect }: { onSelect: (id: string) => vo
     onSuccess: () => {
       void client.invalidateQueries({ queryKey: ["review"] });
       void client.invalidateQueries({ queryKey: ["review-summary"] });
+      void client.invalidateQueries({ queryKey: ["pipeline-status"] });
       void client.invalidateQueries({ queryKey: ["ai-configuration"] });
       message.success("已重新加入 AI 审核队列。");
     },
@@ -97,6 +103,7 @@ export default function ReviewPanel({ onSelect }: { onSelect: (id: string) => vo
     onSuccess: () => {
       client.invalidateQueries({ queryKey: ["review"] });
       client.invalidateQueries({ queryKey: ["review-summary"] });
+      void client.invalidateQueries({ queryKey: ["pipeline-status"] });
       client.invalidateQueries({ queryKey: ["policies"] });
       client.invalidateQueries({ queryKey: ["unified-search"] });
       client.invalidateQueries({ queryKey: ["overview"] });
@@ -113,6 +120,7 @@ export default function ReviewPanel({ onSelect }: { onSelect: (id: string) => vo
     onSuccess: () => {
       void client.invalidateQueries({ queryKey: ["review"] });
       void client.invalidateQueries({ queryKey: ["review-summary"] });
+      void client.invalidateQueries({ queryKey: ["pipeline-status"] });
       void client.invalidateQueries({ queryKey: ["policies"] });
       void client.invalidateQueries({ queryKey: ["unified-search"] });
       void client.invalidateQueries({ queryKey: ["overview"] });
@@ -137,6 +145,8 @@ export default function ReviewPanel({ onSelect }: { onSelect: (id: string) => vo
   if (query.isLoading) return <Skeleton active />;
   return (
     <>
+      {!focusedPolicyId && <>
+      <details className="space-bottom"><summary>查看完整处理流程</summary>
       <section className="policy-process" aria-label="政策自动处理流程">
         <div className="policy-process-heading">
           <div>
@@ -195,8 +205,9 @@ export default function ReviewPanel({ onSelect }: { onSelect: (id: string) => vo
             <small>进入检索与订阅推送</small>
           </button>
         </div>
-      </section>
+      </section></details>
       <AIReviewControl title="AI 自动审核与发布" />
+      <details className="space-bottom"><summary>查看自动恢复记录</summary><RecoveryHistory onSelect={onSelect} /></details>
       <div className="automation-heading review-queue-heading">
         <div>
           <h3>处理队列</h3>
@@ -273,6 +284,8 @@ export default function ReviewPanel({ onSelect }: { onSelect: (id: string) => vo
           }}
         />
       </div>
+      </>}
+      {focusedPolicyId && <RecoveryHistory focusedPolicyId={focusedPolicyId} onSelect={onSelect} />}
       {!query.data?.items.length ? (
         <div className="empty-pad">
           <Empty description="没有符合当前筛选条件的政策" />
@@ -339,6 +352,9 @@ export default function ReviewPanel({ onSelect }: { onSelect: (id: string) => vo
                       policyId={policy.id}
                       onSaved={() => void query.refetch()}
                     />
+                  )}
+                  {!!enrichment?.id && (enrichment.status === "failed" || workflow.pipeline?.stage === "NEEDS_ACTION") && (
+                    <RecoveryAction enrichment={enrichment.id} />
                   )}
                   {enrichment?.status === "failed" && !!enrichment.id && (
                     <Button
@@ -415,14 +431,14 @@ export default function ReviewPanel({ onSelect }: { onSelect: (id: string) => vo
           );
         })
       )}
-      <Pagination
+      {!focusedPolicyId && <Pagination
         className="pagination"
         current={page}
         total={query.data?.count || 0}
         pageSize={20}
         showSizeChanger={false}
         onChange={setPage}
-      />
+      />}
     </>
   );
 }

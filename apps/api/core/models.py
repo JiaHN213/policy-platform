@@ -86,14 +86,23 @@ class SystemConfigAudit(Record):
 class AIModelProfile(Record):
     class Purpose(models.TextChoices):
         REVIEW = "review", "政策自动审核与摘要"
-        SEARCH = "search", "自然语言检索与归纳"
+        SEARCH = "search", "搜索意图解析"
+        SEARCH_SUMMARY = "search_summary", "搜索结果归纳"
         WIKI_SYNTHESIS = "wiki_synthesis", "Wiki 知识页综合"
         WIKI_RELATIONS = "wiki_relations", "政策关系发现"
+        ENTERPRISE = "enterprise", "企业与项目资料提取"
+        ENTERPRISE_MATCH = "enterprise_match", "企业政策匹配解读"
 
     purpose = models.CharField(max_length=40, choices=Purpose.choices, unique=True)
     enabled = models.BooleanField(default=True)
+    thinking = models.BooleanField(default=False)
+    context_tokens = models.PositiveIntegerField(null=True, blank=True, validators=[MinValueValidator(2048), MaxValueValidator(131072)])
+    max_output_tokens = models.PositiveIntegerField(null=True, blank=True, validators=[MinValueValidator(128), MaxValueValidator(16384)])
     base_url = models.URLField(max_length=500)
     model = models.CharField(max_length=200)
+    input_price = models.DecimalField(max_digits=12, decimal_places=6, null=True, blank=True, validators=[MinValueValidator(0)])
+    output_price = models.DecimalField(max_digits=12, decimal_places=6, null=True, blank=True, validators=[MinValueValidator(0)])
+    currency = models.CharField(max_length=3, choices=[("CNY", "人民币"), ("USD", "美元")], default="CNY")
     api_key = models.TextField(blank=True)
     concurrency = models.PositiveSmallIntegerField(
         default=1, validators=[MinValueValidator(1), MaxValueValidator(4)]
@@ -104,3 +113,21 @@ class AIModelProfile(Record):
 
     class Meta:
         ordering = ["purpose"]
+
+
+class AICall(Record):
+    task = models.ForeignKey("enterprises.ResearchRun", null=True, blank=True, on_delete=models.SET_NULL, related_name="model_requests")
+    step = models.ForeignKey("enterprises.ResearchStep", null=True, blank=True, on_delete=models.SET_NULL, related_name="model_requests")
+    purpose = models.CharField(max_length=40)
+    model = models.CharField(max_length=200)
+    status = models.CharField(max_length=20)
+    duration_ms = models.PositiveIntegerField()
+    input_tokens = models.PositiveBigIntegerField(null=True)
+    output_tokens = models.PositiveBigIntegerField(null=True)
+    estimated_cost = models.DecimalField(max_digits=20, decimal_places=8, null=True)
+    currency = models.CharField(max_length=3)
+    input_price = models.DecimalField(max_digits=12, decimal_places=6, null=True)
+    output_price = models.DecimalField(max_digits=12, decimal_places=6, null=True)
+
+    class Meta:
+        indexes = [models.Index(fields=["created_at", "purpose"], name="ai_call_usage_period")]
